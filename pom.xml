@@ -1,0 +1,506 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.liveontologies</groupId>
+	<artifactId>protege-justification-explanation</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+
+	<name>Protege Justification Explanation</name>
+	<description>
+This is a plug-in that adds justification-based explanation facilities 
+to the Protege Desktop ontology editor. It registers as an extension to the Protege 
+explanation services and defines an extension point using which justifications can 
+be provided by other Protege plug-ins. The main functionality of this plug-in 
+is displaying a list of these justifications in the user interface.
+	</description>
+
+	<scm>
+		<connection>scm:git:https://github.com/liveontologies/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:git@github.com:liveontologies/${project.artifactId}.git</developerConnection>
+		<url>https://github.com/liveontologies/${project.artifactId}</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<organization>
+		<name>Live Ontologies Project</name>
+		<url>http://liveontologies.org</url>
+	</organization>
+	
+	<inceptionYear>2016</inceptionYear>
+
+	<developers>
+		<developer>
+			<id>yevgeny</id>
+			<name>Yevgeny Kazakov</name>
+			<email>yevgeny.kazakov@uni-ulm.de</email>
+			<organization>Institute of Artificial Intelligence, University of Ulm</organization>
+			<organizationUrl>http://www.uni-ulm.de/en/in/ki.html</organizationUrl>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>1</timezone>
+		</developer>
+		<developer>
+			<name>Matthew Horridge</name>
+			<email>matthew.horridge@stanford.edu</email>
+		</developer>
+		<developer>
+			<id>saa</id>
+			<name>Alexander Stupnikov</name>
+			<email>saarus72@gmail.com</email>
+		</developer>
+	</developers>
+
+	<properties>
+		<protege.version>5.0.0</protege.version>
+		<pluginId>${project.groupId}.protege.explanation.justification</pluginId>
+		<extensionId>${pluginId}.service</extensionId>
+		<plugin-zip.file>
+			${project.artifactId}-${project.version}
+		</plugin-zip.file>
+		<!-- the next release version used in changes.xml -->
+		<release.version>
+			${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}
+		</release.version>
+		<!-- the path to update.properties and version-info.txt for Protege auto-update -->
+		<update.url>https://raw.githubusercontent.com/liveontologies/protege-justification-explanation/release</update.url>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
+	
+	<dependencies>
+		<dependency>
+			<groupId>edu.stanford.protege</groupId>
+			<artifactId>protege-editor-owl</artifactId>
+			<version>${protege.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>edu.stanford.protege</groupId>
+			<artifactId>protege-editor-core</artifactId>
+			<version>${protege.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>edu.stanford.protege</groupId>
+			<artifactId>protege-common</artifactId>
+			<version>${protege.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.owlapi</groupId>
+			<artifactId>owlapi-osgidistribution</artifactId>
+			<version>4.2.6</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.owlapi</groupId>
+			<artifactId>owlexplanation</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.owlapi</groupId>
+			<artifactId>telemetry</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+	</dependencies>
+	
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>plugin.xml</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>build-helper-maven-plugin</artifactId>
+										<versionRange>[1.0,)</versionRange>
+										<goals>
+											<goal>timestamp-property</goal>
+											<goal>parse-version</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute>
+											<runOnConfiguration>true</runOnConfiguration>
+											<runOnIncremental>true</runOnIncremental>
+										</execute>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>3.0.1</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${pluginId};singleton:=true</Bundle-SymbolicName>
+						<Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+						<Export-Package>${extensionId}</Export-Package>
+						<Embed-Dependency>*;scope=!provided;scope=compile|runtime;inline=false</Embed-Dependency>
+						<Embed-Transitive>true</Embed-Transitive>
+						<Embed-Directory>target/dependency</Embed-Directory>
+						<Import-Package>*</Import-Package>
+						<Update-Url>${update.url}/p5.update.properties</Update-Url>
+					</instructions>
+					<executions>
+						<execution>
+							<id>bundle-manifest</id>
+							<phase>install</phase>
+							<goals>
+								<goal>manifest</goal>
+							</goals>
+						</execution>
+					</executions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- the plugin used to generate license headers -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.9</version>
+				<configuration>
+					<verbose>false</verbose>
+					<addSvnKeyWords>true</addSvnKeyWords>
+					<extraExtensions>
+						<g>java</g>
+						<jj>java</jj>
+					</extraExtensions>
+				</configuration>
+				<executions>
+					<execution>
+						<id>first</id>
+						<goals>
+							<goal>update-file-header</goal>
+							<goal>update-project-license</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<licenseName>apache_v2</licenseName>
+							<roots>
+								<root>src/main/java</root>
+								<root>src/test/java</root>
+							</roots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.11</version>
+				<executions>
+					<execution>
+						<!-- generate the modified plugin versions, such as release.version 
+							used templates/*.vm and parsedVersion.osgiVersion used in src/main/update.properties -->
+						<id>set-osgi-versions</id>
+						<goals>
+							<goal>parse-version</goal>
+						</goals>
+					</execution>
+					<execution>
+						<!-- set the current year from the build timestamp, used in README.txt -->
+						<id>set-current-year</id>
+						<goals>
+							<goal>timestamp-property</goal>
+						</goals>
+						<configuration>
+							<name>currentYear</name>
+							<pattern>yyyy</pattern>
+							<locale>en,US</locale>
+						</configuration>
+					</execution>
+					<execution>
+						<!-- set the build date, used in changes.xml -->
+						<id>set-build-date</id>
+						<goals>
+							<goal>timestamp-property</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<name>buildDate</name>
+							<pattern>yyyy-MM-dd</pattern>
+							<locale>en,US</locale>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- filtering and copying of additional files; these will *not* be included 
+					in the jar -->
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
+				<executions>
+					<execution>
+						<id>filter-main-resources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>p5.update.properties</include>
+										<include>README.txt</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>filter-changes-xml</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<resources>
+								<resource>
+									<!-- filtering of the changes.xml file -->
+									<directory>${basedir}/src/changes</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>changes.xml</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>plugin-zip</id>
+						<phase>install</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<appendAssemblyId>false</appendAssemblyId>
+							<descriptors>
+								<descriptor>${basedir}/src/assembly/plugin-zip.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- deplyoing to maven central -->
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- generate changelog and release announcements -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.12</version>
+				<configuration>
+					<!-- the changes filtered source changes file -->
+					<xmlPath>${basedir}/target/changes.xml</xmlPath>
+					<templateDirectory>templates</templateDirectory>
+					<announcementDirectory>${project.build.directory}</announcementDirectory>
+					<developmentTeam>${project.organization.name} team</developmentTeam>
+				</configuration>
+				<executions>
+					<execution>
+						<!-- check if the changes file is well-formed -->
+						<id>check-changes</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>changes-check</goal>
+						</goals>
+					</execution>
+					<execution>
+						<!-- generate Changes.txt -->
+						<id>generate-changes-file</id>
+						<phase>package</phase>
+						<goals>
+							<goal>announcement-generate</goal>
+						</goals>
+						<configuration>
+							<announcementFile>Changes.txt</announcementFile>
+							<template>changes.vm</template>
+						</configuration>
+					</execution>
+					<execution>
+						<!-- generate version-info.txt for Protege auto-update feature -->
+						<id>generate-protege-version-info</id>
+						<phase>package</phase>
+						<goals>
+							<goal>announcement-generate</goal>
+						</goals>
+						<configuration>
+							<announcementFile>p5.version-info.txt</announcementFile>
+							<template>version-info.vm</template>
+							<announcementDirectory>${basedir}</announcementDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<!-- generation of the e-mail announcement message announcement.txt -->
+						<id>generate-email-announcement</id>
+						<phase>package</phase>
+						<goals>
+							<goal>announcement-generate</goal>
+						</goals>
+						<configuration>
+							<announcementFile>announcement.txt</announcementFile>
+							<template>announcement.vm</template>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<profiles>
+		<profile>
+			<!-- with this profile put META-INF/MANIFEST.MF, plugin.xml, and embed 
+				dependencies so that Eclipse/PDE can find them; to use in Eclipse right click 
+				on the project > Configure > Convert to Plug-in Projects... -->
+			<id>eclipse</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.felix</groupId>
+						<artifactId>maven-bundle-plugin</artifactId>
+						<extensions>true</extensions>
+						<configuration>
+							<manifestLocation>META-INF</manifestLocation>
+						</configuration>
+					</plugin>
+					<plugin>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-dependencies</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-dependencies</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<excludeScope>provided</excludeScope>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.2.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.9.1</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

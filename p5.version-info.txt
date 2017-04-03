@@ -1,0 +1,17 @@
+The Live Ontologies Project team is pleased to announce 
+        the Protege Justification Explanation 0.0.1 release!
+
+This is a plug-in that adds justification-based explanation facilities 
+to the Protege Desktop ontology editor. It registers as an extension to the Protege 
+explanation services and defines an extension point using which justifications can 
+be provided by other Protege plug-ins. The main functionality of this plug-in 
+is displaying a list of these justifications in the user interface.
+
+Changes in this version:
+------------------------
+New features:
+- Initial release. 
+
+
+Have fun!
+- Live Ontologies Project team
