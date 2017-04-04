@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="JustificationService" name="Justification Service" schema="schema/JustificationService.exsd"/>
+   <extension id="PresentationService" point="org.protege.editor.owl.explanation">
+      <name
+            value="Justification Based Explanation">
+      </name>
+      <class
+            value="org.liveontologies.protege.explanation.justification.PresentationService">
+      </class>
+   </extension>
+   <extension
+         id="InconsistentOntologyPresentationService"
+         point="org.protege.editor.owl.inconsistentOntologyExplanation">
+      <name
+            value="Inconsistent Ontology Justification-Based Explanation">
+      </name>
+      <class
+            value="org.liveontologies.protege.explanation.justification.InconsistentOntologyPresentationService">
+      </class>
+   </extension>
+   <extension
+         id="JustificationPreferences"
+         point="org.protege.editor.core.application.preferencespanel">
+      <label
+            value="Justifications">
+      </label>
+      <class
+            value="org.liveontologies.protege.explanation.justification.PresentationPreferencesPanel">
+      </class>
+   </extension>
+</plugin>
