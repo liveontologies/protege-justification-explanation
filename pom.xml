@@ -198,7 +198,6 @@ is displaying a list of these justifications in the user interface.
 						<Embed-Dependency>*;scope=!provided;scope=compile|runtime;inline=false</Embed-Dependency>
 						<Embed-Transitive>true</Embed-Transitive>
 						<Embed-Directory>target/dependency</Embed-Directory>
-						<Import-Package>*</Import-Package>
 						<Update-Url>${update.url}/p5.update.properties</Update-Url>
 					</instructions>
 					<executions>
