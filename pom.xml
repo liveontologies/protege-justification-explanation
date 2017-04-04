@@ -126,10 +126,10 @@ is displaying a list of these justifications in the user interface.
 	</distributionManagement>
 
 	<build>
-		<sourceDirectory>src</sourceDirectory>
 		<resources>
+			<!-- additional resources included in jar -->
 			<resource>
-				<directory>${basedir}</directory>
+				<directory>${basedir}/src/main/resources</directory>
 				<includes>
 					<include>plugin.xml</include>
 				</includes>
