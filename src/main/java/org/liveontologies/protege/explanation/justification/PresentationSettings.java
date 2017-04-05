@@ -29,6 +29,7 @@ package org.liveontologies.protege.explanation.justification;
 
 public class PresentationSettings {
 	private int explanationsDisplayedCnt = 0;
+	private int explanationsCnt = 0;
 	
 	public int getIncrement() {
 		return PresentationPreferencesPanel.getIncrement();
@@ -44,5 +45,13 @@ public class PresentationSettings {
 
 	public int getCurrentCount() {
 		return explanationsDisplayedCnt;
+	}
+	
+	public void setExplanationsCount(int count) {
+		explanationsCnt = count;
+	}
+
+	public int getExplanationsCount() {
+		return explanationsCnt;
 	}
 }

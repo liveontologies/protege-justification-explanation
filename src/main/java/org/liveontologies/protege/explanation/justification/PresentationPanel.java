@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -112,7 +113,7 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 	private Collection<AxiomsDisplay> panels;
 	private JComponent headerPanel;
 
-	private List<Explanation<OWLAxiom>> lastExplanations;
+	private PriorityQueue<Explanation<OWLAxiom>> displayedExplanations;
 	private JButton bAdd;
 
 	private AxiomSelectionModelImpl selectionModel;
@@ -220,20 +221,19 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 	
 	private String getIncrementString()
 	{
-		if (lastExplanations == null)
+		if (displayedExplanations == null)
 			return "Show next " + manager.getPresentationSettings().getIncrement() + " justifications";
 		int inc = Math.min(manager.getPresentationSettings().getIncrement(),
-				lastExplanations.size() - manager.getPresentationSettings().getCurrentCount());
-		return "Show next " + inc + " justifications of " + lastExplanations.size() + " in total";
+				getDisplayedExplanationsAmout() - manager.getPresentationSettings().getCurrentCount());
+		return "Show next " + inc + " justifications of " + getDisplayedExplanationsAmout() + " in total";
 	}
 
 	private void updateHeaderPanel() {
 		int current = manager.getPresentationSettings().getCurrentCount();
-		int all = lastExplanations.size();
 		
-		String sAll = lastExplanations.size() + " justification" + (all == 1 ? " is shown." : "s are shown.");
+		String sAll = getDisplayedExplanationsAmout() + " justification" + (getDisplayedExplanationsAmout() == 1 ? " is shown." : "s are shown.");
 
-		if (current != all) {
+		if (current != getDisplayedExplanationsAmout()) {
 			bAdd.setText(getIncrementString());
 			headerPanel.validate();
 		} else {
@@ -307,7 +307,22 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 			explanationDisplayHolder.removeAll();
 			explanationDisplayHolder.validate();
 
-			lastExplanations = getOrderedExplanations(manager.getJustifications());
+			Set<Explanation<OWLAxiom>> e = manager.getJustifications();
+			setDisplayedExplanationsAmout(e.size());
+			displayedExplanations = new PriorityQueue<>(getDisplayedExplanationsAmout(), new Comparator<Explanation<OWLAxiom>>() {
+				public int compare(Explanation<OWLAxiom> o1, Explanation<OWLAxiom> o2) {
+					int diff = getAxiomTypes(o1).size() - getAxiomTypes(o2).size();
+					if (diff != 0) {
+						return diff;
+					}
+					diff = getClassExpressionTypes(o1).size() - getClassExpressionTypes(o2).size();
+					if (diff != 0) {
+						return diff;
+					}
+					return o1.getSize() - o2.getSize();
+				}
+			});
+			displayedExplanations.addAll(e);
 			manager.getPresentationSettings().setCurrentCount(0);
 
 			updateHeaderPanel();
@@ -319,44 +334,26 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 	}
 
 	private void updatePanel() {
-		updatePanel(lastExplanations.size() - manager.getPresentationSettings().getCurrentCount());
+		updatePanel(getDisplayedExplanationsAmout() - manager.getPresentationSettings().getCurrentCount());
 	}
 
 	private void updatePanel(int diff) {
 		PresentationSettings settings = manager.getPresentationSettings();
-		int maxCnt = Math.min(settings.getCurrentCount() + diff, lastExplanations.size());
+		int maxCnt = Math.min(settings.getCurrentCount() + diff, getDisplayedExplanationsAmout());
 
 		for (int explNum = settings.getCurrentCount() + 1; explNum <= maxCnt; explNum++) {
-			Explanation<OWLAxiom> explanation = lastExplanations.get(explNum - 1);
+			Explanation<OWLAxiom> explanation = displayedExplanations.poll();
 			final AxiomsDisplay display = new AxiomsDisplay(manager, this, explanation);
 			AxiomsDisplayList displayList = new AxiomsDisplayList(display, explNum);
 			displayList.setBorder(BorderFactory.createEmptyBorder(2, 0, 10, 0));
 			explanationDisplayHolder.add(displayList);
 			panels.add(display);
 		}
+
 		settings.setCurrentCount(maxCnt);
 		updateHeaderPanel();
 
 		scrollPane.validate();
-	}
-
-	protected List<Explanation<OWLAxiom>> getOrderedExplanations(Set<Explanation<OWLAxiom>> explanations) {
-		List<Explanation<OWLAxiom>> orderedExplanations = new ArrayList<>();
-		orderedExplanations.addAll(explanations);
-		Collections.sort(orderedExplanations, new Comparator<Explanation<OWLAxiom>>() {
-			public int compare(Explanation<OWLAxiom> o1, Explanation<OWLAxiom> o2) {
-				int diff = getAxiomTypes(o1).size() - getAxiomTypes(o2).size();
-				if (diff != 0) {
-					return diff;
-				}
-				diff = getClassExpressionTypes(o1).size() - getClassExpressionTypes(o2).size();
-				if (diff != 0) {
-					return diff;
-				}
-				return o1.getSize() - o2.getSize();
-			}
-		});
-		return orderedExplanations;
 	}
 
 	private Set<AxiomType<?>> getAxiomTypes(Explanation<OWLAxiom> explanation) {
@@ -410,5 +407,13 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 		int width = (int) (workspaceSize.getWidth() * 0.8);
 		int height = (int) (workspaceSize.getHeight() * 0.7);
 		return new Dimension(width, height);
+	}
+	
+	private int getDisplayedExplanationsAmout() {
+		return manager.getPresentationSettings().getExplanationsCount();
+	}
+	
+	private void setDisplayedExplanationsAmout(int count) {
+		manager.getPresentationSettings().setExplanationsCount(count);
 	}
 }
