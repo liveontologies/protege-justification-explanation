@@ -51,7 +51,7 @@ public class AxiomsCache {
 		if (explanations == null) {
 			return Collections.emptySet();
 		}
-		return new HashSet<>(explanations);
+		return Collections.unmodifiableSet(explanations);
 	}
 
 	public void put(Explanation<OWLAxiom> explanation) {
