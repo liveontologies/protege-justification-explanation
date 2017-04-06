@@ -179,15 +179,8 @@ public class PresentationManager {
 		}
 	}
 
-	public int getPopularity(OWLAxiom axiom) {
-		int count = 0;
-		Set<Explanation<OWLAxiom>> justifications = getJustifications(entailment);
-		for (Explanation<OWLAxiom> justification : justifications) {
-			if (justification.contains(axiom)) {
-				count++;
-			}
-		}
-		return count;
+	public int getPopularity(OWLAxiom entailment, OWLAxiom axiom) {
+		return axiomsCache.getAxiomPopularity(entailment, axiom);
 	}
 
 	public OWLEditorKit getOWLEditorKit() {

@@ -270,7 +270,7 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 	}
 
 	private AttributedString getPopularityString(boolean sel, AxiomsFrameSectionRow row) {
-		int popularity = manager.getPopularity(row.getAxiom());
+		int popularity = manager.getPopularity(row.getRoot().getEntailment(), row.getAxiom());
 		OWLAxiom entailment = row.getRoot().getEntailment();
 		int count = manager.getComputedExplanationCount(entailment);
 

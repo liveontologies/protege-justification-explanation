@@ -41,7 +41,8 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 
 public class AxiomsCache {
 	private Map<OWLAxiom, Set<Explanation<OWLAxiom>>> cache = new HashMap<>();
-
+	private Map<OWLAxiom, Map<OWLAxiom, Integer>> popularityCache = new HashMap<>();
+	
 	public boolean contains(OWLAxiom entailment) {
 		return cache.containsKey(entailment);
 	}
@@ -59,6 +60,7 @@ public class AxiomsCache {
 		if (expls == null) {
 			expls = new HashSet<>();
 			cache.put(explanation.getEntailment(), expls);
+			getPopularityCache(explanation.getEntailment());
 		}
 		expls.add(explanation);
 	}
@@ -76,5 +78,29 @@ public class AxiomsCache {
 	public void clear(OWLAxiom entailment) {
 		cache.remove(entailment);
 	}
+	
+	private Map<OWLAxiom, Integer> getPopularityCache(OWLAxiom entailment) {
+		Map<OWLAxiom, Integer> popularities = popularityCache.get(entailment);
+		if (popularities != null)
+			return popularities;
 
+		popularityCache.put(entailment, new HashMap<>());
+		return popularityCache.get(entailment);
+	}
+
+	public int getAxiomPopularity(OWLAxiom entailment, OWLAxiom axiom) {
+		Map<OWLAxiom, Integer> popularities = getPopularityCache(entailment);
+		if (popularities.containsKey(axiom))
+			return popularities.get(axiom);
+
+		int count = 0;
+		Set<Explanation<OWLAxiom>> explanations = get(entailment);
+		for (Explanation<OWLAxiom> explanation : explanations) {
+			if (explanation.contains(axiom)) {
+				count++;
+			}
+		}
+		popularities.put(axiom, count);
+		return count;
+	}
 }
