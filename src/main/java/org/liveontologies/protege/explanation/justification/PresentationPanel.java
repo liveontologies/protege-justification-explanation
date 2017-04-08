@@ -170,6 +170,7 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 		kit.getModelManager().addListener(this);
 
 		serviceSettingsDisplayHolder = new JPanel(new BorderLayout());
+		updateSettingsPanel();
 		add(serviceSettingsDisplayHolder, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHEAST,
 				GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
 
@@ -298,7 +299,7 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 		serviceSettingsDisplayHolder.removeAll();
 		if (settingsPanel != null)
 			serviceSettingsDisplayHolder.add(settingsPanel, BorderLayout.WEST);
-		serviceSettingsDisplayHolder.validate();
+		validate();
 	}
 
 	private void recompute() {
