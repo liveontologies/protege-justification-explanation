@@ -36,17 +36,18 @@ import org.protege.editor.owl.OWLEditorKit;
 
 public class JustificationComputationPluginLoader extends AbstractPluginLoader<JustificationComputationPlugin> {
 	
+	private static final String KEY_ = "org.liveontologies.protege.explanation.justification";
+	private static final String ID_ = "JustificationService";
+	
 	private final OWLEditorKit kit;
 
 	/**
 	 * Constructs JustificationComputationPluginLoader
 	 * 
 	 * @param kit	OWLEditorKit which is necessary to instantiate a JustificationComputationPlugin
-	 * @param KEY	A string to specify the extension point to find plugins for
-	 * @param ID	A string to specify the extension point to find plugins for
 	 */
-	public JustificationComputationPluginLoader(OWLEditorKit kit, String KEY, String ID) {
-		super(KEY, ID);
+	public JustificationComputationPluginLoader(OWLEditorKit kit) {
+		super(KEY_, ID_);
 		this.kit = kit;
 	}
 

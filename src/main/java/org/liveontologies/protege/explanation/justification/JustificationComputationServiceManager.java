@@ -44,6 +44,8 @@ import org.protege.editor.owl.OWLEditorKit;
 
 public class JustificationComputationServiceManager implements Disposable {
 
+	private static final String KEY_ = "org.liveontologies.protege.explanation.justification.services";
+	
 	private final OWLEditorKit kit;
 
 	private final Collection<ComputationService> services;
@@ -51,17 +53,26 @@ public class JustificationComputationServiceManager implements Disposable {
 	private ComputationService selectedService = null;
 	public static String lastChoosenServiceId = null;
 
-	public JustificationComputationServiceManager(OWLEditorKit kit, String KEY, String ID) throws Exception {
+	private JustificationComputationServiceManager(OWLEditorKit kit) throws Exception {
 		this.kit = kit;
 		this.services = new ArrayList<ComputationService>();
 		this.serviceIds = new HashMap<ComputationService, String>();
-		JustificationComputationPluginLoader loader = new JustificationComputationPluginLoader(this.kit, KEY, ID);
+		JustificationComputationPluginLoader loader = new JustificationComputationPluginLoader(this.kit);
 		for (JustificationComputationPlugin plugin : loader.getPlugins()) {
 			ComputationService service = plugin.newInstance();
 			service.initialise();
 			services.add(service);
 			serviceIds.put(service, plugin.getIExtension().getUniqueIdentifier());
 		}
+	}
+	
+	public static synchronized JustificationComputationServiceManager get(OWLEditorKit kit) throws Exception{
+		JustificationComputationServiceManager manager = kit.getModelManager().get(KEY_);
+		if (manager == null) {
+			manager = new JustificationComputationServiceManager(kit);
+			kit.getModelManager().put(KEY_, manager);
+		}
+		return manager;
 	}
 
 	@Override

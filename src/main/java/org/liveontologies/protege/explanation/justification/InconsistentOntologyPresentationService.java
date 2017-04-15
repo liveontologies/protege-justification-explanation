@@ -52,7 +52,7 @@ public class InconsistentOntologyPresentationService implements InconsistentOnto
 
 	@Override
 	public void initialise() throws Exception {
-		manager = new JustificationComputationServiceManager(editorKit, "org.liveontologies.protege.explanation.justification", "JustificationService");
+		manager = JustificationComputationServiceManager.get(editorKit);
 	}
 
 	@Override

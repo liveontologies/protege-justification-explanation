@@ -41,7 +41,7 @@ public class PresentationService extends ExplanationService {
 	@Override
 	public void initialise() throws Exception {
 		OWLEditorKit kit = getOWLEditorKit();
-		manager = new JustificationComputationServiceManager(kit, "org.liveontologies.protege.explanation.justification", "JustificationService");
+		manager = JustificationComputationServiceManager.get(kit);
 	}
 
 	@Override
