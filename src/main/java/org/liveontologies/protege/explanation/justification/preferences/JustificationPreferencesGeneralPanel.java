@@ -1,4 +1,24 @@
-package org.liveontologies.protege.explanation.justification;
+package org.liveontologies.protege.explanation.justification.preferences;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+
+import org.liveontologies.protege.explanation.justification.JustificationComputationServiceManager;
+import org.liveontologies.protege.explanation.justification.service.ComputationService;
+import org.protege.editor.core.ui.preferences.PreferencesLayoutPanel;
+import org.protege.editor.core.ui.preferences.PreferencesPanel;
+import org.protege.editor.core.ui.preferences.PreferencesPanelPlugin;
+import org.protege.editor.owl.ui.preferences.OWLPreferencesPanel;
 
 /*-
  * #%L
@@ -23,22 +43,7 @@ package org.liveontologies.protege.explanation.justification;
  */
 
 
-import java.awt.BorderLayout;
-import java.util.ArrayList;
-
-import javax.swing.JComponent;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-
-import org.protege.editor.core.ui.preferences.PreferencesLayoutPanel;
-import org.protege.editor.owl.ui.preferences.OWLPreferencesPanel;
-
-/**
- * @author Alexander Stupnikov
- * Date: 23-03-2017
- */
-
-public class PresentationPreferencesPanel extends OWLPreferencesPanel {
+public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 
 	private SpinnerNumberModel initialAmountM, incrementM;
 
@@ -52,7 +57,18 @@ public class PresentationPreferencesPanel extends OWLPreferencesPanel {
 		setLayout(new BorderLayout());
 		PreferencesLayoutPanel panel = new PreferencesLayoutPanel();
 		add(panel, BorderLayout.NORTH);
-
+		
+		panel.addGroup("Installed justification plugins");
+		DefaultListModel<String> pluginModel = new DefaultListModel<>();
+		JustificationComputationServiceManager manager = JustificationComputationServiceManager.get(getOWLEditorKit());
+		for (ComputationService service : manager.getServices())
+			pluginModel.addElement(service.getName());
+		JList<String> pluginList = new JList<>(pluginModel);
+		pluginList.setToolTipText("Plugins that provide justification facilities");
+		JScrollPane pluginInfoScrollPane = new JScrollPane(pluginList);
+		pluginInfoScrollPane.setPreferredSize(new Dimension(300, 100));
+		panel.addGroupComponent(pluginInfoScrollPane);
+		
 		panel.addGroup("Initial justifications");
 		initialAmountM = new SpinnerNumberModel(getInitialAmount(), 1, 999, 1);
 		JComponent spinnerIA = new JSpinner(initialAmountM);
@@ -66,6 +82,7 @@ public class PresentationPreferencesPanel extends OWLPreferencesPanel {
 		spinnerI.setMaximumSize(spinnerI.getPreferredSize());
 		panel.addGroupComponent(spinnerI);
 		spinnerI.setToolTipText("Amount of additional justifications displayed after click on “Show next” button");
+
 	}
 
 	@Override
@@ -79,7 +96,7 @@ public class PresentationPreferencesPanel extends OWLPreferencesPanel {
 		for (PreferencesListener listener : listeners)
 			listener.valueChanged();
 	}
-
+	
 	static public int getIncrement() {
 		return increment;
 	}

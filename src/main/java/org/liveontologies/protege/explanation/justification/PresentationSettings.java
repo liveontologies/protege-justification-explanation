@@ -1,5 +1,7 @@
 package org.liveontologies.protege.explanation.justification;
 
+import org.liveontologies.protege.explanation.justification.preferences.JustificationPreferencesGeneralPanel;
+
 /*-
  * #%L
  * Protege Justification Explanation
@@ -32,11 +34,11 @@ public class PresentationSettings {
 	private int explanationsCnt = 0;
 	
 	public int getIncrement() {
-		return PresentationPreferencesPanel.getIncrement();
+		return JustificationPreferencesGeneralPanel.getIncrement();
 	}
 	
 	public int getInitialAmount() {
-		return PresentationPreferencesPanel.getInitialAmount();
+		return JustificationPreferencesGeneralPanel.getInitialAmount();
 	}
 	
 	public void setCurrentCount(int count) {

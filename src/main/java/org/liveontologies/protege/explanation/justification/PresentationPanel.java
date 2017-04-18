@@ -55,6 +55,7 @@ import javax.swing.Scrollable;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
+import org.liveontologies.protege.explanation.justification.preferences.JustificationPreferencesGeneralPanel;
 import org.liveontologies.protege.explanation.justification.service.ComputationService;
 import org.liveontologies.protege.explanation.justification.service.ComputationServiceListener;
 import org.protege.editor.core.Disposable;
@@ -210,7 +211,7 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 				updatePanel(manager.getPresentationSettings().getIncrement());
 			}
 		});
-		PresentationPreferencesPanel.addListener(new PresentationPreferencesPanel.PreferencesListener() {
+		JustificationPreferencesGeneralPanel.addListener(new JustificationPreferencesGeneralPanel.PreferencesListener() {
 			@Override
 			public void valueChanged() {
 				bAdd.setText(getIncrementString());
