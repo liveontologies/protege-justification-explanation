@@ -28,6 +28,14 @@ is displaying a list of these justifications in the user interface.
 		<url>http://liveontologies.org</url>
 	</organization>
 	
+	<licenses>
+		<license>
+			<name>GNU LGPL Version 3.0</name>
+			<url>http://www.gnu.org/licenses/lgpl.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
 	<inceptionYear>2016</inceptionYear>
 
 	<developers>
