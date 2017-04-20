@@ -30,6 +30,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -48,18 +49,22 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.Scrollable;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
+import org.liveontologies.protege.explanation.justification.preferences.JustPrefPanel;
 import org.liveontologies.protege.explanation.justification.preferences.JustificationPreferencesGeneralPanel;
 import org.liveontologies.protege.explanation.justification.service.ComputationService;
 import org.liveontologies.protege.explanation.justification.service.ComputationServiceListener;
 import org.protege.editor.core.Disposable;
 import org.protege.editor.core.ProtegeManager;
+import org.protege.editor.core.plugin.PluginUtilities;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.model.event.OWLModelManagerChangeEvent;
 import org.protege.editor.owl.model.event.OWLModelManagerListener;
@@ -131,6 +136,50 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 		this.kit = this.manager.getOWLEditorKit();
 		setLayout(new GridBagLayout());
 
+		boolean bExplPrefExtPointExists = PluginUtilities.getInstance()
+				.getExtensionRegistry()
+				.getExtensionPoint("org.protege.editor.core.application",
+						"explanationpreferencespanel") == null;
+
+		if (bExplPrefExtPointExists) {
+			JButton b = new JButton("…");
+			b.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						JustPrefPanel prefPanel = new JustPrefPanel();
+						prefPanel.setup(prefPanel.getLabel(), manager.getOWLEditorKit());
+						prefPanel.initialise();
+						Dimension screenSize = Toolkit.getDefaultToolkit()
+								.getScreenSize();
+						int margin = 100;
+						int prefWidth = Math.min(screenSize.width - margin,
+								850);
+						int prefHeight = Math.min(screenSize.height - margin,
+								600);
+						prefPanel.setPreferredSize(new Dimension(prefWidth, prefHeight));
+						JOptionPane op = new JOptionPane(prefPanel,
+								JOptionPane.PLAIN_MESSAGE,
+								JOptionPane.DEFAULT_OPTION);
+						JDialog dlg = op.createDialog(
+								manager.getOWLEditorKit().getWorkspace(),
+								"Justification preferences");
+						dlg.setResizable(true);
+						dlg.setVisible(true);
+						Object o = op.getValue();
+						if (o != null)
+							if ((Integer) o == JOptionPane.OK_OPTION)
+								prefPanel.applyChanges();
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
+			});
+			add(b, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+					GridBagConstraints.NORTHEAST, GridBagConstraints.EAST,
+					new Insets(2, 0, 2, 0), 0, 0));
+		}
+
 		Collection<ComputationService> services = manager.getServices();
 		switch (services.size()) {
 		case 0:
@@ -162,7 +211,7 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 					recompute();
 				}
 			});
-			add(selector, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHEAST,
+			add(selector, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.NORTHEAST,
 					GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
 		}
 
@@ -172,7 +221,7 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 
 		serviceSettingsDisplayHolder = new JPanel(new BorderLayout());
 		updateSettingsPanel();
-		add(serviceSettingsDisplayHolder, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHEAST,
+		add(serviceSettingsDisplayHolder, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0, GridBagConstraints.NORTHEAST,
 				GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
 
 		headerPanel = new JPanel(new BorderLayout());
@@ -192,7 +241,7 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 		JPanel explanationListPanel = new JPanel(new BorderLayout());
 		explanationListPanel.add(scrollPane);
 		explanationListPanel.setMinimumSize(new Dimension(10, 10));
-		add(explanationListPanel, new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHEAST,
+		add(explanationListPanel, new GridBagConstraints(0, 2, 2, 1, 1.0, 1.0, GridBagConstraints.NORTHEAST,
 		GridBagConstraints.BOTH, new Insets(2, 0, 2, 0), 0, 0));
 
 		recompute();
