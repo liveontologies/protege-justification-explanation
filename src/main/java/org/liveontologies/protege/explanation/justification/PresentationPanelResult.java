@@ -22,30 +22,28 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.awt.*;
 import org.protege.editor.owl.ui.explanation.ExplanationResult;
 
 /**
- * Author: Matthew Horridge
- * Stanford University
- * Bio-Medical Informatics Research Group
- * Date: 18/03/2012
+ * Author: Matthew Horridge Stanford University Bio-Medical Informatics Research
+ * Group Date: 18/03/2012
  */
 
 public class PresentationPanelResult extends ExplanationResult {
 
-	private PresentationPanel presentationPanel;
+	private static final long serialVersionUID = -92356477757932140L;
+
+	private final PresentationPanel panel_;
 
 	public PresentationPanelResult(PresentationPanel panel) {
-		this.presentationPanel = panel;
+		panel_ = panel;
 		setLayout(new BorderLayout());
-		add(this.presentationPanel);
+		add(panel_);
 	}
 
 	@Override
 	public void dispose() {
-		presentationPanel.dispose();
+		panel_.dispose();
 	}
-
 }

@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import org.semanticweb.owlapi.model.OWLAxiom;
 /*
  * Copyright (C) 2008, University of Manchester
@@ -48,10 +47,8 @@ import org.semanticweb.owlapi.model.OWLAxiom;
  */
 
 /**
- * Author: Matthew Horridge
- * The University Of Manchester
- * Information Management Group
- * Date: 09-Oct-2008
+ * Author: Matthew Horridge The University Of Manchester Information Management
+ * Group Date: 09-Oct-2008
  */
 
 public interface AxiomSelectionListener {

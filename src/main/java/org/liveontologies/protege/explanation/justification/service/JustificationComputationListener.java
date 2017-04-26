@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification.service;
  * #L%
  */
 
-
 import java.util.Collection;
 
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -30,8 +29,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 /**
  * Listener should be created to be provided with computed justifications
  * 
- * @author Alexander Stupnikov
- * Date: 08-02-2017
+ * @author Alexander Stupnikov Date: 08-02-2017
  */
 
 public interface JustificationComputationListener {
@@ -39,7 +37,8 @@ public interface JustificationComputationListener {
 	/**
 	 * Should be called when another justification is computed
 	 * 
-	 * @param justification	another justification for the axiom
+	 * @param justification
+	 *            another justification for the axiom
 	 */
 	void foundJustification(Collection<OWLAxiom> justification);
 }

@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -55,62 +54,60 @@ import org.semanticweb.owlapi.model.OWLAxiom;
  */
 
 /**
- * Author: Matthew Horridge
- * The University Of Manchester
- * Information Management Group
- * Date: 09-Oct-2008
+ * Author: Matthew Horridge The University Of Manchester Information Management
+ * Group Date: 09-Oct-2008
  */
 
-public class AxiomSelectionModelImpl implements AxiomSelectionModel, Disposable {
+public class AxiomSelectionModelImpl
+		implements AxiomSelectionModel, Disposable {
 
-	private Set<OWLAxiom> selectedAxioms;
-
-	private List<AxiomSelectionListener> listeners;
+	private final Set<OWLAxiom> selectedAxioms_;
+	private final List<AxiomSelectionListener> listeners_;
 
 	public AxiomSelectionModelImpl() {
-		selectedAxioms = new HashSet<>();
-		listeners = new ArrayList<>();
+		selectedAxioms_ = new HashSet<>();
+		listeners_ = new ArrayList<>();
 	}
 
 	public void setAxiomSelected(OWLAxiom axiom, boolean b) {
 		if (b) {
-			if (!selectedAxioms.contains(axiom)) {
-				selectedAxioms.add(axiom);
+			if (!selectedAxioms_.contains(axiom)) {
+				selectedAxioms_.add(axiom);
 				fireEvent(axiom, true);
 			}
 		} else {
-			if (selectedAxioms.contains(axiom)) {
-				selectedAxioms.remove(axiom);
+			if (selectedAxioms_.contains(axiom)) {
+				selectedAxioms_.remove(axiom);
 				fireEvent(axiom, false);
 			}
 		}
 	}
 
 	protected void fireEvent(OWLAxiom axiom, boolean added) {
-		for (AxiomSelectionListener lsnr : new ArrayList<>(listeners)) {
+		for (AxiomSelectionListener listener : new ArrayList<>(listeners_)) {
 			if (added) {
-				lsnr.axiomAdded(this, axiom);
+				listener.axiomAdded(this, axiom);
 			} else {
-				lsnr.axiomRemoved(this, axiom);
+				listener.axiomRemoved(this, axiom);
 			}
 		}
 	}
 
 	public Set<OWLAxiom> getSelectedAxioms() {
-		return Collections.unmodifiableSet(selectedAxioms);
+		return Collections.unmodifiableSet(selectedAxioms_);
 	}
 
 	public void addAxiomSelectionListener(AxiomSelectionListener lsnr) {
-		listeners.add(lsnr);
+		listeners_.add(lsnr);
 	}
 
 	public void removeAxiomSelectionListener(AxiomSelectionListener lsnr) {
-		listeners.remove(lsnr);
+		listeners_.remove(lsnr);
 	}
 
 	@Override
 	public void dispose() {
-		while (listeners.size() != 0)
-			removeAxiomSelectionListener(listeners.get(0));
+		while (listeners_.size() != 0)
+			removeAxiomSelectionListener(listeners_.get(0));
 	}
 }

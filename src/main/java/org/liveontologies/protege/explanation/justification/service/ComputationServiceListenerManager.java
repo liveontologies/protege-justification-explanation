@@ -22,22 +22,21 @@ package org.liveontologies.protege.explanation.justification.service;
  * #L%
  */
 
-
 /**
- * @author Alexander Stupnikov
- * Date: 28-02-2017
+ * @author Alexander Stupnikov Date: 28-02-2017
  */
 public class ComputationServiceListenerManager {
 
-	private ComputationServiceListener listener;
+	private ComputationServiceListener listener_;
 
-	public ComputationServiceListenerManager(ComputationServiceListener listener, ComputationService service) {
-		this.listener = listener;
+	public ComputationServiceListenerManager(
+			ComputationServiceListener listener, ComputationService service) {
+		listener_ = listener;
 		changeService(service);
 	}
 
 	public void changeService(ComputationService service) {
 		if (service != null)
-			service.setListener(listener);
+			service.setListener(listener_);
 	}
 }

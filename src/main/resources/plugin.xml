@@ -7,7 +7,7 @@
 	<extension-point id="JustificationPreferences" name="Justification Preferences" schema="schema/JustificationPreferences.exsd"/>
 
 	<extension id="PresentationService" point="org.protege.editor.owl.explanation">
-		<name value="Justification Based Explanation" />
+		<name value="Justifications" />
 		<class value="org.liveontologies.protege.explanation.justification.PresentationService" />
 	</extension>
 

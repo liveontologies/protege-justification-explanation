@@ -22,10 +22,8 @@ package org.liveontologies.protege.explanation.justification.service;
  * #L%
  */
 
-
 /**
- * @author Alexander Stupnikov
- * Date: 27-02-2017
+ * @author Alexander Stupnikov Date: 27-02-2017
  */
 public interface ComputationServiceListener {
 

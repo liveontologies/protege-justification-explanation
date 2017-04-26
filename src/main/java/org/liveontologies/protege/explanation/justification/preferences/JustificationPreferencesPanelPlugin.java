@@ -22,35 +22,35 @@ package org.liveontologies.protege.explanation.justification.preferences;
  * #L%
  */
 
-
 import org.eclipse.core.runtime.IExtension;
-import org.liveontologies.protege.explanation.justification.service.ComputationService;
 import org.protege.editor.core.editorkit.EditorKit;
 import org.protege.editor.core.plugin.AbstractProtegePlugin;
 import org.protege.editor.core.ui.preferences.PreferencesPanel;
 import org.protege.editor.core.ui.preferences.PreferencesPanelPlugin;
-import org.protege.editor.owl.OWLEditorKit;
 
-public class JustificationPreferencesPanelPlugin extends AbstractProtegePlugin<PreferencesPanel>
+public class JustificationPreferencesPanelPlugin
+		extends AbstractProtegePlugin<PreferencesPanel>
 		implements PreferencesPanelPlugin {
-	private final EditorKit kit;
+
+	private final EditorKit kit_;
 
 	public static final String LABEL_PARAM = "label";
-	
-	public JustificationPreferencesPanelPlugin(EditorKit kit, IExtension extension) {
+
+	public JustificationPreferencesPanelPlugin(EditorKit kit,
+			IExtension extension) {
 		super(extension);
-		this.kit = kit;
+		kit_ = kit;
 	}
-	
-    public String getLabel() {
-        return getPluginProperty(LABEL_PARAM);
-    }
+
+	public String getLabel() {
+		return getPluginProperty(LABEL_PARAM);
+	}
 
 	@Override
-	public PreferencesPanel newInstance()
-			throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+	public PreferencesPanel newInstance() throws ClassNotFoundException,
+			IllegalAccessException, InstantiationException {
 		PreferencesPanel panel = super.newInstance();
-		panel.setup(getLabel(), kit);
+		panel.setup(getLabel(), kit_);
 		return panel;
 	}
 }

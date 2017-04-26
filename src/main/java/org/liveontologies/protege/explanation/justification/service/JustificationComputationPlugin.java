@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification.service;
  * #L%
  */
 
-
 import org.eclipse.core.runtime.IExtension;
 import org.protege.editor.core.plugin.AbstractProtegePlugin;
 import org.protege.editor.owl.OWLEditorKit;
@@ -30,27 +29,31 @@ import org.protege.editor.owl.OWLEditorKit;
 /**
  * Instantiates the plugin which is based on specified computation service
  * 
- * @author Alexander Stupnikov
- * Date: 08-02-2017
+ * @author Alexander Stupnikov Date: 08-02-2017
  */
 
-public class JustificationComputationPlugin extends AbstractProtegePlugin<ComputationService> {
-	private final OWLEditorKit kit;
+public class JustificationComputationPlugin
+		extends AbstractProtegePlugin<ComputationService> {
+
+	private final OWLEditorKit kit_;
 
 	/**
 	 * Constructs plugin object
 	 * 
-	 * @param kit	OWLEditorKit for the service
-	 * @param extension	plugin extension
+	 * @param kit
+	 *            OWLEditorKit for the service
+	 * @param extension
+	 *            plugin extension
 	 */
-	public JustificationComputationPlugin(OWLEditorKit kit, IExtension extension) {
+	public JustificationComputationPlugin(OWLEditorKit kit,
+			IExtension extension) {
 		super(extension);
-		this.kit = kit;
+		kit_ = kit;
 	}
 
 	@Override
-	public ComputationService newInstance()
-			throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-		return super.newInstance().stp(kit);
+	public ComputationService newInstance() throws ClassNotFoundException,
+			IllegalAccessException, InstantiationException {
+		return super.newInstance().stp(kit_);
 	}
 }

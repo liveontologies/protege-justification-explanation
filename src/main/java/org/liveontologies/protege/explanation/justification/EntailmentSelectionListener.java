@@ -46,12 +46,11 @@ package org.liveontologies.protege.explanation.justification;
  */
 
 /**
- * Author: Matthew Horridge
- * The University Of Manchester
- * Information Management Group
- * Date: 26-Sep-2008
+ * Author: Matthew Horridge The University Of Manchester Information Management
+ * Group Date: 26-Sep-2008
  */
 
 public interface EntailmentSelectionListener {
+
 	void selectionChanged();
 }

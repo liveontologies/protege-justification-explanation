@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.util.Comparator;
 import java.util.List;
 
@@ -37,19 +36,19 @@ import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
- * Author: Matthew Horridge
- * Stanford University
- * Bio-Medical Informatics Research Group
- * Date: 19/03/2012
+ * Author: Matthew Horridge Stanford University Bio-Medical Informatics Research
+ * Group Date: 19/03/2012
  */
 
-public class AxiomsFrameSection extends AbstractOWLFrameSection<Explanation<OWLAxiom>, OWLAxiom, OWLAxiom> {
+public class AxiomsFrameSection extends
+		AbstractOWLFrameSection<Explanation<OWLAxiom>, OWLAxiom, OWLAxiom> {
 
-	private static String LABEL = "";
+	private static final String LABEL = "";
 
-	private boolean filled = false;
+	private boolean isFilled_ = false;
 
-	public AxiomsFrameSection(OWLEditorKit editorKit, OWLFrame<? extends Explanation<OWLAxiom>> owlFrame) {
+	public AxiomsFrameSection(OWLEditorKit editorKit,
+			OWLFrame<? extends Explanation<OWLAxiom>> owlFrame) {
 		super(editorKit, LABEL, owlFrame);
 	}
 
@@ -65,24 +64,26 @@ public class AxiomsFrameSection extends AbstractOWLFrameSection<Explanation<OWLA
 
 	@Override
 	protected void refill(OWLOntology ontology) {
-		if (filled) {
+		if (isFilled_) {
 			return;
 		}
-		filled = true;
+		isFilled_ = true;
 
-		AxiomsFormattingManager formattingManager = AxiomsFormattingManager.getManager();
-		Explanation<OWLAxiom> expl = getRootObject();
-		List<OWLAxiom> formatting = formattingManager.getOrdering(expl);
-		for (OWLAxiom ax : formatting) {
-			int depth = formattingManager.getIndentation(expl, ax);
-			AxiomsFrameSectionRow row = new AxiomsFrameSectionRow(getOWLEditorKit(), this, expl, ax, depth);
+		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
+				.getInstance();
+		Explanation<OWLAxiom> explanation = getRootObject();
+		List<OWLAxiom> formatting = formattingManager.getOrdering(explanation);
+		for (OWLAxiom axiom : formatting) {
+			int depth = formattingManager.getIndentation(explanation, axiom);
+			AxiomsFrameSectionRow row = new AxiomsFrameSectionRow(
+					getOWLEditorKit(), this, explanation, axiom, depth);
 			addRow(row);
 		}
 	}
 
 	@Override
 	protected void clear() {
-		filled = false;
+		isFilled_ = false;
 	}
 
 	public Comparator<OWLFrameSectionRow<Explanation<OWLAxiom>, OWLAxiom, OWLAxiom>> getRowComparator() {

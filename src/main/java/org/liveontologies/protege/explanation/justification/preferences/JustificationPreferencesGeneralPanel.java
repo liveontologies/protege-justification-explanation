@@ -3,8 +3,6 @@ package org.liveontologies.protege.explanation.justification.preferences;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
@@ -16,8 +14,6 @@ import javax.swing.SpinnerNumberModel;
 import org.liveontologies.protege.explanation.justification.JustificationComputationServiceManager;
 import org.liveontologies.protege.explanation.justification.service.ComputationService;
 import org.protege.editor.core.ui.preferences.PreferencesLayoutPanel;
-import org.protege.editor.core.ui.preferences.PreferencesPanel;
-import org.protege.editor.core.ui.preferences.PreferencesPanelPlugin;
 import org.protege.editor.owl.ui.preferences.OWLPreferencesPanel;
 
 /*-
@@ -42,46 +38,51 @@ import org.protege.editor.owl.ui.preferences.OWLPreferencesPanel;
  * #L%
  */
 
-
 public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 
-	private SpinnerNumberModel initialAmountM, incrementM;
+	private static final long serialVersionUID = 2271633237554797195L;
 
-	static private int increment = 10;
-	static private int initialAmount = 20;
+	private static ArrayList<PreferencesListener> listeners_ = new ArrayList<PreferencesListener>();
 
-	static private ArrayList<PreferencesListener> listeners = new ArrayList<PreferencesListener>();
+	private SpinnerNumberModel initialAmountM_, incrementM_;
+
+	private static int increment_ = 10;
+	private static int initialAmount_ = 20;
 
 	@Override
 	public void initialise() throws Exception {
 		setLayout(new BorderLayout());
 		PreferencesLayoutPanel panel = new PreferencesLayoutPanel();
 		add(panel, BorderLayout.NORTH);
-		
+
 		panel.addGroup("Installed justification plugins");
 		DefaultListModel<String> pluginModel = new DefaultListModel<>();
-		JustificationComputationServiceManager manager = JustificationComputationServiceManager.get(getOWLEditorKit());
+		JustificationComputationServiceManager manager = JustificationComputationServiceManager
+				.get(getOWLEditorKit());
 		for (ComputationService service : manager.getServices())
 			pluginModel.addElement(service.getName());
 		JList<String> pluginList = new JList<>(pluginModel);
-		pluginList.setToolTipText("Plugins that provide justification facilities");
+		pluginList.setToolTipText(
+				"Plugins that provide justification facilities");
 		JScrollPane pluginInfoScrollPane = new JScrollPane(pluginList);
 		pluginInfoScrollPane.setPreferredSize(new Dimension(300, 100));
 		panel.addGroupComponent(pluginInfoScrollPane);
-		
+
 		panel.addGroup("Initial justifications");
-		initialAmountM = new SpinnerNumberModel(getInitialAmount(), 1, 999, 1);
-		JComponent spinnerIA = new JSpinner(initialAmountM);
+		initialAmountM_ = new SpinnerNumberModel(getInitialAmount(), 1, 999, 1);
+		JComponent spinnerIA = new JSpinner(initialAmountM_);
 		spinnerIA.setMaximumSize(spinnerIA.getPreferredSize());
 		panel.addGroupComponent(spinnerIA);
-		spinnerIA.setToolTipText("Amount of justifications displayed at the beginning");
+		spinnerIA.setToolTipText(
+				"Amount of justifications displayed at the beginning");
 
 		panel.addGroup("Increment value");
-		incrementM = new SpinnerNumberModel(getIncrement(), 1, 999, 1);
-		JComponent spinnerI = new JSpinner(incrementM);
+		incrementM_ = new SpinnerNumberModel(getIncrement(), 1, 999, 1);
+		JComponent spinnerI = new JSpinner(incrementM_);
 		spinnerI.setMaximumSize(spinnerI.getPreferredSize());
 		panel.addGroupComponent(spinnerI);
-		spinnerI.setToolTipText("Amount of additional justifications displayed after click on “Show next” button");
+		spinnerI.setToolTipText(
+				"Amount of additional justifications displayed after click on “Show next” button");
 
 	}
 
@@ -91,34 +92,34 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 
 	@Override
 	public void applyChanges() {
-		setInitialAmount(initialAmountM.getNumber().intValue());
-		setIncrement(incrementM.getNumber().intValue());
-		for (PreferencesListener listener : listeners)
+		setInitialAmount(initialAmountM_.getNumber().intValue());
+		setIncrement(incrementM_.getNumber().intValue());
+		for (PreferencesListener listener : listeners_)
 			listener.valueChanged();
 	}
-	
+
 	static public int getIncrement() {
-		return increment;
+		return increment_;
 	}
 
 	static private void setIncrement(int value) {
-		increment = value;
+		increment_ = value;
 	}
 
 	static public int getInitialAmount() {
-		return initialAmount;
+		return initialAmount_;
 	}
 
 	static public void setInitialAmount(int value) {
-		initialAmount = value;
+		initialAmount_ = value;
 	}
 
 	public static void addListener(PreferencesListener listener) {
-		listeners.add(listener);
+		listeners_.add(listener);
 	}
 
 	public static void removeListener(PreferencesListener listener) {
-		listeners.remove(listener);
+		listeners_.remove(listener);
 	}
 
 	public interface PreferencesListener {

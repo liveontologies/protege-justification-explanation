@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -53,65 +52,83 @@ import org.semanticweb.owl.explanation.api.Explanation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
- * Author: Matthew Horridge
- * Stanford University
- * Bio-Medical Informatics Research Group
- * Date: 19/03/2012
+ * Author: Matthew Horridge Stanford University Bio-Medical Informatics Research
+ * Group Date: 19/03/2012
  */
 
 public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 
-	public static final Color SINGLE_POPULARITY_COLOR = new Color(170, 70, 15);
-	public static final Color MULTI_POPULARITY_COLOR = new Color(10, 75, 175);
-	public static final Color ALL_POPULARITY_COLOR = new Color(6, 133, 19);
+	private static final long serialVersionUID = -8844035741045455140L;
 
-	private PresentationManager manager;
-	private int buttonRunWidth = 0;
-	private AxiomSelectionModel axiomSelectionModel;
+	public static final Color COLOR_SINGLE_POPULARITY = new Color(170, 70, 15);
+	public static final Color COLOR_MULTI_POPULARITY = new Color(10, 75, 175);
+	public static final Color COLOR_ALL_POPULARITY = new Color(6, 133, 19);
 
-	public AxiomsFrameList(AxiomSelectionModel axiomSelectionModel, PresentationManager manager,
+	private final PresentationManager manager_;
+	private final AxiomSelectionModel axiomSelectionModel_;
+	private int buttonRunWidth_ = 0;
+
+	public AxiomsFrameList(AxiomSelectionModel axiomSelectionModel,
+			PresentationManager manager,
 			OWLFrame<Explanation<OWLAxiom>> explanationOWLFrame) {
 		super(manager.getOWLEditorKit(), explanationOWLFrame);
-		this.manager = manager;
-		this.axiomSelectionModel = axiomSelectionModel;
+		this.manager_ = manager;
+		this.axiomSelectionModel_ = axiomSelectionModel;
 		OWLEditorKit kit = manager.getOWLEditorKit();
 		setWrap(false);
 		setCellRenderer(new AxiomsFrameListRenderer(kit));
 
 		Action moveUpAction = new AbstractAction("Move up") {
+			private static final long serialVersionUID = -8758870933492900093L;
+
 			public void actionPerformed(ActionEvent e) {
 				handleMoveUp();
 			}
 		};
 		getActionMap().put(moveUpAction.getValue(Action.NAME), moveUpAction);
-		getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_MASK),
+		getInputMap().put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_MASK),
 				moveUpAction.getValue(Action.NAME));
 
 		Action moveDownAction = new AbstractAction("Move down") {
+			private static final long serialVersionUID = -7554058930748542853L;
+
 			public void actionPerformed(ActionEvent e) {
 				handleMoveDown();
 			}
 		};
-		getActionMap().put(moveDownAction.getValue(Action.NAME), moveDownAction);
-		getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_MASK),
+		getActionMap().put(moveDownAction.getValue(Action.NAME),
+				moveDownAction);
+		getInputMap().put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_MASK),
 				moveDownAction.getValue(Action.NAME));
 
-		Action increaseIndentation = new AbstractAction("Increase indentation") {
+		Action increaseIndentation = new AbstractAction(
+				"Increase indentation") {
+			private static final long serialVersionUID = 3264353432939432586L;
+
 			public void actionPerformed(ActionEvent e) {
 				handleIncreaseIndentation();
 			}
 		};
-		getActionMap().put(increaseIndentation.getValue(Action.NAME), increaseIndentation);
-		getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_MASK),
+		getActionMap().put(increaseIndentation.getValue(Action.NAME),
+				increaseIndentation);
+		getInputMap().put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_MASK),
 				increaseIndentation.getValue(Action.NAME));
 
-		Action decreaseIndentation = new AbstractAction("decrease indentation") {
+		Action decreaseIndentation = new AbstractAction(
+				"decrease indentation") {
+			private static final long serialVersionUID = 4625665722123561472L;
+
 			public void actionPerformed(ActionEvent e) {
 				handleDecreaseIndentation();
 			}
 		};
-		getActionMap().put(decreaseIndentation.getValue(Action.NAME), decreaseIndentation);
-		getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_MASK),
+		getActionMap().put(decreaseIndentation.getValue(Action.NAME),
+				decreaseIndentation);
+		getInputMap().put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_MASK),
 				decreaseIndentation.getValue(Action.NAME));
 	}
 
@@ -120,8 +137,10 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 		if (selectedAxiom == null) {
 			return;
 		}
-		AxiomsFormattingManager formattingManager = AxiomsFormattingManager.getManager();
-		int newIndex = formattingManager.moveAxiomUp(getRootObject(), selectedAxiom);
+		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
+				.getInstance();
+		int newIndex = formattingManager.moveAxiomUp(getRootObject(),
+				selectedAxiom);
 		getFrame().setRootObject(getRootObject());
 		setSelectedIndex(newIndex + 1);
 	}
@@ -131,8 +150,10 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 		if (selectedAxiom == null) {
 			return;
 		}
-		AxiomsFormattingManager formattingManager = AxiomsFormattingManager.getManager();
-		int newIndex = formattingManager.moveAxiomDown(getRootObject(), selectedAxiom);
+		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
+				.getInstance();
+		int newIndex = formattingManager.moveAxiomDown(getRootObject(),
+				selectedAxiom);
 		getFrame().setRootObject(getRootObject());
 		setSelectedIndex(newIndex + 1);
 	}
@@ -142,7 +163,8 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 		if (selectedAxiom == null) {
 			return;
 		}
-		AxiomsFormattingManager formattingManager = AxiomsFormattingManager.getManager();
+		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
+				.getInstance();
 		formattingManager.increaseIndentation(getRootObject(), selectedAxiom);
 		int selIndex = getSelectedIndex();
 		getFrame().setRootObject(getRootObject());
@@ -154,7 +176,8 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 		if (selectedAxiom == null) {
 			return;
 		}
-		AxiomsFormattingManager formattingManager = AxiomsFormattingManager.getManager();
+		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
+				.getInstance();
 		formattingManager.decreaseIndentation(getRootObject(), selectedAxiom);
 		int selIndex = getSelectedIndex();
 		getFrame().setRootObject(getRootObject());
@@ -176,12 +199,18 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 	@Override
 	protected List<MListButton> getButtons(Object value) {
 		if (value instanceof AxiomsFrameSectionRow) {
-			List<MListButton> buttons = Arrays.<MListButton>asList(new ExplainButton(new AbstractAction() {
-				public void actionPerformed(ActionEvent e) {
-					invokeExplanationHandler();
-				}
-			}));
-			buttonRunWidth = buttons.size() * (getButtonDimension() + 2) + 20;
+			List<MListButton> buttons = Arrays.<MListButton> asList(
+					new ExplainButton(new AbstractAction() {
+						/**
+						 * 
+						 */
+						private static final long serialVersionUID = 4860966076807447714L;
+
+						public void actionPerformed(ActionEvent e) {
+							invokeExplanationHandler();
+						}
+					}));
+			buttonRunWidth_ = buttons.size() * (getButtonDimension() + 2) + 20;
 			return buttons;
 		} else {
 			return Collections.emptyList();
@@ -201,17 +230,18 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 			OWLAxiom axiom = row.getAxiom();
 			int rowIndex = row.getFrameSection().getRowIndex(row) + 1;
 			if (!isSelectedIndex(rowIndex)) {
-				if (axiomSelectionModel.getSelectedAxioms().contains(axiom)) {
+				if (axiomSelectionModel_.getSelectedAxioms().contains(axiom)) {
 					return Color.YELLOW;
 				} else {
-					boolean inAll = true;
-					for (Explanation<?> expl : manager.getJustifications(getRootObject().getEntailment())) {
+					boolean isInAll = true;
+					for (Explanation<?> expl : manager_.getJustifications(
+							getRootObject().getEntailment())) {
 						if (!expl.contains(axiom)) {
-							inAll = false;
+							isInAll = false;
 							break;
 						}
 					}
-					if (inAll) {
+					if (isInAll) {
 						return new Color(245, 255, 235);
 					}
 				}
@@ -226,15 +256,17 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 	}
 
 	@Override
-	protected Border createListItemBorder(JList list, Object value, int index, boolean isSelected,
-			boolean cellHasFocus) {
-		return super.createListItemBorder(list, value, index, isSelected, cellHasFocus);
+	protected Border createListItemBorder(JList list, Object value, int index,
+			boolean isSelected, boolean cellHasFocus) {
+		return super.createListItemBorder(list, value, index, isSelected,
+				cellHasFocus);
 	}
 
 	@Override
-	protected Border createPaddingBorder(JList list, Object value, int index, boolean isSelected,
-			boolean cellHasFocus) {
-		return super.createPaddingBorder(list, value, index, isSelected, cellHasFocus);
+	protected Border createPaddingBorder(JList list, Object value, int index,
+			boolean isSelected, boolean cellHasFocus) {
+		return super.createPaddingBorder(list, value, index, isSelected,
+				cellHasFocus);
 	}
 
 	@Override
@@ -249,18 +281,25 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 				Rectangle rect = getCellBounds(i, i);
 				if (rect.intersects(g.getClip().getBounds())) {
 					OWLAxiom entailment = getRootObject().getEntailment();
-					if (manager.getComputedExplanationCount(entailment) > 1) {
-						AttributedString popularityString = getPopularityString(isSelectedIndex(i), row);
-						TextLayout textLayout = new TextLayout(popularityString.getIterator(),
+					if (manager_.getComputedExplanationCount(entailment) > 1) {
+						AttributedString popularityString = getPopularityString(
+								isSelectedIndex(i), row);
+						TextLayout textLayout = new TextLayout(
+								popularityString.getIterator(),
 								g2.getFontRenderContext());
 						float advance = textLayout.getAdvance();
-						float x = rect.x + rect.width - advance - buttonRunWidth;
-						float h = textLayout.getAscent() + textLayout.getDescent();
-						float y = ((rect.height - h) / 2) + rect.y + textLayout.getLeading() + textLayout.getAscent();
+						float x = rect.x + rect.width - advance
+								- buttonRunWidth_;
+						float h = textLayout.getAscent()
+								+ textLayout.getDescent();
+						float y = ((rect.height - h) / 2) + rect.y
+								+ textLayout.getLeading()
+								+ textLayout.getAscent();
 						textLayout.draw(g2, x, y);
 
 						g2.setColor(Color.LIGHT_GRAY);
-						TextLayout numberLayout = new TextLayout(i + ")", g2.getFont(), g2.getFontRenderContext());
+						TextLayout numberLayout = new TextLayout(i + ")",
+								g2.getFont(), g2.getFontRenderContext());
 						float numberX = 20 - numberLayout.getAdvance();
 						numberLayout.draw(g2, numberX, y);
 					}
@@ -269,30 +308,34 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 		}
 	}
 
-	private AttributedString getPopularityString(boolean sel, AxiomsFrameSectionRow row) {
-		int popularity = manager.getPopularity(row.getRoot().getEntailment(), row.getAxiom());
+	private AttributedString getPopularityString(boolean isSelected,
+			AxiomsFrameSectionRow row) {
+		int popularity = manager_.getPopularity(row.getRoot().getEntailment(),
+				row.getAxiom());
 		OWLAxiom entailment = row.getRoot().getEntailment();
-		int count = manager.getComputedExplanationCount(entailment);
+		int count = manager_.getComputedExplanationCount(entailment);
 
 		StringBuilder sb = new StringBuilder("In ");
 		int start = sb.length();
 		final Color highlightColor;
 		if (popularity <= 1) {
 			sb.append("NO");
-			highlightColor = SINGLE_POPULARITY_COLOR;
+			highlightColor = COLOR_SINGLE_POPULARITY;
 		} else if (popularity != count) {
 			sb.append(popularity - 1);
-			highlightColor = MULTI_POPULARITY_COLOR;
+			highlightColor = COLOR_MULTI_POPULARITY;
 		} else {
 			sb.append("ALL");
-			highlightColor = ALL_POPULARITY_COLOR;
+			highlightColor = COLOR_ALL_POPULARITY;
 		}
 		int end = sb.length();
 		sb.append(" other justifications");
 		AttributedString as = new AttributedString(sb.toString());
-		as.addAttribute(TextAttribute.FOREGROUND, Color.LIGHT_GRAY, 0, sb.length());
-		if (!sel) {
-			as.addAttribute(TextAttribute.FOREGROUND, highlightColor, start, end);
+		as.addAttribute(TextAttribute.FOREGROUND, Color.LIGHT_GRAY, 0,
+				sb.length());
+		if (!isSelected) {
+			as.addAttribute(TextAttribute.FOREGROUND, highlightColor, start,
+					end);
 		}
 		return as;
 	}

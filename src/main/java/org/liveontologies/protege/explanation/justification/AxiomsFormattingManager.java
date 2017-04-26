@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -60,66 +59,66 @@ import uk.ac.manchester.cs.owl.explanation.ordering.Tree;
  */
 
 /**
- * Author: Matthew Horridge
- * The University Of Manchester
- * Information Management Group
- * Date: 23-Oct-2008
+ * Author: Matthew Horridge The University Of Manchester Information Management
+ * Group Date: 23-Oct-2008
  */
 
 public class AxiomsFormattingManager {
-	static private AxiomsFormattingManager manager;
 
-	private Map<Explanation<?>, Map<OWLAxiom, Integer>> indentMap;
+	private final static AxiomsFormattingManager instance_ = new AxiomsFormattingManager();
 
-	private Map<Explanation<?>, List<OWLAxiom>> orderingMap;
+	private final Map<Explanation<?>, Map<OWLAxiom, Integer>> indents_;
+	private final Map<Explanation<?>, List<OWLAxiom>> ordering_;
 
 	private AxiomsFormattingManager() {
-		indentMap = new HashMap<>();
-		orderingMap = new HashMap<>();
+		indents_ = new HashMap<>();
+		ordering_ = new HashMap<>();
 	}
 
-	public static synchronized AxiomsFormattingManager getManager() {
-		if (manager == null) {
-			manager = new AxiomsFormattingManager();
-		}
-		return manager;
+	public static AxiomsFormattingManager getInstance() {
+		return instance_;
 	}
 
 	private void init(Explanation<?> explanation) {
-		ExplanationOrderer orderer = new ProtegeExplanationOrderer(OWLManager.createOWLOntologyManager());
-		ExplanationTree tree = orderer.getOrderedExplanation((OWLAxiom) explanation.getEntailment(),
+		ExplanationOrderer orderer = new ProtegeExplanationOrderer(
+				OWLManager.createOWLOntologyManager());
+		ExplanationTree tree = orderer.getOrderedExplanation(
+				(OWLAxiom) explanation.getEntailment(),
 				explanation.getAxioms());
 		List<OWLAxiom> ordering = new ArrayList<>();
 		Map<OWLAxiom, Integer> im = new HashMap<>();
 		fill(tree, ordering, im);
-		indentMap.put(explanation, im);
-		orderingMap.put(explanation, ordering);
+		indents_.put(explanation, im);
+		ordering_.put(explanation, ordering);
 
 	}
 
-	private static void fill(Tree<OWLAxiom> tree, List<OWLAxiom> ordering, Map<OWLAxiom, Integer> indentMap) {
+	private static void fill(Tree<OWLAxiom> tree, List<OWLAxiom> ordering,
+			Map<OWLAxiom, Integer> indents) {
 		if (!tree.isRoot()) {
 			ordering.add(tree.getUserObject());
-			indentMap.put(tree.getUserObject(), tree.getPathToRoot().size() - 2);
+			indents.put(tree.getUserObject(), tree.getPathToRoot().size() - 2);
 		}
 		for (Tree<OWLAxiom> child : tree.getChildren()) {
-			fill(child, ordering, indentMap);
+			fill(child, ordering, indents);
 		}
 	}
 
 	private void initIfNecessary(Explanation<?> explanation) {
-		if (!indentMap.containsKey(explanation)) {
+		if (!indents_.containsKey(explanation)) {
 			init(explanation);
 		}
 	}
 
 	public int getIndentation(Explanation<?> explanation, OWLAxiom axiom) {
-		if (!explanation.getAxioms().contains(axiom) && !explanation.getEntailment().equals(axiom)) {
+		if (!explanation.getAxioms().contains(axiom)
+				&& !explanation.getEntailment().equals(axiom)) {
 			throw new IllegalArgumentException(
-					"The explanation does not contain the specified axiom: " + axiom + "  " + explanation);
+					"The explanation does not contain the specified axiom: "
+							+ axiom + "  " + explanation);
 		}
 		initIfNecessary(explanation);
-		Integer i = indentMap.get(explanation).get(axiom);
+		Integer i = indents_.get(explanation).get(axiom);
 		if (i != null) {
 			return i;
 		} else {
@@ -127,18 +126,21 @@ public class AxiomsFormattingManager {
 		}
 	}
 
-	public void setIndentation(Explanation<?> explanation, OWLAxiom axiom, int indentation) {
+	public void setIndentation(Explanation<?> explanation, OWLAxiom axiom,
+			int indentation) {
 		initIfNecessary(explanation);
-		indentMap.get(explanation).put(axiom, indentation);
+		indents_.get(explanation).put(axiom, indentation);
 	}
 
-	public void increaseIndentation(Explanation<?> explanation, OWLAxiom axiom) {
+	public void increaseIndentation(Explanation<?> explanation,
+			OWLAxiom axiom) {
 		initIfNecessary(explanation);
 		Integer indent = getIndentation(explanation, axiom);
 		setIndentation(explanation, axiom, indent + 1);
 	}
 
-	public void decreaseIndentation(Explanation<?> explanation, OWLAxiom axiom) {
+	public void decreaseIndentation(Explanation<?> explanation,
+			OWLAxiom axiom) {
 		initIfNecessary(explanation);
 		Integer indent = getIndentation(explanation, axiom);
 		indent = indent - 1;
@@ -150,7 +152,7 @@ public class AxiomsFormattingManager {
 
 	public int moveAxiomUp(Explanation<?> explanation, OWLAxiom axiom) {
 		initIfNecessary(explanation);
-		List<OWLAxiom> ordering = orderingMap.get(explanation);
+		List<OWLAxiom> ordering = ordering_.get(explanation);
 		// Lowest index is 1 - the entailment is held in position 0
 		int index = ordering.indexOf(axiom);
 		if (index > 0) {
@@ -163,7 +165,7 @@ public class AxiomsFormattingManager {
 
 	public int moveAxiomDown(Explanation<?> explanation, OWLAxiom axiom) {
 		initIfNecessary(explanation);
-		List<OWLAxiom> ordering = orderingMap.get(explanation);
+		List<OWLAxiom> ordering = ordering_.get(explanation);
 		// Lowest index is 1 - the entailment is held in position 0
 		int index = ordering.indexOf(axiom);
 		if (index < ordering.size() - 1) {
@@ -176,11 +178,11 @@ public class AxiomsFormattingManager {
 
 	public List<OWLAxiom> getOrdering(Explanation<?> explanation) {
 		initIfNecessary(explanation);
-		return Collections.unmodifiableList(orderingMap.get(explanation));
+		return Collections.unmodifiableList(ordering_.get(explanation));
 	}
 
 	public void clearFormatting(Explanation<?> explanation) {
-		indentMap.remove(explanation);
-		orderingMap.remove(explanation);
+		indents_.remove(explanation);
+		ordering_.remove(explanation);
 	}
 }

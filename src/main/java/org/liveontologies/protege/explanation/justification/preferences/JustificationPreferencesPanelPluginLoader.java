@@ -22,32 +22,26 @@ package org.liveontologies.protege.explanation.justification.preferences;
  * #L%
  */
 
-
 import org.eclipse.core.runtime.IExtension;
 import org.protege.editor.core.editorkit.EditorKit;
 import org.protege.editor.core.plugin.AbstractPluginLoader;
 
-public class JustificationPreferencesPanelPluginLoader extends AbstractPluginLoader<JustificationPreferencesPanelPlugin> {
-	
-	private final EditorKit kit;
-	
+public class JustificationPreferencesPanelPluginLoader
+		extends AbstractPluginLoader<JustificationPreferencesPanelPlugin> {
+
+	private final EditorKit kit_;
+
 	private static final String ID = "JustificationPreferences";
 	private static final String KEY = "org.liveontologies.protege.explanation.justification";
 
-	/**
-	 * Constructs JustificationComputationPluginLoader
-	 * 
-	 * @param kit	OWLEditorKit which is necessary to instantiate a JustificationComputationPlugin
-	 * @param KEY	A string to specify the extension point to find plugins for
-	 * @param ID	A string to specify the extension point to find plugins for
-	 */
 	public JustificationPreferencesPanelPluginLoader(EditorKit kit) {
 		super(KEY, ID);
-		this.kit = kit;
+		kit_ = kit;
 	}
 
 	@Override
-	protected JustificationPreferencesPanelPlugin createInstance(IExtension extension) {
-		return new JustificationPreferencesPanelPlugin(kit, extension);
+	protected JustificationPreferencesPanelPlugin createInstance(
+			IExtension extension) {
+		return new JustificationPreferencesPanelPlugin(kit_, extension);
 	}
-}	
+}

@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -57,20 +56,20 @@ import org.protege.editor.core.Disposable;
  */
 
 /**
- * Author: Matthew Horridge
- * The University Of Manchester
- * Information Management Group
- * Date: 19-Oct-2008
+ * Author: Matthew Horridge The University Of Manchester Information Management
+ * Group Date: 19-Oct-2008
  */
 
 public class AxiomsDisplayList extends JPanel implements Disposable {
 
-	private AxiomsDisplay display;
-	private int explanationNumber;
+	private static final long serialVersionUID = -1961408405222527918L;
 
-	public AxiomsDisplayList(AxiomsDisplay display, int explanationNumber) {
-		this.display = display;
-		this.explanationNumber = explanationNumber;
+	private final AxiomsDisplay display_;
+	private int justificationNo_;
+
+	public AxiomsDisplayList(AxiomsDisplay display, int justificationNo) {
+		display_ = display;
+		justificationNo_ = justificationNo;
 		createUI();
 	}
 
@@ -78,18 +77,18 @@ public class AxiomsDisplayList extends JPanel implements Disposable {
 		setLayout(new BorderLayout(2, 2));
 
 		JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JLabel label = new JLabel("Justification " + explanationNumber);
+		JLabel label = new JLabel("Justification " + justificationNo_);
 		headerPanel.add(label);
 		add(headerPanel, BorderLayout.NORTH);
 
 		JPanel displayHolder = new JPanel(new BorderLayout());
-		displayHolder.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-		displayHolder.add((JComponent) display);
+		displayHolder
+				.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		displayHolder.add((JComponent) display_);
 		add(displayHolder);
 	}
 
 	public void dispose() {
-		display.dispose();
+		display_.dispose();
 	}
-
 }

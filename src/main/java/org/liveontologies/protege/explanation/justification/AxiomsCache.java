@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,22 +32,21 @@ import org.semanticweb.owl.explanation.api.Explanation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
- * Author: Matthew Horridge
- * Stanford University
- * Bio-Medical Informatics Research Group
- * Date: 20/03/2012
+ * Author: Matthew Horridge Stanford University Bio-Medical Informatics Research
+ * Group Date: 20/03/2012
  */
 
 public class AxiomsCache {
-	private Map<OWLAxiom, Set<Explanation<OWLAxiom>>> cache = new HashMap<>();
-	private Map<OWLAxiom, Map<OWLAxiom, Integer>> popularityCache = new HashMap<>();
-	
+
+	private final Map<OWLAxiom, Set<Explanation<OWLAxiom>>> cache_ = new HashMap<>();
+	private final Map<OWLAxiom, Map<OWLAxiom, Integer>> popularityCache_ = new HashMap<>();
+
 	public boolean contains(OWLAxiom entailment) {
-		return cache.containsKey(entailment);
+		return cache_.containsKey(entailment);
 	}
 
 	public Set<Explanation<OWLAxiom>> get(OWLAxiom entailment) {
-		Set<Explanation<OWLAxiom>> explanations = cache.get(entailment);
+		Set<Explanation<OWLAxiom>> explanations = cache_.get(entailment);
 		if (explanations == null) {
 			return Collections.emptySet();
 		}
@@ -56,10 +54,11 @@ public class AxiomsCache {
 	}
 
 	public void put(Explanation<OWLAxiom> explanation) {
-		Set<Explanation<OWLAxiom>> expls = cache.get(explanation.getEntailment());
+		Set<Explanation<OWLAxiom>> expls = cache_
+				.get(explanation.getEntailment());
 		if (expls == null) {
 			expls = new HashSet<>();
-			cache.put(explanation.getEntailment(), expls);
+			cache_.put(explanation.getEntailment(), expls);
 			getPopularityCache(explanation.getEntailment());
 		}
 		expls.add(explanation);
@@ -72,20 +71,20 @@ public class AxiomsCache {
 	}
 
 	public void clear() {
-		cache.clear();
+		cache_.clear();
 	}
 
 	public void clear(OWLAxiom entailment) {
-		cache.remove(entailment);
+		cache_.remove(entailment);
 	}
-	
+
 	private Map<OWLAxiom, Integer> getPopularityCache(OWLAxiom entailment) {
-		Map<OWLAxiom, Integer> popularities = popularityCache.get(entailment);
+		Map<OWLAxiom, Integer> popularities = popularityCache_.get(entailment);
 		if (popularities != null)
 			return popularities;
 
-		popularityCache.put(entailment, new HashMap<>());
-		return popularityCache.get(entailment);
+		popularityCache_.put(entailment, new HashMap<>());
+		return popularityCache_.get(entailment);
 	}
 
 	public int getAxiomPopularity(OWLAxiom entailment, OWLAxiom axiom) {

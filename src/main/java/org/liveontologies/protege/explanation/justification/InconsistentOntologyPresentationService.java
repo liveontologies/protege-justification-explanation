@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import org.protege.editor.owl.ui.explanation.io.InconsistentOntologyPluginInstance;
 import org.protege.editor.owl.OWLEditorKit;
 import org.semanticweb.owlapi.model.OWLDataFactory;
@@ -34,25 +33,24 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 /**
- * Author: Matthew Horridge
- * Stanford University
- * Bio-Medical Informatics Research Group
- * Date: 18/03/2012
+ * Author: Matthew Horridge Stanford University Bio-Medical Informatics Research
+ * Group Date: 18/03/2012
  */
 
-public class InconsistentOntologyPresentationService implements InconsistentOntologyPluginInstance {
+public class InconsistentOntologyPresentationService
+		implements InconsistentOntologyPluginInstance {
 
-	private OWLEditorKit editorKit;
-	private JustificationComputationServiceManager manager;
+	private OWLEditorKit editorKit_;
+	private JustificationComputationServiceManager manager_;
 
 	@Override
 	public void setup(OWLEditorKit editorKit) {
-		this.editorKit = editorKit;
+		this.editorKit_ = editorKit;
 	}
 
 	@Override
 	public void initialise() throws Exception {
-		manager = JustificationComputationServiceManager.get(editorKit);
+		manager_ = JustificationComputationServiceManager.get(editorKit_);
 	}
 
 	@Override
@@ -61,11 +59,13 @@ public class InconsistentOntologyPresentationService implements InconsistentOnto
 
 	@Override
 	public void explain(OWLOntology ontology) {
-		OWLDataFactory df = editorKit.getOWLModelManager().getOWLDataFactory();
-		OWLSubClassOfAxiom entailment = df.getOWLSubClassOfAxiom(df.getOWLThing(), df.getOWLNothing());
-		PresentationPanel panel = new PresentationPanel(manager, entailment);
+		OWLDataFactory df = editorKit_.getOWLModelManager().getOWLDataFactory();
+		OWLSubClassOfAxiom entailment = df
+				.getOWLSubClassOfAxiom(df.getOWLThing(), df.getOWLNothing());
+		PresentationPanel panel = new PresentationPanel(manager_, entailment);
 
-		JOptionPane op = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION);
+		JOptionPane op = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
+				JOptionPane.DEFAULT_OPTION);
 		JDialog dlg = op.createDialog("Inconsistent ontology explanation");
 		dlg.addComponentListener(new ComponentAdapter() {
 			@Override

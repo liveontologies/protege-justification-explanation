@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,40 +37,41 @@ import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
- * Author: Matthew Horridge
- * Stanford University
- * Bio-Medical Informatics Research Group
- * Date: 19/03/2012
+ * Author: Matthew Horridge Stanford University Bio-Medical Informatics Research
+ * Group Date: 19/03/2012
  */
 
-public class AxiomsFrameSectionRow extends AbstractOWLFrameSectionRow<Explanation<OWLAxiom>, OWLAxiom, OWLAxiom> {
+public class AxiomsFrameSectionRow extends
+		AbstractOWLFrameSectionRow<Explanation<OWLAxiom>, OWLAxiom, OWLAxiom> {
 
-	private int depth;
+	private int depth_;
 
 	public AxiomsFrameSectionRow(OWLEditorKit owlEditorKit,
-			OWLFrameSection<Explanation<OWLAxiom>, OWLAxiom, OWLAxiom> section, Explanation<OWLAxiom> rootObject,
-			OWLAxiom axiom, int depth) {
-		super(owlEditorKit, section, getOntologyForAxiom(owlEditorKit, axiom), rootObject, axiom);
-		this.depth = depth;
+			OWLFrameSection<Explanation<OWLAxiom>, OWLAxiom, OWLAxiom> section,
+			Explanation<OWLAxiom> rootObject, OWLAxiom axiom, int depth) {
+		super(owlEditorKit, section, getOntologyForAxiom(owlEditorKit, axiom),
+				rootObject, axiom);
+		this.depth_ = depth;
 	}
 
 	public int getDepth() {
-		return depth;
+		return depth_;
 	}
 
-	private static OWLOntology getOntologyForAxiom(OWLEditorKit editorKit, OWLAxiom axiom) {
+	private static OWLOntology getOntologyForAxiom(OWLEditorKit editorKit,
+			OWLAxiom axiom) {
 		return null;
 	}
 
 	@Override
 	public String getRendering() {
 		String rendering = super.getRendering().replaceAll("\\s", " ");
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < depth; i++) {
-			sb.append("        ");
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < depth_; i++) {
+			builder.append("        ");
 		}
-		sb.append(rendering);
-		return sb.toString();
+		builder.append(rendering);
+		return builder.toString();
 	}
 
 	@Override

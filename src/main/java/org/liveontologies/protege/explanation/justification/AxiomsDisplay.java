@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.awt.BorderLayout;
 
 import javax.swing.BorderFactory;
@@ -58,82 +57,89 @@ import org.semanticweb.owlapi.model.OWLAxiom;
  */
 
 /**
- * Author: Matthew Horridge
- * The University Of Manchester
- * Information Management Group
- * Date: 03-Oct-2008
+ * Author: Matthew Horridge The University Of Manchester Information Management
+ * Group Date: 03-Oct-2008
  *
  * An interface to a component that can display justifications.
  */
 
-public class AxiomsDisplay extends JPanel implements AxiomSelectionListener, Disposable {
+public class AxiomsDisplay extends JPanel
+		implements AxiomSelectionListener, Disposable {
 
-	private Explanation<OWLAxiom> explanation;
-	private AxiomsFrame frame;
-	private final AxiomsFrameList frameList;
-	private AxiomSelectionModel axiomSelectionModel;
-	private boolean transmittingSelectionToModel = false;
+	private static final long serialVersionUID = -3309833245922441823L;
 
-	public AxiomsDisplay(PresentationManager manager, AxiomSelectionModel selectionModel,
+	private final Explanation<OWLAxiom> explanation_;
+	private final AxiomsFrame frame_;
+	private final AxiomsFrameList frameList_;
+	private final AxiomSelectionModel axiomSelectionModel_;
+	private boolean isTransmittingSelectionToModel_ = false;
+
+	public AxiomsDisplay(PresentationManager manager,
+			AxiomSelectionModel selectionModel,
 			Explanation<OWLAxiom> explanation) {
 		OWLEditorKit editorKit = manager.getOWLEditorKit();
-		this.axiomSelectionModel = selectionModel;
-		this.explanation = explanation;
-		frame = new AxiomsFrame(editorKit);
+		axiomSelectionModel_ = selectionModel;
+		explanation_ = explanation;
+		frame_ = new AxiomsFrame(editorKit);
 		setLayout(new BorderLayout());
-		frameList = new AxiomsFrameList(selectionModel, manager, frame);
-		add(frameList, BorderLayout.NORTH);
-		frame.setRootObject(explanation);
-		frameList.setBorder(BorderFactory.createEmptyBorder(7, 10, 7, 10));
+		frameList_ = new AxiomsFrameList(selectionModel, manager, frame_);
+		add(frameList_, BorderLayout.NORTH);
+		frame_.setRootObject(explanation);
+		frameList_.setBorder(BorderFactory.createEmptyBorder(7, 10, 7, 10));
 
-		frameList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				transmitSelectionToModel();
-			}
-		});
+		frameList_.getSelectionModel()
+				.addListSelectionListener(new ListSelectionListener() {
+					public void valueChanged(ListSelectionEvent e) {
+						transmitSelectionToModel();
+					}
+				});
 
-		axiomSelectionModel.addAxiomSelectionListener(new AxiomSelectionListener() {
-			public void axiomAdded(AxiomSelectionModel source, OWLAxiom axiom) {
-				respondToAxiomSelectionChange();
-			}
+		axiomSelectionModel_
+				.addAxiomSelectionListener(new AxiomSelectionListener() {
+					public void axiomAdded(AxiomSelectionModel source,
+							OWLAxiom axiom) {
+						respondToAxiomSelectionChange();
+					}
 
-			public void axiomRemoved(AxiomSelectionModel source, OWLAxiom axiom) {
-				respondToAxiomSelectionChange();
-			}
-		});
+					public void axiomRemoved(AxiomSelectionModel source,
+							OWLAxiom axiom) {
+						respondToAxiomSelectionChange();
+					}
+				});
 	}
 
 	private void respondToAxiomSelectionChange() {
-		if (!transmittingSelectionToModel) {
-			frameList.clearSelection();
-			frameList.repaint(frameList.getVisibleRect());
+		if (!isTransmittingSelectionToModel_) {
+			frameList_.clearSelection();
+			frameList_.repaint(frameList_.getVisibleRect());
 		}
-		frameList.repaint(frameList.getVisibleRect());
+		frameList_.repaint(frameList_.getVisibleRect());
 	}
 
 	private void transmitSelectionToModel() {
 		try {
-			transmittingSelectionToModel = true;
-			for (int i = 1; i < frameList.getModel().getSize(); i++) {
-				Object element = frameList.getModel().getElementAt(i);
+			isTransmittingSelectionToModel_ = true;
+			for (int i = 1; i < frameList_.getModel().getSize(); i++) {
+				Object element = frameList_.getModel().getElementAt(i);
 				if (element instanceof AxiomsFrameSectionRow) {
 					AxiomsFrameSectionRow row = (AxiomsFrameSectionRow) element;
 					OWLAxiom ax = row.getAxiom();
-					axiomSelectionModel.setAxiomSelected(ax, frameList.isSelectedIndex(i));
+					axiomSelectionModel_.setAxiomSelected(ax,
+							frameList_.isSelectedIndex(i));
 				}
 			}
 		} finally {
-			transmittingSelectionToModel = false;
+			isTransmittingSelectionToModel_ = false;
 		}
 	}
 
 	public Explanation<OWLAxiom> getExplanation() {
-		return explanation;
+		return explanation_;
 	}
 
 	public void dispose() {
-		frame.dispose();
-		frameList.dispose();
+		frame_.dispose();
+		frameList_.dispose();
 	}
 
 	@Override

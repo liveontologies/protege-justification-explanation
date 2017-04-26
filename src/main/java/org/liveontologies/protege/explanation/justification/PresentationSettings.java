@@ -24,36 +24,36 @@ import org.liveontologies.protege.explanation.justification.preferences.Justific
  * #L%
  */
 
-
 /**
  * Date: 23/03/2017
  */
 
 public class PresentationSettings {
-	private int explanationsDisplayedCnt = 0;
-	private int explanationsCnt = 0;
-	
+
+	private int nExplanationsDisplayed_ = 0;
+	private int nExplanations_ = 0;
+
 	public int getIncrement() {
 		return JustificationPreferencesGeneralPanel.getIncrement();
 	}
-	
+
 	public int getInitialAmount() {
 		return JustificationPreferencesGeneralPanel.getInitialAmount();
 	}
-	
+
 	public void setCurrentCount(int count) {
-		explanationsDisplayedCnt = count;
+		nExplanationsDisplayed_ = count;
 	}
 
 	public int getCurrentCount() {
-		return explanationsDisplayedCnt;
+		return nExplanationsDisplayed_;
 	}
-	
+
 	public void setExplanationsCount(int count) {
-		explanationsCnt = count;
+		nExplanations_ = count;
 	}
 
 	public int getExplanationsCount() {
-		return explanationsCnt;
+		return nExplanations_;
 	}
 }

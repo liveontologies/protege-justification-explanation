@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -62,40 +61,37 @@ import org.liveontologies.protege.explanation.justification.service.Justificatio
  */
 
 /**
- * Author: Matthew Horridge
- * The University of Manchester
- * Information Management Group
- * Date: 14-Oct-2009
+ * Author: Matthew Horridge The University of Manchester Information Management
+ * Group Date: 14-Oct-2009
  */
 
 public class AxiomsProgressPanel extends JPanel {
 
-	private JLabel messageLabel;
-
-	private int numberFound = 0;
+	private static final long serialVersionUID = 5548156306411811469L;
 
 	private static final String MESSAGE = "Computing justifications. Found ";
 
-	private Action cancelAction;
-	
-	private JustificationComputation computation;
+	private final JLabel messageLabel_;
+	private final Action cancelAction_;
+	private int nFound_ = 0;
 
 	/**
 	 * Creates a new <code>JPanel</code> with a double buffer and a flow layout.
 	 */
 	public AxiomsProgressPanel(JustificationComputation computation) {
-		this.computation = computation;		
 		setLayout(new BorderLayout(12, 12));
 		setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 		setPreferredSize(new Dimension(400, 100));
 		JPanel progressPanel = new JPanel(new BorderLayout(3, 3));
 		add(progressPanel, BorderLayout.NORTH);
-		messageLabel = new JLabel(MESSAGE + "0  ");
-		progressPanel.add(messageLabel, BorderLayout.NORTH);
+		messageLabel_ = new JLabel(MESSAGE + "0  ");
+		progressPanel.add(messageLabel_, BorderLayout.NORTH);
 		JProgressBar progressBar = new JProgressBar();
 		progressBar.setIndeterminate(true);
 		progressPanel.add(progressBar, BorderLayout.SOUTH);
-		cancelAction = new AbstractAction("Stop searching") {
+		cancelAction_ = new AbstractAction("Stop searching") {
+			private static final long serialVersionUID = 1784308350971019508L;
+
 			public void actionPerformed(ActionEvent e) {
 				computation.interruptComputation();
 				setEnabled(false);
@@ -103,17 +99,17 @@ public class AxiomsProgressPanel extends JPanel {
 		};
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		add(buttonPanel, BorderLayout.SOUTH);
-		buttonPanel.add(new JButton(cancelAction));
+		buttonPanel.add(new JButton(cancelAction_));
 	}
 
 	public void reset() {
-		numberFound = 0;
-		cancelAction.setEnabled(true);
+		nFound_ = 0;
+		cancelAction_.setEnabled(true);
 	}
 
 	public void setExplanationCount(int count) {
-		numberFound = count;
-		Runnable runnable = () -> messageLabel.setText(MESSAGE + numberFound);
+		nFound_ = count;
+		Runnable runnable = () -> messageLabel_.setText(MESSAGE + nFound_);
 		if (SwingUtilities.isEventDispatchThread()) {
 			runnable.run();
 		} else {

@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification.service;
  * #L%
  */
 
-
 import org.eclipse.core.runtime.IExtension;
 import org.protege.editor.core.plugin.AbstractPluginLoader;
 import org.protege.editor.owl.OWLEditorKit;
@@ -30,29 +29,32 @@ import org.protege.editor.owl.OWLEditorKit;
 /**
  * Load the available specified {@link ComputationService} plugins
  * 
- * @author Alexander Stupnikov
- * Date: 08-02-2017
+ * @author Alexander Stupnikov Date: 08-02-2017
  */
 
-public class JustificationComputationPluginLoader extends AbstractPluginLoader<JustificationComputationPlugin> {
-	
+public class JustificationComputationPluginLoader
+		extends AbstractPluginLoader<JustificationComputationPlugin> {
+
 	private static final String KEY_ = "org.liveontologies.protege.explanation.justification";
 	private static final String ID_ = "JustificationService";
-	
-	private final OWLEditorKit kit;
+
+	private final OWLEditorKit kit_;
 
 	/**
 	 * Constructs JustificationComputationPluginLoader
 	 * 
-	 * @param kit	OWLEditorKit which is necessary to instantiate a JustificationComputationPlugin
+	 * @param kit
+	 *            OWLEditorKit which is necessary to instantiate a
+	 *            JustificationComputationPlugin
 	 */
 	public JustificationComputationPluginLoader(OWLEditorKit kit) {
 		super(KEY_, ID_);
-		this.kit = kit;
+		kit_ = kit;
 	}
 
 	@Override
-	protected JustificationComputationPlugin createInstance(IExtension extension) {
-		return new JustificationComputationPlugin(kit, extension);
+	protected JustificationComputationPlugin createInstance(
+			IExtension extension) {
+		return new JustificationComputationPlugin(kit_, extension);
 	}
 }

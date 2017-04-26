@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -72,145 +71,155 @@ import org.semanticweb.owl.explanation.api.ExplanationGeneratorInterruptedExcept
  */
 
 /**
- * Author: Matthew Horridge
- * The University Of Manchester
- * Information Management Group
- * Date: 03-Oct-2008
+ * Author: Matthew Horridge The University Of Manchester Information Management
+ * Group Date: 03-Oct-2008
  */
 
 public class PresentationManager {
 
-	private static final Logger logger = LoggerFactory.getLogger(PresentationManager.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(PresentationManager.class);
 	public static final Marker MARKER = MarkerFactory.getMarker("Presentation");
 
-	private final OWLAxiom entailment;
-	private final JustificationComputationServiceManager manager;
-	private final PresentationSettings presentationSettings;
-	private AxiomsCache axiomsCache;
-	private ExecutorService executorService;
-	private JFrame parentWindow;
-	private ComputationServiceListenerManager listenerManager = null;
+	private final OWLAxiom entailment_;
+	private final JustificationComputationServiceManager manager_;
+	private final PresentationSettings presentationSettings_;
+	private final ExecutorService executorService_;
+	private AxiomsCache axiomsCache_;
+	private JFrame parentWindow_;
+	private ComputationServiceListenerManager listenerManager_ = null;
 
-	public PresentationManager(JFrame parentWindow, JustificationComputationServiceManager manager,
+	public PresentationManager(JFrame parentWindow,
+			JustificationComputationServiceManager manager,
 			OWLAxiom entailment) {
-		this.entailment = entailment;
-		this.manager = manager;
-		this.parentWindow = parentWindow;
-		presentationSettings = new PresentationSettings();
-		axiomsCache = new AxiomsCache();
-		executorService = Executors.newSingleThreadExecutor();
+		entailment_ = entailment;
+		manager_ = manager;
+		parentWindow_ = parentWindow;
+		presentationSettings_ = new PresentationSettings();
+		axiomsCache_ = new AxiomsCache();
+		executorService_ = Executors.newSingleThreadExecutor();
 	}
 
-	public void setComputationServiceListener(ComputationServiceListener listener) {
-		listenerManager = new ComputationServiceListenerManager(listener, manager.getSelectedService());
+	public void setComputationServiceListener(
+			ComputationServiceListener listener) {
+		listenerManager_ = new ComputationServiceListenerManager(listener,
+				manager_.getSelectedService());
 	}
 
 	public PresentationSettings getPresentationSettings() {
-		return presentationSettings;
+		return presentationSettings_;
 	}
 
 	public Collection<ComputationService> getServices() {
-		return manager.getServices();
+		return manager_.getServices();
 	}
 
 	public void selectService(ComputationService service) {
-		if (listenerManager != null)
-			listenerManager.changeService(service);
-		manager.selectService(service);
+		if (listenerManager_ != null)
+			listenerManager_.changeService(service);
+		manager_.selectService(service);
 	}
 
 	public ComputationService getSelectedService() {
-		return manager.getSelectedService();
+		return manager_.getSelectedService();
 	}
 
 	public OWLAxiom getEntailment() {
-		return entailment;
+		return entailment_;
 	}
 
 	public Set<Explanation<OWLAxiom>> getJustifications() {
-		return getJustifications(entailment);
+		return getJustifications(entailment_);
 	}
 
 	public Set<Explanation<OWLAxiom>> getJustifications(OWLAxiom entailment) {
-		if (!axiomsCache.contains(entailment)) {
-			Set<Explanation<OWLAxiom>> expls = computeJustifications(entailment);
-			axiomsCache.put(expls);
+		if (!axiomsCache_.contains(entailment)) {
+			Set<Explanation<OWLAxiom>> expls = computeJustifications(
+					entailment);
+			axiomsCache_.put(expls);
 		}
-		return axiomsCache.get(entailment);
+		return axiomsCache_.get(entailment);
 	}
 
-	private Set<Explanation<OWLAxiom>> computeJustifications(OWLAxiom entailment) {
+	private Set<Explanation<OWLAxiom>> computeJustifications(
+			OWLAxiom entailment) {
 		if (getSelectedService() == null)
 			return null;
 		logger.info(LogBanner.start("Computing Explanations"));
 		logger.info(MARKER, "Computing explanations for {}", entailment);
 		ComputationService service = getSelectedService();
 
-		OWLDataFactory df = manager.getOWLEditorKit().getOWLModelManager().getOWLDataFactory();
-		OWLSubClassOfAxiom impossibleAxiom = df.getOWLSubClassOfAxiom(df.getOWLThing(), df.getOWLNothing());
+		OWLDataFactory df = manager_.getOWLEditorKit().getOWLModelManager()
+				.getOWLDataFactory();
+		OWLSubClassOfAxiom impossibleAxiom = df
+				.getOWLSubClassOfAxiom(df.getOWLThing(), df.getOWLNothing());
 
-		JustificationComputation computation = (entailment.equalsIgnoreAnnotations(impossibleAxiom))
-				? service.createInconsistentOntologyJustificationComputation()
-				: service.createJustificationComputation(entailment);
+		JustificationComputation computation = (entailment
+				.equalsIgnoreAnnotations(impossibleAxiom))
+						? service
+								.createInconsistentOntologyJustificationComputation()
+						: service.createJustificationComputation(entailment);
 
-		ExplanationGeneratorProgressDialog progressDialog = new ExplanationGeneratorProgressDialog(parentWindow,
-				computation);
+		ExplanationGeneratorProgressDialog progressDialog = new ExplanationGeneratorProgressDialog(
+				parentWindow_, computation);
 
-		ExplanationGeneratorCallable callable = new ExplanationGeneratorCallable(entailment, computation,
-				progressDialog);
+		ExplanationGeneratorCallable callable = new ExplanationGeneratorCallable(
+				entailment, computation, progressDialog);
 		try {
-			executorService.submit(callable);
+			executorService_.submit(callable);
 		} catch (ExplanationGeneratorInterruptedException e) {
-			logger.info(MARKER, "Explanation computation terminated early by user");
+			logger.info(MARKER,
+					"Explanation computation terminated early by user");
 		}
 		progressDialog.reset();
 		progressDialog.setVisible(true);
-		HashSet<Explanation<OWLAxiom>> explanations = new HashSet<>(callable.found);
-		logger.info(MARKER, "A total of {} explanations have been computed", explanations.size());
+		HashSet<Explanation<OWLAxiom>> explanations = new HashSet<>(
+				callable.found_);
+		logger.info(MARKER, "A total of {} explanations have been computed",
+				explanations.size());
 		logger.info(LogBanner.end());
 		return explanations;
 	}
 
 	public int getComputedExplanationCount(OWLAxiom entailment) {
-		if (axiomsCache.contains(entailment)) {
-			return axiomsCache.get(entailment).size();
+		if (axiomsCache_.contains(entailment)) {
+			return axiomsCache_.get(entailment).size();
 		} else {
 			return -1;
 		}
 	}
 
 	public int getPopularity(OWLAxiom entailment, OWLAxiom axiom) {
-		return axiomsCache.getAxiomPopularity(entailment, axiom);
+		return axiomsCache_.getAxiomPopularity(entailment, axiom);
 	}
 
 	public OWLEditorKit getOWLEditorKit() {
-		return manager.getOWLEditorKit();
+		return manager_.getOWLEditorKit();
 	}
 
 	public void clearJustificationsCache() {
-		axiomsCache = new AxiomsCache();
+		axiomsCache_ = new AxiomsCache();
 	}
 
 	public String getIdForService(ComputationService service) {
-		return manager.getIdForService(service);
+		return manager_.getIdForService(service);
 	}
 
 	private class ExplanationGeneratorCallable
-			implements Callable<Set<Explanation<OWLAxiom>>>, JustificationComputationListener {
+			implements Callable<Set<Explanation<OWLAxiom>>>,
+			JustificationComputationListener {
 
-		private final OWLAxiom entailment;
+		private final OWLAxiom entailment_;
+		private final ExplanationGeneratorProgressDialog progressDialog_;
+		private final JustificationComputation computation_;
+		private Set<Explanation<OWLAxiom>> found_ = new HashSet<>();
 
-		private Set<Explanation<OWLAxiom>> found = new HashSet<>();
-
-		private final ExplanationGeneratorProgressDialog progressDialog;
-
-		private final JustificationComputation computation;
-
-		private ExplanationGeneratorCallable(OWLAxiom entailment, JustificationComputation computation,
+		private ExplanationGeneratorCallable(OWLAxiom entailment,
+				JustificationComputation computation,
 				ExplanationGeneratorProgressDialog progressDialog) {
-			this.entailment = entailment;
-			this.progressDialog = progressDialog;
-			this.computation = computation;
+			entailment_ = entailment;
+			progressDialog_ = progressDialog;
+			computation_ = computation;
 			computation.addComputationListener(this);
 		}
 
@@ -222,20 +231,22 @@ public class PresentationManager {
 		 *             if unable to compute a result
 		 */
 		public Set<Explanation<OWLAxiom>> call() throws Exception {
-			found = new HashSet<>();
-			progressDialog.reset();
+			found_ = new HashSet<>();
+			progressDialog_.reset();
 			try {
-				computation.startComputation();
+				computation_.startComputation();
 			} finally {
-				SwingUtilities.invokeLater(() -> progressDialog.setVisible(false));
+				SwingUtilities
+						.invokeLater(() -> progressDialog_.setVisible(false));
 			}
-			return found;
+			return found_;
 		}
 
 		@Override
 		public void foundJustification(Collection<OWLAxiom> justification) {
-			found.add(new Explanation<OWLAxiom>(entailment, new HashSet<>(justification)));
-			progressDialog.setExplanationCount(found.size());
+			found_.add(new Explanation<OWLAxiom>(entailment_,
+					new HashSet<>(justification)));
+			progressDialog_.setExplanationCount(found_.size());
 		}
 	}
 }

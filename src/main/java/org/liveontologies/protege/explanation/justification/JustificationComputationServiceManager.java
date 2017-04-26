@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,30 +43,34 @@ import org.protege.editor.owl.OWLEditorKit;
 
 public class JustificationComputationServiceManager implements Disposable {
 
+	public static String LAST_CHOOSEN_SERVICE_ID = null;
 	private static final String KEY_ = "org.liveontologies.protege.explanation.justification.services";
-	
-	private final OWLEditorKit kit;
 
-	private final Collection<ComputationService> services;
-	private Map<ComputationService, String> serviceIds;
-	private ComputationService selectedService = null;
-	public static String lastChoosenServiceId = null;
+	private final OWLEditorKit kit_;
+	private final Collection<ComputationService> services_;
+	private final Map<ComputationService, String> serviceIds_;
+	private ComputationService selectedService_ = null;
 
-	private JustificationComputationServiceManager(OWLEditorKit kit) throws Exception {
-		this.kit = kit;
-		this.services = new ArrayList<ComputationService>();
-		this.serviceIds = new HashMap<ComputationService, String>();
-		JustificationComputationPluginLoader loader = new JustificationComputationPluginLoader(this.kit);
+	private JustificationComputationServiceManager(OWLEditorKit kit)
+			throws Exception {
+		kit_ = kit;
+		services_ = new ArrayList<ComputationService>();
+		serviceIds_ = new HashMap<ComputationService, String>();
+		JustificationComputationPluginLoader loader = new JustificationComputationPluginLoader(
+				kit_);
 		for (JustificationComputationPlugin plugin : loader.getPlugins()) {
 			ComputationService service = plugin.newInstance();
 			service.initialise();
-			services.add(service);
-			serviceIds.put(service, plugin.getIExtension().getUniqueIdentifier());
+			services_.add(service);
+			serviceIds_.put(service,
+					plugin.getIExtension().getUniqueIdentifier());
 		}
 	}
-	
-	public static synchronized JustificationComputationServiceManager get(OWLEditorKit kit) throws Exception{
-		JustificationComputationServiceManager manager = kit.getModelManager().get(KEY_);
+
+	public static synchronized JustificationComputationServiceManager get(
+			OWLEditorKit kit) throws Exception {
+		JustificationComputationServiceManager manager = kit.getModelManager()
+				.get(KEY_);
 		if (manager == null) {
 			manager = new JustificationComputationServiceManager(kit);
 			kit.getModelManager().put(KEY_, manager);
@@ -77,30 +80,29 @@ public class JustificationComputationServiceManager implements Disposable {
 
 	@Override
 	public void dispose() throws Exception {
-		for (ComputationService service : services) {
+		for (ComputationService service : services_) {
 			service.dispose();
 		}
 	}
 
 	public OWLEditorKit getOWLEditorKit() {
-		return kit;
+		return kit_;
 	}
 
 	public Collection<ComputationService> getServices() {
-		return services;
+		return services_;
 	}
-	
+
 	public ComputationService getSelectedService() {
-		return selectedService;
+		return selectedService_;
 	}
-	
+
 	public void selectService(ComputationService service) {
-		selectedService = service;
-		lastChoosenServiceId = getIdForService(service);
+		selectedService_ = service;
+		LAST_CHOOSEN_SERVICE_ID = getIdForService(service);
 	}
-	
-	public String getIdForService(ComputationService service)
-	{
-		return serviceIds.get(service);
+
+	public String getIdForService(ComputationService service) {
+		return serviceIds_.get(service);
 	}
 }

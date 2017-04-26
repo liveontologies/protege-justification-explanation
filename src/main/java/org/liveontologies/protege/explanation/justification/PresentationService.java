@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import org.liveontologies.protege.explanation.justification.service.ComputationService;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.explanation.ExplanationResult;
@@ -30,23 +29,22 @@ import org.protege.editor.owl.ui.explanation.ExplanationService;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
- * @author Alexander Stupnikov
- * Date: 08-02-2017
+ * @author Alexander Stupnikov Date: 08-02-2017
  */
 
 public class PresentationService extends ExplanationService {
 
-	private JustificationComputationServiceManager manager;
+	private JustificationComputationServiceManager manager_;
 
 	@Override
 	public void initialise() throws Exception {
 		OWLEditorKit kit = getOWLEditorKit();
-		manager = JustificationComputationServiceManager.get(kit);
+		manager_ = JustificationComputationServiceManager.get(kit);
 	}
 
 	@Override
 	public boolean hasExplanation(OWLAxiom axiom) {
-		for (ComputationService service : manager.getServices())
+		for (ComputationService service : manager_.getServices())
 			if (service.canComputeJustification(axiom))
 				return true;
 		return false;
@@ -54,7 +52,7 @@ public class PresentationService extends ExplanationService {
 
 	@Override
 	public ExplanationResult explain(OWLAxiom axiom) {
-		PresentationPanel panel = new PresentationPanel(manager, axiom);
+		PresentationPanel panel = new PresentationPanel(manager_, axiom);
 		return new PresentationPanelResult(panel);
 	}
 

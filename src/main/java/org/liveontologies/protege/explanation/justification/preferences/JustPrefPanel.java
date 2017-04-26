@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification.preferences;
  * #L%
  */
 
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.ArrayList;
@@ -44,19 +43,15 @@ import org.protege.editor.core.ui.preferences.PreferencesPanelPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JustPrefPanel extends PreferencesPanel
-		implements Disposable {
+public class JustPrefPanel extends PreferencesPanel implements Disposable {
 
-	private final Map<String, PreferencesPanel> map = new HashMap<>();
-
-	private final Map<String, JComponent> componentMap = new HashMap<>();
-
-	private final JTabbedPane tabbedPane = new JTabbedPane();
-
-	private final Logger logger = LoggerFactory
-			.getLogger(JustPrefPanel.class);
-
+	private static final long serialVersionUID = -2626712731291697883L;
 	private static final String JUST_PREFS_HISTORY_PANEL_KEY = "just.prefs.history.panel";
+
+	private final Map<String, PreferencesPanel> panels_ = new HashMap<>();
+	private final Map<String, JComponent> panes_ = new HashMap<>();
+	private final JTabbedPane tabbedPane_ = new JTabbedPane();
+	private final Logger logger_ = LoggerFactory.getLogger(JustPrefPanel.class);
 
 	@Override
 	public void initialise() throws Exception {
@@ -78,17 +73,17 @@ public class JustPrefPanel extends PreferencesPanel
 				String label = plugin.getLabel();
 				final JScrollPane sp = new JScrollPane(panel);
 				sp.setBorder(new EmptyBorder(0, 0, 0, 0));
-				map.put(label, panel);
-				componentMap.put(label, sp);
-				tabbedPane.addTab(label, sp);
+				panels_.put(label, panel);
+				panes_.put(label, sp);
+				tabbedPane_.addTab(label, sp);
 			} catch (Throwable e) {
-				logger.warn(
+				logger_.warn(
 						"An error occurred whilst trying to instantiate the justification preferences panel plugin '{}': {}",
 						plugin.getLabel(), e);
 			}
 		}
 
-		add(tabbedPane);
+		add(tabbedPane_);
 
 		updatePanelSelection(null);
 	}
@@ -98,25 +93,25 @@ public class JustPrefPanel extends PreferencesPanel
 		final Preferences prefs = PreferencesManager.getInstance()
 				.getApplicationPreferences(JustPrefPanel.class);
 		prefs.putString(JUST_PREFS_HISTORY_PANEL_KEY, getSelectedPanel());
-		for (PreferencesPanel panel : new ArrayList<>(map.values())) {
+		for (PreferencesPanel panel : new ArrayList<>(panels_.values())) {
 			try {
 				panel.dispose();
 			} catch (Throwable e) {
-				logger.warn(
+				logger_.warn(
 						"An error occurred whilst disposing of the justification preferences panel plugin '{}': {}",
 						panel.getLabel(), e);
 			}
 		}
-		map.clear();
+		panels_.clear();
 	}
 
 	protected String getSelectedPanel() {
-		Component c = tabbedPane.getSelectedComponent();
+		Component c = tabbedPane_.getSelectedComponent();
 		if (c instanceof JScrollPane) {
 			c = ((JScrollPane) c).getViewport().getView();
 		}
-		for (String tabName : map.keySet()) {
-			if (c.equals(map.get(tabName))) {
+		for (String tabName : panels_.keySet()) {
+			if (c.equals(panels_.get(tabName))) {
 				return tabName;
 			}
 		}
@@ -126,23 +121,22 @@ public class JustPrefPanel extends PreferencesPanel
 	public void updatePanelSelection(String selectedPanel) {
 		if (selectedPanel == null) {
 			final Preferences prefs = PreferencesManager.getInstance()
-					.getApplicationPreferences(
-							JustPrefPanel.class);
+					.getApplicationPreferences(JustPrefPanel.class);
 			selectedPanel = prefs.getString(JUST_PREFS_HISTORY_PANEL_KEY, null);
 		}
-		Component c = componentMap.get(selectedPanel);
+		Component c = panes_.get(selectedPanel);
 		if (c != null) {
-			tabbedPane.setSelectedComponent(c);
+			tabbedPane_.setSelectedComponent(c);
 		}
 	}
 
 	@Override
 	public void applyChanges() {
-		for (PreferencesPanel panel : new ArrayList<>(map.values())) {
+		for (PreferencesPanel panel : new ArrayList<>(panels_.values())) {
 			try {
 				panel.applyChanges();
 			} catch (Throwable e) {
-				logger.warn(
+				logger_.warn(
 						"An error occurred whilst trying to save the preferences for the justification preferences panel '{}': {}",
 						panel.getLabel(), e);
 			}

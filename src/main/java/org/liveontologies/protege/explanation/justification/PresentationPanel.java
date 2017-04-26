@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -35,10 +34,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -100,40 +97,45 @@ import org.slf4j.LoggerFactory;
  */
 
 /**
- * Author: Matthew Horridge
- * The University Of Manchester
- * Information Management Group
- * Date: 04-Oct-2008
+ * Author: Matthew Horridge The University Of Manchester Information Management
+ * Group Date: 04-Oct-2008
  * 
  * The component that displays a set of justification
  */
 
-public class PresentationPanel extends JPanel implements Disposable, OWLModelManagerListener,
-		EntailmentSelectionListener, AxiomSelectionModel, ExplanationManagerListener, ComputationServiceListener {
+public class PresentationPanel extends JPanel
+		implements Disposable, OWLModelManagerListener,
+		EntailmentSelectionListener, AxiomSelectionModel,
+		ExplanationManagerListener, ComputationServiceListener {
 
-	private final OWLEditorKit kit;
-	private final PresentationManager manager;
-	private JComponent explanationDisplayHolder;
-	private JComponent serviceSettingsDisplayHolder;
-	private JScrollPane scrollPane;
-	private Collection<AxiomsDisplay> panels;
-	private JComponent headerPanel;
+	private static final long serialVersionUID = 5025702425365703918L;
 
-	private PriorityQueue<Explanation<OWLAxiom>> displayedExplanations;
-	private JButton bAdd;
+	private static final Logger logger = LoggerFactory
+			.getLogger(PresentationPanel.class);
 
-	private AxiomSelectionModelImpl selectionModel;
-	private static final Logger logger = LoggerFactory.getLogger(PresentationPanel.class);
+	private final OWLEditorKit kit_;
+	private final PresentationManager manager_;
+	private final JComponent explanationDisplayHolder_;
+	private final JComponent serviceSettingsDisplayHolder_;
+	private final JScrollPane scrollPane_;
+	private final Collection<AxiomsDisplay> panels_;
+	private final JComponent headerPanel_;
+	private PriorityQueue<Explanation<OWLAxiom>> displayedExplanations_;
+	private JButton bAdd_;
+	private final AxiomSelectionModelImpl selectionModel_;
 
-	public PresentationPanel(JustificationComputationServiceManager manager, OWLAxiom entailment) {
-		this(new PresentationManager(ProtegeManager.getInstance().getFrame(manager.getOWLEditorKit().getWorkspace()),
+	public PresentationPanel(JustificationComputationServiceManager manager,
+			OWLAxiom entailment) {
+		this(new PresentationManager(
+				ProtegeManager.getInstance()
+						.getFrame(manager.getOWLEditorKit().getWorkspace()),
 				manager, entailment));
 	}
 
 	public PresentationPanel(PresentationManager manager) {
-		this.manager = manager;
+		this.manager_ = manager;
 		manager.setComputationServiceListener(this);
-		this.kit = this.manager.getOWLEditorKit();
+		this.kit_ = this.manager_.getOWLEditorKit();
 		setLayout(new GridBagLayout());
 
 		boolean bExplPrefExtPointExists = PluginUtilities.getInstance()
@@ -148,7 +150,8 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 				public void actionPerformed(ActionEvent e) {
 					try {
 						JustPrefPanel prefPanel = new JustPrefPanel();
-						prefPanel.setup(prefPanel.getLabel(), manager.getOWLEditorKit());
+						prefPanel.setup(prefPanel.getLabel(),
+								manager.getOWLEditorKit());
 						prefPanel.initialise();
 						Dimension screenSize = Toolkit.getDefaultToolkit()
 								.getScreenSize();
@@ -157,7 +160,8 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 								850);
 						int prefHeight = Math.min(screenSize.height - margin,
 								600);
-						prefPanel.setPreferredSize(new Dimension(prefWidth, prefHeight));
+						prefPanel.setPreferredSize(
+								new Dimension(prefWidth, prefHeight));
 						JOptionPane op = new JOptionPane(prefPanel,
 								JOptionPane.PLAIN_MESSAGE,
 								JOptionPane.DEFAULT_OPTION);
@@ -186,9 +190,11 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 			break;
 		case 1:
 			manager.selectService(services.iterator().next());
-			JLabel label = new JLabel("Using " + manager.getSelectedService() + " as a computation service");
-			add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHEAST,
-					GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
+			JLabel label = new JLabel("Using " + manager.getSelectedService()
+					+ " as a computation service");
+			add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+					GridBagConstraints.NORTHEAST, GridBagConstraints.HORIZONTAL,
+					new Insets(2, 0, 2, 0), 0, 0));
 			break;
 		default:
 			JComboBox<ComputationService> selector = new JComboBox<ComputationService>();
@@ -196,7 +202,8 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 			for (ComputationService service : services)
 				if (service.canComputeJustification(manager.getEntailment())) {
 					selector.addItem(service);
-					if (JustificationComputationServiceManager.lastChoosenServiceId == manager.getIdForService(service))
+					if (JustificationComputationServiceManager.LAST_CHOOSEN_SERVICE_ID == manager
+							.getIdForService(service))
 						serviceToSelect = service;
 				}
 			selector.setSelectedItem(serviceToSelect);
@@ -204,94 +211,107 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 			selector.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					manager.selectService((ComputationService) selector.getSelectedItem());
+					manager.selectService(
+							(ComputationService) selector.getSelectedItem());
 					updateSettingsPanel();
 					manager.clearJustificationsCache();
 					createHeaderPanel();
 					recompute();
 				}
 			});
-			add(selector, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.NORTHEAST,
-					GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
+			add(selector, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
+					GridBagConstraints.NORTHEAST, GridBagConstraints.HORIZONTAL,
+					new Insets(2, 0, 2, 0), 0, 0));
 		}
 
-		selectionModel = new AxiomSelectionModelImpl();
-		panels = new ArrayList<>();
-		kit.getModelManager().addListener(this);
+		selectionModel_ = new AxiomSelectionModelImpl();
+		panels_ = new ArrayList<>();
+		kit_.getModelManager().addListener(this);
 
-		serviceSettingsDisplayHolder = new JPanel(new BorderLayout());
+		serviceSettingsDisplayHolder_ = new JPanel(new BorderLayout());
 		updateSettingsPanel();
-		add(serviceSettingsDisplayHolder, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0, GridBagConstraints.NORTHEAST,
+		add(serviceSettingsDisplayHolder_, new GridBagConstraints(0, 1, 2, 1,
+				0.0, 0.0, GridBagConstraints.NORTHEAST,
 				GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
 
-		headerPanel = new JPanel(new BorderLayout());
+		headerPanel_ = new JPanel(new BorderLayout());
 		createHeaderPanel();
-		explanationDisplayHolder = new Box(BoxLayout.Y_AXIS);
+		explanationDisplayHolder_ = new Box(BoxLayout.Y_AXIS);
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(explanationDisplayHolder);
-		panel.add(headerPanel);
+		panel.add(explanationDisplayHolder_);
+		panel.add(headerPanel_);
 		JPanel holder = new HolderPanel(new BorderLayout());
 		holder.add(panel, BorderLayout.NORTH);
-		scrollPane = new JScrollPane(holder);
-		scrollPane.setBorder(null);
-		scrollPane.getViewport().setOpaque(false);
-		scrollPane.getViewport().setBackground(null);
-		scrollPane.setOpaque(false);
+		scrollPane_ = new JScrollPane(holder);
+		scrollPane_.setBorder(null);
+		scrollPane_.getViewport().setOpaque(false);
+		scrollPane_.getViewport().setBackground(null);
+		scrollPane_.setOpaque(false);
 		JPanel explanationListPanel = new JPanel(new BorderLayout());
-		explanationListPanel.add(scrollPane);
+		explanationListPanel.add(scrollPane_);
 		explanationListPanel.setMinimumSize(new Dimension(10, 10));
-		add(explanationListPanel, new GridBagConstraints(0, 2, 2, 1, 1.0, 1.0, GridBagConstraints.NORTHEAST,
-		GridBagConstraints.BOTH, new Insets(2, 0, 2, 0), 0, 0));
+		add(explanationListPanel,
+				new GridBagConstraints(0, 2, 2, 1, 1.0, 1.0,
+						GridBagConstraints.NORTHEAST, GridBagConstraints.BOTH,
+						new Insets(2, 0, 2, 0), 0, 0));
 
 		recompute();
 	}
 
 	private JComponent createHeaderPanel() {
-		headerPanel.removeAll();
+		headerPanel_.removeAll();
 
-		bAdd = new JButton(getIncrementString());
-		bAdd.setBorder(new CompoundBorder(bAdd.getBorder(), new EmptyBorder(5, 5, 5, 5)));
-		bAdd.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 0, 5), bAdd.getBorder()));
-		headerPanel.add(bAdd);
-		bAdd.addActionListener(new ActionListener() {
+		bAdd_ = new JButton(getIncrementString());
+		bAdd_.setBorder(new CompoundBorder(bAdd_.getBorder(),
+				new EmptyBorder(5, 5, 5, 5)));
+		bAdd_.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 0, 5),
+				bAdd_.getBorder()));
+		headerPanel_.add(bAdd_);
+		bAdd_.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				updatePanel(manager.getPresentationSettings().getIncrement());
+				updatePanel(manager_.getPresentationSettings().getIncrement());
 			}
 		});
-		JustificationPreferencesGeneralPanel.addListener(new JustificationPreferencesGeneralPanel.PreferencesListener() {
-			@Override
-			public void valueChanged() {
-				bAdd.setText(getIncrementString());
-			}
-		});
+		JustificationPreferencesGeneralPanel.addListener(
+				new JustificationPreferencesGeneralPanel.PreferencesListener() {
+					@Override
+					public void valueChanged() {
+						bAdd_.setText(getIncrementString());
+					}
+				});
 
-		return headerPanel;
+		return headerPanel_;
 	}
-	
-	private String getIncrementString()
-	{
-		if (displayedExplanations == null)
-			return "Show next " + manager.getPresentationSettings().getIncrement() + " justifications";
-		int inc = Math.min(manager.getPresentationSettings().getIncrement(),
-				getDisplayedExplanationsAmout() - manager.getPresentationSettings().getCurrentCount());
-		return "Show next " + inc + " justifications of " + getDisplayedExplanationsAmout() + " in total";
+
+	private String getIncrementString() {
+		if (displayedExplanations_ == null)
+			return "Show next "
+					+ manager_.getPresentationSettings().getIncrement()
+					+ " justifications";
+		int inc = Math.min(manager_.getPresentationSettings().getIncrement(),
+				getDisplayedExplanationsAmout()
+						- manager_.getPresentationSettings().getCurrentCount());
+		return "Show next " + inc + " justifications of "
+				+ getDisplayedExplanationsAmout() + " in total";
 	}
 
 	private void updateHeaderPanel() {
-		int current = manager.getPresentationSettings().getCurrentCount();
-		
-		String sAll = getDisplayedExplanationsAmout() + " justification" + (getDisplayedExplanationsAmout() == 1 ? " is shown." : "s are shown.");
+		int current = manager_.getPresentationSettings().getCurrentCount();
+
+		String sAll = getDisplayedExplanationsAmout() + " justification"
+				+ (getDisplayedExplanationsAmout() == 1 ? " is shown."
+						: "s are shown.");
 
 		if (current != getDisplayedExplanationsAmout()) {
-			bAdd.setText(getIncrementString());
-			headerPanel.validate();
+			bAdd_.setText(getIncrementString());
+			headerPanel_.validate();
 		} else {
-			headerPanel.removeAll();
+			headerPanel_.removeAll();
 			JLabel explanationsCountLabel = new JLabel("All " + sAll);
-			headerPanel.add(explanationsCountLabel, BorderLayout.CENTER);
-			headerPanel.validate();
+			headerPanel_.add(explanationsCountLabel, BorderLayout.CENTER);
+			headerPanel_.validate();
 		}
 	}
 
@@ -299,7 +319,8 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 		return new Dimension(10, 10);
 	}
 
-	public void explanationLimitChanged(PresentationManager presentationManager) {
+	public void explanationLimitChanged(
+			PresentationManager presentationManager) {
 		selectionChanged();
 	}
 
@@ -307,6 +328,8 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 	}
 
 	private class HolderPanel extends JPanel implements Scrollable {
+
+		private static final long serialVersionUID = 1368378506064086576L;
 
 		public HolderPanel(LayoutManager layout) {
 			super(layout);
@@ -317,11 +340,13 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 			return super.getPreferredSize();
 		}
 
-		public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+		public int getScrollableUnitIncrement(Rectangle visibleRect,
+				int orientation, int direction) {
 			return 30;
 		}
 
-		public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+		public int getScrollableBlockIncrement(Rectangle visibleRect,
+				int orientation, int direction) {
 			return 30;
 		}
 
@@ -340,71 +365,77 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 
 	@Override
 	public void redrawingCalled() {
-		manager.clearJustificationsCache();
+		manager_.clearJustificationsCache();
 		recompute();
 	}
 
 	private void updateSettingsPanel() {
-		JPanel settingsPanel = manager.getSelectedService().getSettingsPanel();
-		serviceSettingsDisplayHolder.removeAll();
+		JPanel settingsPanel = manager_.getSelectedService().getSettingsPanel();
+		serviceSettingsDisplayHolder_.removeAll();
 		if (settingsPanel != null)
-			serviceSettingsDisplayHolder.add(settingsPanel, BorderLayout.WEST);
+			serviceSettingsDisplayHolder_.add(settingsPanel, BorderLayout.WEST);
 		validate();
 	}
 
 	private void recompute() {
 		try {
-			panels.forEach(AxiomsDisplay::dispose);
-			explanationDisplayHolder.removeAll();
-			explanationDisplayHolder.validate();
+			panels_.forEach(AxiomsDisplay::dispose);
+			explanationDisplayHolder_.removeAll();
+			explanationDisplayHolder_.validate();
 
-			Set<Explanation<OWLAxiom>> e = manager.getJustifications();
+			Set<Explanation<OWLAxiom>> e = manager_.getJustifications();
 			setDisplayedExplanationsAmout(e.size());
-			displayedExplanations = new PriorityQueue<>(getDisplayedExplanationsAmout(), new Comparator<Explanation<OWLAxiom>>() {
-				public int compare(Explanation<OWLAxiom> o1, Explanation<OWLAxiom> o2) {
-					int diff = getAxiomTypes(o1).size() - getAxiomTypes(o2).size();
-					if (diff != 0) {
-						return diff;
-					}
-					diff = getClassExpressionTypes(o1).size() - getClassExpressionTypes(o2).size();
-					if (diff != 0) {
-						return diff;
-					}
-					return o1.getSize() - o2.getSize();
-				}
-			});
-			displayedExplanations.addAll(e);
-			manager.getPresentationSettings().setCurrentCount(0);
+			displayedExplanations_ = new PriorityQueue<>(
+					getDisplayedExplanationsAmout(),
+					new Comparator<Explanation<OWLAxiom>>() {
+						public int compare(Explanation<OWLAxiom> o1,
+								Explanation<OWLAxiom> o2) {
+							int diff = getAxiomTypes(o1).size()
+									- getAxiomTypes(o2).size();
+							if (diff != 0) {
+								return diff;
+							}
+							diff = getClassExpressionTypes(o1).size()
+									- getClassExpressionTypes(o2).size();
+							if (diff != 0) {
+								return diff;
+							}
+							return o1.getSize() - o2.getSize();
+						}
+					});
+			displayedExplanations_.addAll(e);
+			manager_.getPresentationSettings().setCurrentCount(0);
 
 			updateHeaderPanel();
 
-			updatePanel(manager.getPresentationSettings().getInitialAmount());
+			updatePanel(manager_.getPresentationSettings().getInitialAmount());
 		} catch (ExplanationException e) {
-			logger.error("An error occurred whilst computing explanations: {}", e.getMessage(), e);
+			logger.error("An error occurred whilst computing explanations: {}",
+					e.getMessage(), e);
 		}
 	}
 
-	private void updatePanel() {
-		updatePanel(getDisplayedExplanationsAmout() - manager.getPresentationSettings().getCurrentCount());
-	}
-
 	private void updatePanel(int diff) {
-		PresentationSettings settings = manager.getPresentationSettings();
-		int maxCnt = Math.min(settings.getCurrentCount() + diff, getDisplayedExplanationsAmout());
+		PresentationSettings settings = manager_.getPresentationSettings();
+		int maxCnt = Math.min(settings.getCurrentCount() + diff,
+				getDisplayedExplanationsAmout());
 
-		for (int explNum = settings.getCurrentCount() + 1; explNum <= maxCnt; explNum++) {
-			Explanation<OWLAxiom> explanation = displayedExplanations.poll();
-			final AxiomsDisplay display = new AxiomsDisplay(manager, this, explanation);
-			AxiomsDisplayList displayList = new AxiomsDisplayList(display, explNum);
+		for (int explNum = settings.getCurrentCount()
+				+ 1; explNum <= maxCnt; explNum++) {
+			Explanation<OWLAxiom> explanation = displayedExplanations_.poll();
+			final AxiomsDisplay display = new AxiomsDisplay(manager_, this,
+					explanation);
+			AxiomsDisplayList displayList = new AxiomsDisplayList(display,
+					explNum);
 			displayList.setBorder(BorderFactory.createEmptyBorder(2, 0, 10, 0));
-			explanationDisplayHolder.add(displayList);
-			panels.add(display);
+			explanationDisplayHolder_.add(displayList);
+			panels_.add(display);
 		}
 
 		settings.setCurrentCount(maxCnt);
 		updateHeaderPanel();
 
-		scrollPane.validate();
+		scrollPane_.validate();
 	}
 
 	private Set<AxiomType<?>> getAxiomTypes(Explanation<OWLAxiom> explanation) {
@@ -415,21 +446,23 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 		return result;
 	}
 
-	private Set<ClassExpressionType> getClassExpressionTypes(Explanation<OWLAxiom> explanation) {
+	private Set<ClassExpressionType> getClassExpressionTypes(
+			Explanation<OWLAxiom> explanation) {
 		Set<ClassExpressionType> result = new HashSet<>();
 		for (OWLAxiom ax : explanation.getAxioms()) {
-			result.addAll(ax.getNestedClassExpressions().stream().map(OWLClassExpression::getClassExpressionType)
+			result.addAll(ax.getNestedClassExpressions().stream()
+					.map(OWLClassExpression::getClassExpressionType)
 					.collect(Collectors.toList()));
 		}
 		return result;
 	}
 
 	public void dispose() {
-		kit.getModelManager().removeListener(this);
-		for (AxiomsDisplay panel : panels) {
+		kit_.getModelManager().removeListener(this);
+		for (AxiomsDisplay panel : panels_) {
 			panel.dispose();
 		}
-		selectionModel.dispose();
+		selectionModel_.dispose();
 	}
 
 	public void handleChange(OWLModelManagerChangeEvent event) {
@@ -437,34 +470,34 @@ public class PresentationPanel extends JPanel implements Disposable, OWLModelMan
 	}
 
 	public void addAxiomSelectionListener(AxiomSelectionListener lsnr) {
-		selectionModel.addAxiomSelectionListener(lsnr);
+		selectionModel_.addAxiomSelectionListener(lsnr);
 	}
 
 	public void removeAxiomSelectionListener(AxiomSelectionListener lsnr) {
-		selectionModel.removeAxiomSelectionListener(lsnr);
+		selectionModel_.removeAxiomSelectionListener(lsnr);
 	}
 
 	public void setAxiomSelected(OWLAxiom axiom, boolean b) {
-		selectionModel.setAxiomSelected(axiom, b);
+		selectionModel_.setAxiomSelected(axiom, b);
 	}
 
 	public Set<OWLAxiom> getSelectedAxioms() {
-		return selectionModel.getSelectedAxioms();
+		return selectionModel_.getSelectedAxioms();
 	}
 
 	@Override
 	public Dimension getPreferredSize() {
-		Dimension workspaceSize = kit.getWorkspace().getSize();
+		Dimension workspaceSize = kit_.getWorkspace().getSize();
 		int width = (int) (workspaceSize.getWidth() * 0.8);
 		int height = (int) (workspaceSize.getHeight() * 0.7);
 		return new Dimension(width, height);
 	}
-	
+
 	private int getDisplayedExplanationsAmout() {
-		return manager.getPresentationSettings().getExplanationsCount();
+		return manager_.getPresentationSettings().getExplanationsCount();
 	}
-	
+
 	private void setDisplayedExplanationsAmout(int count) {
-		manager.getPresentationSettings().setExplanationsCount(count);
+		manager_.getPresentationSettings().setExplanationsCount(count);
 	}
 }

@@ -22,7 +22,6 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
@@ -33,31 +32,33 @@ import javax.swing.JFrame;
 import org.liveontologies.protege.explanation.justification.service.JustificationComputation;
 
 /**
- * Author: Matthew Horridge
- * Stanford University
- * Bio-Medical Informatics Research Group
- * Date: 20/03/2012
+ * Author: Matthew Horridge Stanford University Bio-Medical Informatics Research
+ * Group Date: 20/03/2012
  */
 
 public class ExplanationGeneratorProgressDialog extends JDialog {
-	private AxiomsProgressPanel panel;
 
-	public ExplanationGeneratorProgressDialog(Frame owner, JustificationComputation computation) {
+	private static final long serialVersionUID = 2729423646823799401L;
+	private final AxiomsProgressPanel panel_;
+
+	public ExplanationGeneratorProgressDialog(Frame owner,
+			JustificationComputation computation) {
 		super(owner, "Computing explanations", true);
-		panel = new AxiomsProgressPanel(computation);
-		setContentPane(panel);
+		panel_ = new AxiomsProgressPanel(computation);
+		setContentPane(panel_);
 		pack();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension dlgSize = getSize();
-		setLocation(screenSize.width / 2 - dlgSize.width / 2, screenSize.height / 2 - dlgSize.height / 2);
+		setLocation(screenSize.width / 2 - dlgSize.width / 2,
+				screenSize.height / 2 - dlgSize.height / 2);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	}
 
 	public void reset() {
-		panel.reset();
+		panel_.reset();
 	}
 
 	public void setExplanationCount(int count) {
-		panel.setExplanationCount(count);
+		panel_.setExplanationCount(count);
 	}
 }
