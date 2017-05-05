@@ -25,11 +25,14 @@ package org.liveontologies.protege.explanation.justification;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
+import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,6 +44,7 @@ import javax.swing.JList;
 import javax.swing.KeyStroke;
 import javax.swing.border.Border;
 
+import org.liveontologies.protege.explanation.justification.preferences.JustificationPreferencesGeneralPanel;
 import org.protege.editor.core.ui.list.MListButton;
 import org.protege.editor.core.ui.list.MListItem;
 import org.protege.editor.owl.OWLEditorKit;
@@ -270,6 +274,30 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 	}
 
 	@Override
+	public String getToolTipText(MouseEvent event) {
+		if (event == null)
+			return super.getToolTipText();
+
+		Point location = event.getPoint();
+		int index = locationToIndex(location);
+		if (index < 0 || !getCellBounds(index, index).contains(location))
+			return super.getToolTipText();
+
+		Object element = getModel().getElementAt(index);
+		if (element instanceof AxiomsFrameSectionRow) {
+			AttributedString populatiry = getPopularityString(
+					isSelectedIndex(index), (AxiomsFrameSectionRow) element);
+			String tt = "";
+			for (AttributedCharacterIterator i = populatiry.getIterator(); i
+					.getIndex() < i.getEndIndex(); i.next())
+				tt += i.current();
+			return tt;
+		}
+
+		return super.getToolTipText(event);
+	}
+
+	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
@@ -295,7 +323,9 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 						float y = ((rect.height - h) / 2) + rect.y
 								+ textLayout.getLeading()
 								+ textLayout.getAscent();
-						textLayout.draw(g2, x, y);
+						if (JustificationPreferencesGeneralPanel
+								.getPopularityDisplaying())
+							textLayout.draw(g2, x, y);
 
 						g2.setColor(Color.LIGHT_GRAY);
 						TextLayout numberLayout = new TextLayout(i + ")",

@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -45,9 +46,11 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 	private static ArrayList<PreferencesListener> listeners_ = new ArrayList<PreferencesListener>();
 
 	private SpinnerNumberModel initialAmountM_, incrementM_;
+	private JCheckBox showPopularityChB_;
 
 	private static int increment_ = 10;
 	private static int initialAmount_ = 20;
+	private static boolean isPopularityShown_ = false;
 
 	@Override
 	public void initialise() throws Exception {
@@ -84,6 +87,13 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 		spinnerI.setToolTipText(
 				"Amount of additional justifications displayed after click on “Show next” button");
 
+		panel.addGroup("Popularity of axioms");
+		showPopularityChB_ = new JCheckBox("Display popularity");
+		incrementM_ = new SpinnerNumberModel(getIncrement(), 1, 999, 1);
+		showPopularityChB_.setSelected(getPopularityDisplaying());
+		panel.addGroupComponent(showPopularityChB_);
+		showPopularityChB_.setToolTipText(
+				"Sets whether the popularity amount for each axiom would be displayed");
 	}
 
 	@Override
@@ -94,6 +104,7 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 	public void applyChanges() {
 		setInitialAmount(initialAmountM_.getNumber().intValue());
 		setIncrement(incrementM_.getNumber().intValue());
+		setPopularityDisplaying(showPopularityChB_.isSelected());
 		for (PreferencesListener listener : listeners_)
 			listener.valueChanged();
 	}
@@ -110,8 +121,16 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 		return initialAmount_;
 	}
 
-	static public void setInitialAmount(int value) {
+	static private void setInitialAmount(int value) {
 		initialAmount_ = value;
+	}
+
+	static public boolean getPopularityDisplaying() {
+		return isPopularityShown_;
+	}
+
+	static private void setPopularityDisplaying(boolean value) {
+		isPopularityShown_ = value;
 	}
 
 	public static void addListener(PreferencesListener listener) {
