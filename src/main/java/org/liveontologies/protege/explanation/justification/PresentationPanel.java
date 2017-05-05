@@ -386,7 +386,7 @@ public class PresentationPanel extends JPanel
 			Set<Explanation<OWLAxiom>> e = manager_.getJustifications();
 			setDisplayedExplanationsAmout(e.size());
 			displayedExplanations_ = new PriorityQueue<>(
-					getDisplayedExplanationsAmout(),
+					Math.max(getDisplayedExplanationsAmout(), 1),
 					new Comparator<Explanation<OWLAxiom>>() {
 						public int compare(Explanation<OWLAxiom> o1,
 								Explanation<OWLAxiom> o2) {
