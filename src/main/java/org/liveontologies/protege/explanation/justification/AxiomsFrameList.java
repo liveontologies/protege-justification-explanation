@@ -67,6 +67,8 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 	public static final Color COLOR_SINGLE_POPULARITY = new Color(170, 70, 15);
 	public static final Color COLOR_MULTI_POPULARITY = new Color(10, 75, 175);
 	public static final Color COLOR_ALL_POPULARITY = new Color(6, 133, 19);
+	
+	public static final Color INFERRED_BG_COLOR = new Color(255, 255, 215);
 
 	private final PresentationManager manager_;
 	private final AxiomSelectionModel axiomSelectionModel_;
@@ -232,24 +234,28 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 		if (item instanceof AxiomsFrameSectionRow) {
 			AxiomsFrameSectionRow row = (AxiomsFrameSectionRow) item;
 			OWLAxiom axiom = row.getAxiom();
-			int rowIndex = row.getFrameSection().getRowIndex(row) + 1;
-			if (!isSelectedIndex(rowIndex)) {
-				if (axiomSelectionModel_.getSelectedAxioms().contains(axiom)) {
-					return Color.YELLOW;
-				} else {
-					boolean isInAll = true;
-					for (Explanation<?> expl : manager_.getJustifications(
-							getRootObject().getEntailment())) {
-						if (!expl.contains(axiom)) {
-							isInAll = false;
-							break;
-						}
-					}
-					if (isInAll) {
-						return new Color(245, 255, 235);
-					}
-				}
-			}
+
+			if (!manager_.getOWLEditorKit().getOWLModelManager().getActiveOntology().containsAxiom(axiom))
+				return INFERRED_BG_COLOR;
+
+//			int rowIndex = row.getFrameSection().getRowIndex(row) + 1;
+//			if (!isSelectedIndex(rowIndex)) {
+//				if (axiomSelectionModel_.getSelectedAxioms().contains(axiom)) {
+//					return Color.YELLOW;
+//				} else {
+//					boolean isInAll = true;
+//					for (Explanation<?> expl : manager_.getJustifications(
+//							getRootObject().getEntailment())) {
+//						if (!expl.contains(axiom)) {
+//							isInAll = false;
+//							break;
+//						}
+//					}
+//					if (isInAll) {
+//						return new Color(245, 255, 235);
+//					}
+//				}
+//			}
 		}
 		return super.getItemBackgroundColor(item);
 	}
