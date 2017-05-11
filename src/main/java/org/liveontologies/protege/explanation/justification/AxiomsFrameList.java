@@ -44,7 +44,7 @@ import javax.swing.JList;
 import javax.swing.KeyStroke;
 import javax.swing.border.Border;
 
-import org.liveontologies.protege.explanation.justification.preferences.JustificationPreferencesGeneralPanel;
+import org.liveontologies.protege.explanation.justification.preferences.JustPrefs;
 import org.protege.editor.core.ui.list.MListButton;
 import org.protege.editor.core.ui.list.MListItem;
 import org.protege.editor.owl.OWLEditorKit;
@@ -329,8 +329,7 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 						float y = ((rect.height - h) / 2) + rect.y
 								+ textLayout.getLeading()
 								+ textLayout.getAscent();
-						if (JustificationPreferencesGeneralPanel
-								.getPopularityDisplaying())
+						if (JustPrefs.create().load().isPopularityShown)
 							textLayout.draw(g2, x, y);
 
 						g2.setColor(Color.LIGHT_GRAY);

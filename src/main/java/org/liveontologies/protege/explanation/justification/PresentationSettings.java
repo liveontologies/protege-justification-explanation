@@ -1,6 +1,6 @@
 package org.liveontologies.protege.explanation.justification;
 
-import org.liveontologies.protege.explanation.justification.preferences.JustificationPreferencesGeneralPanel;
+import org.liveontologies.protege.explanation.justification.preferences.JustPrefs;
 
 /*-
  * #%L
@@ -34,11 +34,11 @@ public class PresentationSettings {
 	private int nExplanations_ = 0;
 
 	public int getIncrement() {
-		return JustificationPreferencesGeneralPanel.getIncrement();
+		return JustPrefs.create().load().increment;
 	}
 
 	public int getInitialAmount() {
-		return JustificationPreferencesGeneralPanel.getInitialAmount();
+		return JustPrefs.create().load().initialAmount;
 	}
 
 	public void setCurrentCount(int count) {

@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
@@ -48,10 +49,6 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 	private SpinnerNumberModel initialAmountM_, incrementM_;
 	private JCheckBox showPopularityChB_;
 
-	private static int increment_ = 10;
-	private static int initialAmount_ = 20;
-	private static boolean isPopularityShown_ = false;
-
 	@Override
 	public void initialise() throws Exception {
 		setLayout(new BorderLayout());
@@ -72,28 +69,33 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 		panel.addGroupComponent(pluginInfoScrollPane);
 
 		panel.addGroup("Initial justifications");
-		initialAmountM_ = new SpinnerNumberModel(getInitialAmount(), 1, 999, 1);
+		initialAmountM_ = new SpinnerNumberModel(1, 1, 999, 1);
 		JComponent spinnerIA = new JSpinner(initialAmountM_);
 		spinnerIA.setMaximumSize(spinnerIA.getPreferredSize());
 		panel.addGroupComponent(spinnerIA);
 		spinnerIA.setToolTipText(
-				"Amount of justifications displayed at the beginning");
+				JustPrefs.INITIAL_AMOUNT_DESCRIPTION);
 
 		panel.addGroup("Increment value");
-		incrementM_ = new SpinnerNumberModel(getIncrement(), 1, 999, 1);
+		incrementM_ = new SpinnerNumberModel(1, 1, 999, 1);
 		JComponent spinnerI = new JSpinner(incrementM_);
 		spinnerI.setMaximumSize(spinnerI.getPreferredSize());
 		panel.addGroupComponent(spinnerI);
-		spinnerI.setToolTipText(
-				"Amount of additional justifications displayed after click on “Show next” button");
+		spinnerI.setToolTipText(JustPrefs.INCREMENT_DESCRIPTION);
 
 		panel.addGroup("Popularity of axioms");
 		showPopularityChB_ = new JCheckBox("Display popularity");
-		incrementM_ = new SpinnerNumberModel(getIncrement(), 1, 999, 1);
-		showPopularityChB_.setSelected(getPopularityDisplaying());
 		panel.addGroupComponent(showPopularityChB_);
 		showPopularityChB_.setToolTipText(
-				"Sets whether the popularity amount for each axiom would be displayed");
+				JustPrefs.AXIOM_POPULARITY_DESCRIPTION);
+
+		panel.addGroup("");
+		JButton resetButton = new JButton("Reset");
+		resetButton.addActionListener(e -> reset());
+		resetButton.setToolTipText("Resets all settings to default values");
+		panel.addGroupComponent(resetButton);
+
+		loadFrom(JustPrefs.create().load());
 	}
 
 	@Override
@@ -102,35 +104,27 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 
 	@Override
 	public void applyChanges() {
-		setInitialAmount(initialAmountM_.getNumber().intValue());
-		setIncrement(incrementM_.getNumber().intValue());
-		setPopularityDisplaying(showPopularityChB_.isSelected());
+		JustPrefs prefs = JustPrefs.create();
+		saveTo(prefs);
+		prefs.save();
 		for (PreferencesListener listener : listeners_)
 			listener.valueChanged();
 	}
 
-	static public int getIncrement() {
-		return increment_;
+	private void loadFrom(JustPrefs prefs) {
+		incrementM_.setValue(prefs.increment);
+		initialAmountM_.setValue(prefs.initialAmount);
+		showPopularityChB_.setSelected(prefs.isPopularityShown);
 	}
 
-	static private void setIncrement(int value) {
-		increment_ = value;
+	private void saveTo(JustPrefs prefs) {
+		prefs.increment = incrementM_.getNumber().intValue();
+		prefs.initialAmount = initialAmountM_.getNumber().intValue();
+		prefs.isPopularityShown = showPopularityChB_.isSelected();
 	}
 
-	static public int getInitialAmount() {
-		return initialAmount_;
-	}
-
-	static private void setInitialAmount(int value) {
-		initialAmount_ = value;
-	}
-
-	static public boolean getPopularityDisplaying() {
-		return isPopularityShown_;
-	}
-
-	static private void setPopularityDisplaying(boolean value) {
-		isPopularityShown_ = value;
+	private void reset() {
+		loadFrom(JustPrefs.create());
 	}
 
 	public static void addListener(PreferencesListener listener) {
