@@ -38,7 +38,7 @@ public class PresentationSettings {
 	}
 
 	public int getInitialAmount() {
-		return JustPrefs.create().load().initialAmount;
+		return JustPrefs.create().load().initialNumber;
 	}
 
 	public void setCurrentCount(int count) {

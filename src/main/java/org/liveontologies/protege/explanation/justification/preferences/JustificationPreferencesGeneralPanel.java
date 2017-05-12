@@ -74,7 +74,7 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 		spinnerIA.setMaximumSize(spinnerIA.getPreferredSize());
 		panel.addGroupComponent(spinnerIA);
 		spinnerIA.setToolTipText(
-				JustPrefs.INITIAL_AMOUNT_DESCRIPTION);
+				JustPrefs.INITIAL_NUMBER_DESCRIPTION);
 
 		panel.addGroup("Increment value");
 		incrementM_ = new SpinnerNumberModel(1, 1, 999, 1);
@@ -113,13 +113,13 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 
 	private void loadFrom(JustPrefs prefs) {
 		incrementM_.setValue(prefs.increment);
-		initialAmountM_.setValue(prefs.initialAmount);
+		initialAmountM_.setValue(prefs.initialNumber);
 		showPopularityChB_.setSelected(prefs.isPopularityShown);
 	}
 
 	private void saveTo(JustPrefs prefs) {
 		prefs.increment = incrementM_.getNumber().intValue();
-		prefs.initialAmount = initialAmountM_.getNumber().intValue();
+		prefs.initialNumber = initialAmountM_.getNumber().intValue();
 		prefs.isPopularityShown = showPopularityChB_.isSelected();
 	}
 
