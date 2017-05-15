@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.semanticweb.owl.explanation.api.Explanation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
@@ -38,35 +37,35 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 
 public class AxiomsCache {
 
-	private final Map<OWLAxiom, Set<Explanation<OWLAxiom>>> cache_ = new HashMap<>();
+	private final Map<OWLAxiom, Set<Justification<OWLAxiom>>> cache_ = new HashMap<>();
 	private final Map<OWLAxiom, Map<OWLAxiom, Integer>> popularityCache_ = new HashMap<>();
 
 	public boolean contains(OWLAxiom entailment) {
 		return cache_.containsKey(entailment);
 	}
 
-	public Set<Explanation<OWLAxiom>> get(OWLAxiom entailment) {
-		Set<Explanation<OWLAxiom>> explanations = cache_.get(entailment);
-		if (explanations == null) {
+	public Set<Justification<OWLAxiom>> get(OWLAxiom entailment) {
+		Set<Justification<OWLAxiom>> justifications = cache_.get(entailment);
+		if (justifications == null) {
 			return Collections.emptySet();
 		}
-		return explanations;
+		return justifications;
 	}
 
-	public void put(Explanation<OWLAxiom> explanation) {
-		Set<Explanation<OWLAxiom>> expls = cache_
-				.get(explanation.getEntailment());
-		if (expls == null) {
-			expls = new HashSet<>();
-			cache_.put(explanation.getEntailment(), expls);
-			getPopularityCache(explanation.getEntailment());
+	public void put(Justification<OWLAxiom> justification) {
+		Set<Justification<OWLAxiom>> justifications = cache_
+				.get(justification.getEntailment());
+		if (justifications == null) {
+			justifications = new HashSet<>();
+			cache_.put(justification.getEntailment(), justifications);
+			getPopularityCache(justification.getEntailment());
 		}
-		expls.add(explanation);
+		justifications.add(justification);
 	}
 
-	public void put(Set<Explanation<OWLAxiom>> explanations) {
-		for (Explanation<OWLAxiom> expl : explanations) {
-			put(expl);
+	public void put(Set<Justification<OWLAxiom>> justifications) {
+		for (Justification<OWLAxiom> justification : justifications) {
+			put(justification);
 		}
 	}
 
@@ -93,9 +92,9 @@ public class AxiomsCache {
 			return popularities.get(axiom);
 
 		int count = 0;
-		Set<Explanation<OWLAxiom>> explanations = get(entailment);
-		for (Explanation<OWLAxiom> explanation : explanations) {
-			if (explanation.contains(axiom)) {
+		Set<Justification<OWLAxiom>> justifications = get(entailment);
+		for (Justification<OWLAxiom> justification : justifications) {
+			if (justification.contains(axiom)) {
 				count++;
 			}
 		}

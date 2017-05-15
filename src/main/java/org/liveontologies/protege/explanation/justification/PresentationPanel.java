@@ -65,12 +65,11 @@ import org.protege.editor.core.plugin.PluginUtilities;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.model.event.OWLModelManagerChangeEvent;
 import org.protege.editor.owl.model.event.OWLModelManagerListener;
-import org.semanticweb.owl.explanation.api.Explanation;
-import org.semanticweb.owl.explanation.api.ExplanationException;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /*
@@ -120,7 +119,7 @@ public class PresentationPanel extends JPanel
 	private final JScrollPane scrollPane_;
 	private final Collection<AxiomsDisplay> panels_;
 	private final JComponent headerPanel_;
-	private PriorityQueue<Explanation<OWLAxiom>> displayedExplanations_;
+	private PriorityQueue<Justification<OWLAxiom>> displayedJustifications_;
 	private JButton bAdd_;
 	private final AxiomSelectionModelImpl selectionModel_;
 
@@ -248,10 +247,10 @@ public class PresentationPanel extends JPanel
 		scrollPane_.getViewport().setOpaque(false);
 		scrollPane_.getViewport().setBackground(null);
 		scrollPane_.setOpaque(false);
-		JPanel explanationListPanel = new JPanel(new BorderLayout());
-		explanationListPanel.add(scrollPane_);
-		explanationListPanel.setMinimumSize(new Dimension(10, 10));
-		add(explanationListPanel,
+		JPanel justificationListPanel = new JPanel(new BorderLayout());
+		justificationListPanel.add(scrollPane_);
+		justificationListPanel.setMinimumSize(new Dimension(10, 10));
+		add(justificationListPanel,
 				new GridBagConstraints(0, 2, 2, 1, 1.0, 1.0,
 						GridBagConstraints.NORTHEAST, GridBagConstraints.BOTH,
 						new Insets(2, 0, 2, 0), 0, 0));
@@ -286,7 +285,7 @@ public class PresentationPanel extends JPanel
 	}
 
 	private String getIncrementString() {
-		if (displayedExplanations_ == null)
+		if (displayedJustifications_ == null)
 			return "Show next "
 					+ manager_.getPresentationSettings().getIncrement()
 					+ " justifications";
@@ -309,8 +308,8 @@ public class PresentationPanel extends JPanel
 			headerPanel_.validate();
 		} else {
 			headerPanel_.removeAll();
-			JLabel explanationsCountLabel = new JLabel("All " + sAll);
-			headerPanel_.add(explanationsCountLabel, BorderLayout.CENTER);
+			JLabel justificationsCountLabel = new JLabel("All " + sAll);
+			headerPanel_.add(justificationsCountLabel, BorderLayout.CENTER);
 			headerPanel_.validate();
 		}
 	}
@@ -383,13 +382,13 @@ public class PresentationPanel extends JPanel
 			explanationDisplayHolder_.removeAll();
 			explanationDisplayHolder_.validate();
 
-			Set<Explanation<OWLAxiom>> e = manager_.getJustifications();
+			Set<Justification<OWLAxiom>> e = manager_.getJustifications();
 			setDisplayedExplanationsAmout(e.size());
-			displayedExplanations_ = new PriorityQueue<>(
+			displayedJustifications_ = new PriorityQueue<>(
 					Math.max(getDisplayedExplanationsAmout(), 1),
-					new Comparator<Explanation<OWLAxiom>>() {
-						public int compare(Explanation<OWLAxiom> o1,
-								Explanation<OWLAxiom> o2) {
+					new Comparator<Justification<OWLAxiom>>() {
+						public int compare(Justification<OWLAxiom> o1,
+								Justification<OWLAxiom> o2) {
 							int diff = getAxiomTypes(o1).size()
 									- getAxiomTypes(o2).size();
 							if (diff != 0) {
@@ -403,13 +402,13 @@ public class PresentationPanel extends JPanel
 							return o1.getSize() - o2.getSize();
 						}
 					});
-			displayedExplanations_.addAll(e);
+			displayedJustifications_.addAll(e);
 			manager_.getPresentationSettings().setCurrentCount(0);
 
 			updateHeaderPanel();
 
 			updatePanel(manager_.getPresentationSettings().getInitialAmount());
-		} catch (ExplanationException e) {
+		} catch (OWLRuntimeException e) {
 			logger.error("An error occurred whilst computing explanations: {}",
 					e.getMessage(), e);
 		}
@@ -420,13 +419,14 @@ public class PresentationPanel extends JPanel
 		int maxCnt = Math.min(settings.getCurrentCount() + diff,
 				getDisplayedExplanationsAmout());
 
-		for (int explNum = settings.getCurrentCount()
-				+ 1; explNum <= maxCnt; explNum++) {
-			Explanation<OWLAxiom> explanation = displayedExplanations_.poll();
+		for (int nJust = settings.getCurrentCount()
+				+ 1; nJust <= maxCnt; nJust++) {
+			Justification<OWLAxiom> justification = displayedJustifications_
+					.poll();
 			final AxiomsDisplay display = new AxiomsDisplay(manager_, this,
-					explanation);
+					justification);
 			AxiomsDisplayList displayList = new AxiomsDisplayList(display,
-					explNum);
+					nJust);
 			displayList.setBorder(BorderFactory.createEmptyBorder(2, 0, 10, 0));
 			explanationDisplayHolder_.add(displayList);
 			panels_.add(display);
@@ -438,18 +438,19 @@ public class PresentationPanel extends JPanel
 		scrollPane_.validate();
 	}
 
-	private Set<AxiomType<?>> getAxiomTypes(Explanation<OWLAxiom> explanation) {
+	private Set<AxiomType<?>> getAxiomTypes(
+			Justification<OWLAxiom> justification) {
 		Set<AxiomType<?>> result = new HashSet<>();
-		for (OWLAxiom ax : explanation.getAxioms()) {
+		for (OWLAxiom ax : justification.getAxioms()) {
 			result.add(ax.getAxiomType());
 		}
 		return result;
 	}
 
 	private Set<ClassExpressionType> getClassExpressionTypes(
-			Explanation<OWLAxiom> explanation) {
+			Justification<OWLAxiom> justification) {
 		Set<ClassExpressionType> result = new HashSet<>();
-		for (OWLAxiom ax : explanation.getAxioms()) {
+		for (OWLAxiom ax : justification.getAxioms()) {
 			result.addAll(ax.getNestedClassExpressions().stream()
 					.map(OWLClassExpression::getClassExpressionType)
 					.collect(Collectors.toList()));

@@ -120,16 +120,6 @@ is displaying a list of these justifications in the user interface.
 			<version>1.7.12</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.owlapi</groupId>
-			<artifactId>owlexplanation</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.owlapi</groupId>
-			<artifactId>telemetry</artifactId>
-			<version>2.0.0</version>
-		</dependency>
 	</dependencies>
 	
 	<distributionManagement>

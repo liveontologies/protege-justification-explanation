@@ -31,7 +31,6 @@ import javax.swing.event.ListSelectionListener;
 
 import org.protege.editor.core.Disposable;
 import org.protege.editor.owl.OWLEditorKit;
-import org.semanticweb.owl.explanation.api.Explanation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 /*
  * Copyright (C) 2008, University of Manchester
@@ -68,7 +67,7 @@ public class AxiomsDisplay extends JPanel
 
 	private static final long serialVersionUID = -3309833245922441823L;
 
-	private final Explanation<OWLAxiom> explanation_;
+	private final Justification<OWLAxiom> justification_;
 	private final AxiomsFrame frame_;
 	private final AxiomsFrameList frameList_;
 	private final AxiomSelectionModel axiomSelectionModel_;
@@ -76,15 +75,15 @@ public class AxiomsDisplay extends JPanel
 
 	public AxiomsDisplay(PresentationManager manager,
 			AxiomSelectionModel selectionModel,
-			Explanation<OWLAxiom> explanation) {
+			Justification<OWLAxiom> justification) {
 		OWLEditorKit editorKit = manager.getOWLEditorKit();
 		axiomSelectionModel_ = selectionModel;
-		explanation_ = explanation;
+		justification_ = justification;
 		frame_ = new AxiomsFrame(editorKit);
 		setLayout(new BorderLayout());
 		frameList_ = new AxiomsFrameList(selectionModel, manager, frame_);
 		add(frameList_, BorderLayout.NORTH);
-		frame_.setRootObject(explanation);
+		frame_.setRootObject(justification);
 		frameList_.setBorder(BorderFactory.createEmptyBorder(7, 10, 7, 10));
 
 		frameList_.getSelectionModel()
@@ -133,8 +132,8 @@ public class AxiomsDisplay extends JPanel
 		}
 	}
 
-	public Explanation<OWLAxiom> getExplanation() {
-		return explanation_;
+	public Justification<OWLAxiom> getExplanation() {
+		return justification_;
 	}
 
 	public void dispose() {

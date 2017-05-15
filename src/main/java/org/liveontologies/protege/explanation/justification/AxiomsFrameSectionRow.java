@@ -31,7 +31,6 @@ import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.editor.OWLObjectEditor;
 import org.protege.editor.owl.ui.frame.AbstractOWLFrameSectionRow;
 import org.protege.editor.owl.ui.frame.OWLFrameSection;
-import org.semanticweb.owl.explanation.api.Explanation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -42,13 +41,13 @@ import org.semanticweb.owlapi.model.OWLOntology;
  */
 
 public class AxiomsFrameSectionRow extends
-		AbstractOWLFrameSectionRow<Explanation<OWLAxiom>, OWLAxiom, OWLAxiom> {
+		AbstractOWLFrameSectionRow<Justification<OWLAxiom>, OWLAxiom, OWLAxiom> {
 
 	private int depth_;
 
 	public AxiomsFrameSectionRow(OWLEditorKit owlEditorKit,
-			OWLFrameSection<Explanation<OWLAxiom>, OWLAxiom, OWLAxiom> section,
-			Explanation<OWLAxiom> rootObject, OWLAxiom axiom, int depth) {
+			OWLFrameSection<Justification<OWLAxiom>, OWLAxiom, OWLAxiom> section,
+			Justification<OWLAxiom> rootObject, OWLAxiom axiom, int depth) {
 		super(owlEditorKit, section, getOntologyForAxiom(owlEditorKit, axiom),
 				rootObject, axiom);
 		this.depth_ = depth;

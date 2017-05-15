@@ -40,13 +40,12 @@ import org.protege.editor.core.log.LogBanner;
 import org.protege.editor.owl.OWLEditorKit;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLRuntimeException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
-import org.semanticweb.owl.explanation.api.Explanation;
-import org.semanticweb.owl.explanation.api.ExplanationGeneratorInterruptedException;
 /*
  * Copyright (C) 2008, University of Manchester
  *
@@ -128,20 +127,20 @@ public class PresentationManager {
 		return entailment_;
 	}
 
-	public Set<Explanation<OWLAxiom>> getJustifications() {
+	public Set<Justification<OWLAxiom>> getJustifications() {
 		return getJustifications(entailment_);
 	}
 
-	public Set<Explanation<OWLAxiom>> getJustifications(OWLAxiom entailment) {
+	public Set<Justification<OWLAxiom>> getJustifications(OWLAxiom entailment) {
 		if (!axiomsCache_.contains(entailment)) {
-			Set<Explanation<OWLAxiom>> expls = computeJustifications(
+			Set<Justification<OWLAxiom>> justifications = computeJustifications(
 					entailment);
-			axiomsCache_.put(expls);
+			axiomsCache_.put(justifications);
 		}
 		return axiomsCache_.get(entailment);
 	}
 
-	private Set<Explanation<OWLAxiom>> computeJustifications(
+	private Set<Justification<OWLAxiom>> computeJustifications(
 			OWLAxiom entailment) {
 		if (getSelectedService() == null)
 			return null;
@@ -167,18 +166,18 @@ public class PresentationManager {
 				entailment, computation, progressDialog);
 		try {
 			executorService_.submit(callable);
-		} catch (ExplanationGeneratorInterruptedException e) {
+		} catch (OWLRuntimeException e) {
 			logger.info(MARKER,
 					"Explanation computation terminated early by user");
 		}
 		progressDialog.reset();
 		progressDialog.setVisible(true);
-		HashSet<Explanation<OWLAxiom>> explanations = new HashSet<>(
+		HashSet<Justification<OWLAxiom>> justifications = new HashSet<>(
 				callable.found_);
 		logger.info(MARKER, "A total of {} explanations have been computed",
-				explanations.size());
+				justifications.size());
 		logger.info(LogBanner.end());
-		return explanations;
+		return justifications;
 	}
 
 	public int getComputedExplanationCount(OWLAxiom entailment) {
@@ -206,13 +205,13 @@ public class PresentationManager {
 	}
 
 	private class ExplanationGeneratorCallable
-			implements Callable<Set<Explanation<OWLAxiom>>>,
+			implements Callable<Set<Justification<OWLAxiom>>>,
 			JustificationComputationListener {
 
 		private final OWLAxiom entailment_;
 		private final ExplanationGeneratorProgressDialog progressDialog_;
 		private final JustificationComputation computation_;
-		private Set<Explanation<OWLAxiom>> found_ = new HashSet<>();
+		private Set<Justification<OWLAxiom>> found_ = new HashSet<>();
 
 		private ExplanationGeneratorCallable(OWLAxiom entailment,
 				JustificationComputation computation,
@@ -230,7 +229,7 @@ public class PresentationManager {
 		 * @throws Exception
 		 *             if unable to compute a result
 		 */
-		public Set<Explanation<OWLAxiom>> call() throws Exception {
+		public Set<Justification<OWLAxiom>> call() throws Exception {
 			found_ = new HashSet<>();
 			progressDialog_.reset();
 			try {
@@ -244,7 +243,7 @@ public class PresentationManager {
 
 		@Override
 		public void foundJustification(Collection<OWLAxiom> justification) {
-			found_.add(new Explanation<OWLAxiom>(entailment_,
+			found_.add(new Justification<OWLAxiom>(entailment_,
 					new HashSet<>(justification)));
 			progressDialog_.setExplanationCount(found_.size());
 		}

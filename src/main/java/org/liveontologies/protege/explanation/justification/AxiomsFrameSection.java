@@ -30,7 +30,6 @@ import org.protege.editor.owl.ui.editor.OWLObjectEditor;
 import org.protege.editor.owl.ui.frame.AbstractOWLFrameSection;
 import org.protege.editor.owl.ui.frame.OWLFrame;
 import org.protege.editor.owl.ui.frame.OWLFrameSectionRow;
-import org.semanticweb.owl.explanation.api.Explanation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -41,14 +40,14 @@ import org.semanticweb.owlapi.model.OWLOntology;
  */
 
 public class AxiomsFrameSection extends
-		AbstractOWLFrameSection<Explanation<OWLAxiom>, OWLAxiom, OWLAxiom> {
+		AbstractOWLFrameSection<Justification<OWLAxiom>, OWLAxiom, OWLAxiom> {
 
 	private static final String LABEL = "";
 
 	private boolean isFilled_ = false;
 
 	public AxiomsFrameSection(OWLEditorKit editorKit,
-			OWLFrame<? extends Explanation<OWLAxiom>> owlFrame) {
+			OWLFrame<? extends Justification<OWLAxiom>> owlFrame) {
 		super(editorKit, LABEL, owlFrame);
 	}
 
@@ -71,12 +70,13 @@ public class AxiomsFrameSection extends
 
 		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
 				.getInstance();
-		Explanation<OWLAxiom> explanation = getRootObject();
-		List<OWLAxiom> formatting = formattingManager.getOrdering(explanation);
+		Justification<OWLAxiom> justification = getRootObject();
+		List<OWLAxiom> formatting = formattingManager
+				.getOrdering(justification);
 		for (OWLAxiom axiom : formatting) {
-			int depth = formattingManager.getIndentation(explanation, axiom);
+			int depth = formattingManager.getIndentation(justification, axiom);
 			AxiomsFrameSectionRow row = new AxiomsFrameSectionRow(
-					getOWLEditorKit(), this, explanation, axiom, depth);
+					getOWLEditorKit(), this, justification, axiom, depth);
 			addRow(row);
 		}
 	}
@@ -86,7 +86,7 @@ public class AxiomsFrameSection extends
 		isFilled_ = false;
 	}
 
-	public Comparator<OWLFrameSectionRow<Explanation<OWLAxiom>, OWLAxiom, OWLAxiom>> getRowComparator() {
+	public Comparator<OWLFrameSectionRow<Justification<OWLAxiom>, OWLAxiom, OWLAxiom>> getRowComparator() {
 		return null;
 	}
 

@@ -52,7 +52,6 @@ import org.protege.editor.owl.ui.frame.OWLFrame;
 import org.protege.editor.owl.ui.framelist.ExplainButton;
 import org.protege.editor.owl.ui.framelist.OWLFrameList;
 import org.protege.editor.owl.ui.framelist.OWLFrameListPopupMenuAction;
-import org.semanticweb.owl.explanation.api.Explanation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
@@ -60,14 +59,14 @@ import org.semanticweb.owlapi.model.OWLAxiom;
  * Group Date: 19/03/2012
  */
 
-public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
+public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 
 	private static final long serialVersionUID = -8844035741045455140L;
 
 	public static final Color COLOR_SINGLE_POPULARITY = new Color(170, 70, 15);
 	public static final Color COLOR_MULTI_POPULARITY = new Color(10, 75, 175);
 	public static final Color COLOR_ALL_POPULARITY = new Color(6, 133, 19);
-	
+
 	public static final Color INFERRED_BG_COLOR = new Color(255, 255, 215);
 
 	private final PresentationManager manager_;
@@ -76,8 +75,8 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 
 	public AxiomsFrameList(AxiomSelectionModel axiomSelectionModel,
 			PresentationManager manager,
-			OWLFrame<Explanation<OWLAxiom>> explanationOWLFrame) {
-		super(manager.getOWLEditorKit(), explanationOWLFrame);
+			OWLFrame<Justification<OWLAxiom>> justificationOWLFrame) {
+		super(manager.getOWLEditorKit(), justificationOWLFrame);
 		this.manager_ = manager;
 		this.axiomSelectionModel_ = axiomSelectionModel;
 		OWLEditorKit kit = manager.getOWLEditorKit();
@@ -225,7 +224,7 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 
 	@Override
 	public void addToPopupMenu(
-			OWLFrameListPopupMenuAction<Explanation<OWLAxiom>> explanationOWLFrameListPopupMenuAction) {
+			OWLFrameListPopupMenuAction<Justification<OWLAxiom>> justificationOWLFrameListPopupMenuAction) {
 		// NO MENU FOR US
 	}
 
@@ -235,27 +234,28 @@ public class AxiomsFrameList extends OWLFrameList<Explanation<OWLAxiom>> {
 			AxiomsFrameSectionRow row = (AxiomsFrameSectionRow) item;
 			OWLAxiom axiom = row.getAxiom();
 
-			if (!manager_.getOWLEditorKit().getOWLModelManager().getActiveOntology().containsAxiom(axiom))
+			if (!manager_.getOWLEditorKit().getOWLModelManager()
+					.getActiveOntology().containsAxiom(axiom))
 				return INFERRED_BG_COLOR;
 
-//			int rowIndex = row.getFrameSection().getRowIndex(row) + 1;
-//			if (!isSelectedIndex(rowIndex)) {
-//				if (axiomSelectionModel_.getSelectedAxioms().contains(axiom)) {
-//					return Color.YELLOW;
-//				} else {
-//					boolean isInAll = true;
-//					for (Explanation<?> expl : manager_.getJustifications(
-//							getRootObject().getEntailment())) {
-//						if (!expl.contains(axiom)) {
-//							isInAll = false;
-//							break;
-//						}
-//					}
-//					if (isInAll) {
-//						return new Color(245, 255, 235);
-//					}
-//				}
-//			}
+			// int rowIndex = row.getFrameSection().getRowIndex(row) + 1;
+			// if (!isSelectedIndex(rowIndex)) {
+			// if (axiomSelectionModel_.getSelectedAxioms().contains(axiom)) {
+			// return Color.YELLOW;
+			// } else {
+			// boolean isInAll = true;
+			// for (Explanation<?> expl : manager_.getJustifications(
+			// getRootObject().getEntailment())) {
+			// if (!expl.contains(axiom)) {
+			// isInAll = false;
+			// break;
+			// }
+			// }
+			// if (isInAll) {
+			// return new Color(245, 255, 235);
+			// }
+			// }
+			// }
 		}
 		return super.getItemBackgroundColor(item);
 	}

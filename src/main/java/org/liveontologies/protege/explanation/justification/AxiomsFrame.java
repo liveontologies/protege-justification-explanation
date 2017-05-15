@@ -24,7 +24,6 @@ package org.liveontologies.protege.explanation.justification;
 
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.frame.AbstractOWLFrame;
-import org.semanticweb.owl.explanation.api.Explanation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
@@ -32,7 +31,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
  * Group Date: 19/03/2012
  */
 
-public class AxiomsFrame extends AbstractOWLFrame<Explanation<OWLAxiom>> {
+public class AxiomsFrame extends AbstractOWLFrame<Justification<OWLAxiom>> {
 
 	public AxiomsFrame(OWLEditorKit editorKit) {
 		super(editorKit.getOWLModelManager().getOWLOntologyManager());
