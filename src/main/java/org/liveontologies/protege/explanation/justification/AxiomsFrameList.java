@@ -291,13 +291,7 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 
 		Object element = getModel().getElementAt(index);
 		if (element instanceof AxiomsFrameSectionRow) {
-			AttributedString populatiry = getPopularityString(
-					isSelectedIndex(index), (AxiomsFrameSectionRow) element);
-			String tt = "";
-			for (AttributedCharacterIterator i = populatiry.getIterator(); i
-					.getIndex() < i.getEndIndex(); i.next())
-				tt += i.current();
-			return tt;
+			return getPopularityString((AxiomsFrameSectionRow) element);
 		}
 
 		return super.getToolTipText(event);
@@ -311,67 +305,31 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 		for (int i = 0; i < size; i++) {
 			Object element = getModel().getElementAt(i);
 			if (element instanceof AxiomsFrameSectionRow) {
-				AxiomsFrameSectionRow row = (AxiomsFrameSectionRow) element;
 				Rectangle rect = getCellBounds(i, i);
 				if (rect.intersects(g.getClip().getBounds())) {
-					OWLAxiom entailment = getRootObject().getEntailment();
-					if (manager_.getComputedExplanationCount(entailment) > 1) {
-						AttributedString popularityString = getPopularityString(
-								isSelectedIndex(i), row);
-						TextLayout textLayout = new TextLayout(
-								popularityString.getIterator(),
-								g2.getFontRenderContext());
-						float advance = textLayout.getAdvance();
-						float x = rect.x + rect.width - advance
-								- buttonRunWidth_;
-						float h = textLayout.getAscent()
-								+ textLayout.getDescent();
-						float y = ((rect.height - h) / 2) + rect.y
-								+ textLayout.getLeading()
-								+ textLayout.getAscent();
-						if (JustPrefs.create().load().isPopularityShown)
-							textLayout.draw(g2, x, y);
-
-						g2.setColor(Color.LIGHT_GRAY);
-						TextLayout numberLayout = new TextLayout(i + ")",
-								g2.getFont(), g2.getFontRenderContext());
-						float numberX = 20 - numberLayout.getAdvance();
-						numberLayout.draw(g2, numberX, y);
-					}
+					g2.setColor(Color.LIGHT_GRAY);
+					TextLayout textLayout = new TextLayout(i + ")",
+							g2.getFont(), g2.getFontRenderContext());
+					float h = textLayout.getAscent() + textLayout.getDescent();
+					float y = ((rect.height - h) / 2) + rect.y
+							+ textLayout.getLeading() + textLayout.getAscent();
+					float numberX = 20 - textLayout.getAdvance();
+					textLayout.draw(g2, numberX, y);
 				}
 			}
 		}
 	}
 
-	private AttributedString getPopularityString(boolean isSelected,
-			AxiomsFrameSectionRow row) {
-		int popularity = manager_.getPopularity(row.getRoot().getEntailment(),
-				row.getAxiom());
+	private String getPopularityString(AxiomsFrameSectionRow row) {
 		OWLAxiom entailment = row.getRoot().getEntailment();
+		int popularity = manager_.getPopularity(entailment, row.getAxiom());
 		int count = manager_.getComputedExplanationCount(entailment);
-
-		StringBuilder sb = new StringBuilder("In ");
-		int start = sb.length();
-		final Color highlightColor;
-		if (popularity <= 1) {
-			sb.append("NO");
-			highlightColor = COLOR_SINGLE_POPULARITY;
-		} else if (popularity != count) {
-			sb.append(popularity - 1);
-			highlightColor = COLOR_MULTI_POPULARITY;
+		if (popularity == 1) {
+			return "Axiom appears only in THIS justification";
+		} else if (popularity == count) {
+			return "Axiom appears in ALL justifications";
 		} else {
-			sb.append("ALL");
-			highlightColor = COLOR_ALL_POPULARITY;
+			return String.format("Axiom appears in %s justifications", count);
 		}
-		int end = sb.length();
-		sb.append(" other justifications");
-		AttributedString as = new AttributedString(sb.toString());
-		as.addAttribute(TextAttribute.FOREGROUND, Color.LIGHT_GRAY, 0,
-				sb.length());
-		if (!isSelected) {
-			as.addAttribute(TextAttribute.FOREGROUND, highlightColor, start,
-					end);
-		}
-		return as;
 	}
 }
