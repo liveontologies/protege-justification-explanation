@@ -88,6 +88,7 @@ public class AxiomsFrameSectionRow extends
 		return null;
 	}
 
+	@Override
 	public List<? extends OWLObject> getManipulatableObjects() {
 		return Arrays.asList(getAxiom());
 	}

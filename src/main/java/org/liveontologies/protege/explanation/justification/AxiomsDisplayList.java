@@ -32,6 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.protege.editor.core.Disposable;
+import org.semanticweb.owlapi.model.OWLAxiom;
 /*
  * Copyright (C) 2008, University of Manchester
  *
@@ -65,11 +66,14 @@ public class AxiomsDisplayList extends JPanel implements Disposable {
 	private static final long serialVersionUID = -1961408405222527918L;
 
 	private final AxiomsDisplay display_;
-	private int justificationNo_;
+	private final int justificationNo_;
+	private final Justification<OWLAxiom> justification_; 
 
-	public AxiomsDisplayList(AxiomsDisplay display, int justificationNo) {
-		display_ = display;
-		justificationNo_ = justificationNo;
+	public AxiomsDisplayList(AxiomsDisplay display, int justificationNo,
+			Justification<OWLAxiom> justification) {
+		this.display_ = display;
+		this.justificationNo_ = justificationNo;
+		this.justification_ = justification;
 		createUI();
 	}
 
@@ -77,7 +81,8 @@ public class AxiomsDisplayList extends JPanel implements Disposable {
 		setLayout(new BorderLayout(2, 2));
 
 		JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JLabel label = new JLabel("Justification " + justificationNo_);
+		JLabel label = new JLabel(String.format("Justification %s with %d axioms",
+				justificationNo_, justification_.getSize()));
 		headerPanel.add(label);
 		add(headerPanel, BorderLayout.NORTH);
 

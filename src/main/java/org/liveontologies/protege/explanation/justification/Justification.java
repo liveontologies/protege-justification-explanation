@@ -23,7 +23,6 @@ package org.liveontologies.protege.explanation.justification;
  */
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -35,8 +34,7 @@ public class Justification<E> {
 
 	public Justification(E entailment, Set<OWLAxiom> justification) {
 		this.entailment_ = entailment;
-		this.justification_ = Collections
-				.unmodifiableSet(new HashSet<OWLAxiom>(justification));
+		this.justification_ = Collections.unmodifiableSet(justification);
 	}
 
 	public E getEntailment() {

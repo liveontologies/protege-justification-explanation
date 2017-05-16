@@ -143,7 +143,7 @@ public class PresentationPanel extends JPanel
 						"explanationpreferencespanel") == null;
 
 		if (bExplPrefExtPointExists) {
-			JButton b = new JButton("…");
+			JButton b = new JButton("ï¿½");
 			b.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -314,15 +314,18 @@ public class PresentationPanel extends JPanel
 		}
 	}
 
+	@Override
 	public Dimension getMinimumSize() {
 		return new Dimension(10, 10);
 	}
 
+	@Override
 	public void explanationLimitChanged(
 			PresentationManager presentationManager) {
 		selectionChanged();
 	}
 
+	@Override
 	public void explanationsComputed(OWLAxiom entailment) {
 	}
 
@@ -335,29 +338,35 @@ public class PresentationPanel extends JPanel
 			setOpaque(false);
 		}
 
+		@Override
 		public Dimension getPreferredScrollableViewportSize() {
 			return super.getPreferredSize();
 		}
 
+		@Override
 		public int getScrollableUnitIncrement(Rectangle visibleRect,
 				int orientation, int direction) {
 			return 30;
 		}
 
+		@Override
 		public int getScrollableBlockIncrement(Rectangle visibleRect,
 				int orientation, int direction) {
 			return 30;
 		}
 
+		@Override
 		public boolean getScrollableTracksViewportWidth() {
 			return true;
 		}
 
+		@Override
 		public boolean getScrollableTracksViewportHeight() {
 			return false;
 		}
 	}
 
+	@Override
 	public void selectionChanged() {
 		recompute();
 	}
@@ -387,6 +396,7 @@ public class PresentationPanel extends JPanel
 			displayedJustifications_ = new PriorityQueue<>(
 					Math.max(getDisplayedExplanationsAmout(), 1),
 					new Comparator<Justification<OWLAxiom>>() {
+						@Override
 						public int compare(Justification<OWLAxiom> o1,
 								Justification<OWLAxiom> o2) {
 							int diff = getAxiomTypes(o1).size()
@@ -426,7 +436,7 @@ public class PresentationPanel extends JPanel
 			final AxiomsDisplay display = new AxiomsDisplay(manager_, this,
 					justification);
 			AxiomsDisplayList displayList = new AxiomsDisplayList(display,
-					nJust);
+					nJust, justification);
 			displayList.setBorder(BorderFactory.createEmptyBorder(2, 0, 10, 0));
 			explanationDisplayHolder_.add(displayList);
 			panels_.add(display);
@@ -458,6 +468,7 @@ public class PresentationPanel extends JPanel
 		return result;
 	}
 
+	@Override
 	public void dispose() {
 		kit_.getModelManager().removeListener(this);
 		for (AxiomsDisplay panel : panels_) {
@@ -466,22 +477,27 @@ public class PresentationPanel extends JPanel
 		selectionModel_.dispose();
 	}
 
+	@Override
 	public void handleChange(OWLModelManagerChangeEvent event) {
 
 	}
 
+	@Override
 	public void addAxiomSelectionListener(AxiomSelectionListener lsnr) {
 		selectionModel_.addAxiomSelectionListener(lsnr);
 	}
 
+	@Override
 	public void removeAxiomSelectionListener(AxiomSelectionListener lsnr) {
 		selectionModel_.removeAxiomSelectionListener(lsnr);
 	}
 
+	@Override
 	public void setAxiomSelected(OWLAxiom axiom, boolean b) {
 		selectionModel_.setAxiomSelected(axiom, b);
 	}
 
+	@Override
 	public Set<OWLAxiom> getSelectedAxioms() {
 		return selectionModel_.getSelectedAxioms();
 	}

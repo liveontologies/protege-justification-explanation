@@ -88,6 +88,7 @@ public class AxiomsDisplay extends JPanel
 
 		frameList_.getSelectionModel()
 				.addListSelectionListener(new ListSelectionListener() {
+					@Override
 					public void valueChanged(ListSelectionEvent e) {
 						transmitSelectionToModel();
 					}
@@ -95,11 +96,13 @@ public class AxiomsDisplay extends JPanel
 
 		axiomSelectionModel_
 				.addAxiomSelectionListener(new AxiomSelectionListener() {
+					@Override
 					public void axiomAdded(AxiomSelectionModel source,
 							OWLAxiom axiom) {
 						respondToAxiomSelectionChange();
 					}
 
+					@Override
 					public void axiomRemoved(AxiomSelectionModel source,
 							OWLAxiom axiom) {
 						respondToAxiomSelectionChange();
@@ -136,6 +139,7 @@ public class AxiomsDisplay extends JPanel
 		return justification_;
 	}
 
+	@Override
 	public void dispose() {
 		frame_.dispose();
 		frameList_.dispose();

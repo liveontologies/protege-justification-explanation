@@ -23,17 +23,10 @@ package org.liveontologies.protege.explanation.justification;
  */
 
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.font.TextAttribute;
-import java.awt.font.TextLayout;
-import java.text.AttributedCharacterIterator;
-import java.text.AttributedString;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +37,6 @@ import javax.swing.JList;
 import javax.swing.KeyStroke;
 import javax.swing.border.Border;
 
-import org.liveontologies.protege.explanation.justification.preferences.JustPrefs;
 import org.protege.editor.core.ui.list.MListButton;
 import org.protege.editor.core.ui.list.MListItem;
 import org.protege.editor.owl.OWLEditorKit;
@@ -86,6 +78,7 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 		Action moveUpAction = new AbstractAction("Move up") {
 			private static final long serialVersionUID = -8758870933492900093L;
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				handleMoveUp();
 			}
@@ -98,6 +91,7 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 		Action moveDownAction = new AbstractAction("Move down") {
 			private static final long serialVersionUID = -7554058930748542853L;
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				handleMoveDown();
 			}
@@ -112,6 +106,7 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 				"Increase indentation") {
 			private static final long serialVersionUID = 3264353432939432586L;
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				handleIncreaseIndentation();
 			}
@@ -126,6 +121,7 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 				"decrease indentation") {
 			private static final long serialVersionUID = 4625665722123561472L;
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				handleDecreaseIndentation();
 			}
@@ -211,6 +207,7 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 						 */
 						private static final long serialVersionUID = 4860966076807447714L;
 
+						@Override
 						public void actionPerformed(ActionEvent e) {
 							invokeExplanationHandler();
 						}
@@ -295,29 +292,6 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 		}
 
 		return super.getToolTipText(event);
-	}
-
-	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Graphics2D g2 = (Graphics2D) g;
-		int size = getModel().getSize();
-		for (int i = 0; i < size; i++) {
-			Object element = getModel().getElementAt(i);
-			if (element instanceof AxiomsFrameSectionRow) {
-				Rectangle rect = getCellBounds(i, i);
-				if (rect.intersects(g.getClip().getBounds())) {
-					g2.setColor(Color.LIGHT_GRAY);
-					TextLayout textLayout = new TextLayout(i + ")",
-							g2.getFont(), g2.getFontRenderContext());
-					float h = textLayout.getAscent() + textLayout.getDescent();
-					float y = ((rect.height - h) / 2) + rect.y
-							+ textLayout.getLeading() + textLayout.getAscent();
-					float numberX = 20 - textLayout.getAdvance();
-					textLayout.draw(g2, numberX, y);
-				}
-			}
-		}
 	}
 
 	private String getPopularityString(AxiomsFrameSectionRow row) {
