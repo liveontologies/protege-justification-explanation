@@ -66,31 +66,16 @@ public class AxiomsDisplayList extends JPanel implements Disposable {
 	private static final long serialVersionUID = -1961408405222527918L;
 
 	private final AxiomsDisplay display_;
-	private final int justificationNo_;
-	private final Justification<OWLAxiom> justification_; 
 
-	public AxiomsDisplayList(AxiomsDisplay display, int justificationNo,
-			Justification<OWLAxiom> justification) {
+	public AxiomsDisplayList(AxiomsDisplay display) {
 		this.display_ = display;
-		this.justificationNo_ = justificationNo;
-		this.justification_ = justification;
 		createUI();
 	}
 
 	private void createUI() {
 		setLayout(new BorderLayout(2, 2));
-
-		JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JLabel label = new JLabel(String.format("Justification %s with %d axioms",
-				justificationNo_, justification_.getSize()));
-		headerPanel.add(label);
-		add(headerPanel, BorderLayout.NORTH);
-
-		JPanel displayHolder = new JPanel(new BorderLayout());
-		displayHolder
-				.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-		displayHolder.add((JComponent) display_);
-		add(displayHolder);
+		setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		add((JComponent) display_);
 	}
 
 	public void dispose() {

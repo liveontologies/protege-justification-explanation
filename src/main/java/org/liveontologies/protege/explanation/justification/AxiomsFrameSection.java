@@ -45,10 +45,14 @@ public class AxiomsFrameSection extends
 	private static final String LABEL = "";
 
 	private boolean isFilled_ = false;
+	
+	private final Justification<OWLAxiom> justification_;
 
 	public AxiomsFrameSection(OWLEditorKit editorKit,
-			OWLFrame<? extends Justification<OWLAxiom>> owlFrame) {
-		super(editorKit, LABEL, owlFrame);
+			OWLFrame<? extends Justification<OWLAxiom>> owlFrame,
+			String caption, Justification<OWLAxiom> justification) {
+		super(editorKit, caption, owlFrame);
+		justification_ = justification;
 	}
 
 	@Override
@@ -70,13 +74,12 @@ public class AxiomsFrameSection extends
 
 		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
 				.getInstance();
-		Justification<OWLAxiom> justification = getRootObject();
 		List<OWLAxiom> formatting = formattingManager
-				.getOrdering(justification);
+				.getOrdering(justification_);
 		for (OWLAxiom axiom : formatting) {
-			int depth = formattingManager.getIndentation(justification, axiom);
+			int depth = formattingManager.getIndentation(justification_, axiom);
 			AxiomsFrameSectionRow row = new AxiomsFrameSectionRow(
-					getOWLEditorKit(), this, justification, axiom, depth);
+					getOWLEditorKit(), this, justification_, axiom, depth);
 			addRow(row);
 		}
 	}

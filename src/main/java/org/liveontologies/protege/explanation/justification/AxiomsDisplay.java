@@ -75,16 +75,18 @@ public class AxiomsDisplay extends JPanel
 
 	public AxiomsDisplay(PresentationManager manager,
 			AxiomSelectionModel selectionModel,
-			Justification<OWLAxiom> justification) {
+			Justification<OWLAxiom> justification, int justificationNo) {
 		OWLEditorKit editorKit = manager.getOWLEditorKit();
 		axiomSelectionModel_ = selectionModel;
 		justification_ = justification;
 		frame_ = new AxiomsFrame(editorKit);
+		frame_.addSection(justification_, String.format("Justification %s with %d axioms",
+				justificationNo, justification_.getSize()));
 		setLayout(new BorderLayout());
 		frameList_ = new AxiomsFrameList(selectionModel, manager, frame_);
 		add(frameList_, BorderLayout.NORTH);
-		frame_.setRootObject(justification);
-		frameList_.setBorder(BorderFactory.createEmptyBorder(7, 10, 7, 10));
+		frame_.setRootObject(justification_);
+		frameList_.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 
 		frameList_.getSelectionModel()
 				.addListSelectionListener(new ListSelectionListener() {

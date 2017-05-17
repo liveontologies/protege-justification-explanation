@@ -434,9 +434,8 @@ public class PresentationPanel extends JPanel
 			Justification<OWLAxiom> justification = displayedJustifications_
 					.poll();
 			final AxiomsDisplay display = new AxiomsDisplay(manager_, this,
-					justification);
-			AxiomsDisplayList displayList = new AxiomsDisplayList(display,
-					nJust, justification);
+					justification, nJust);
+			AxiomsDisplayList displayList = new AxiomsDisplayList(display);
 			displayList.setBorder(BorderFactory.createEmptyBorder(2, 0, 10, 0));
 			explanationDisplayHolder_.add(displayList);
 			panels_.add(display);

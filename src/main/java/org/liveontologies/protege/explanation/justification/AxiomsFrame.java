@@ -33,8 +33,15 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 
 public class AxiomsFrame extends AbstractOWLFrame<Justification<OWLAxiom>> {
 
+	private final OWLEditorKit editorKit_;
+	
 	public AxiomsFrame(OWLEditorKit editorKit) {
 		super(editorKit.getOWLModelManager().getOWLOntologyManager());
-		addSection(new AxiomsFrameSection(editorKit, this));
+		editorKit_ = editorKit;
+	}
+	
+	public void addSection(Justification<OWLAxiom> justification, String caption) {
+		addSection(new AxiomsFrameSection(editorKit_, this, caption, justification));
+		refill();
 	}
 }
