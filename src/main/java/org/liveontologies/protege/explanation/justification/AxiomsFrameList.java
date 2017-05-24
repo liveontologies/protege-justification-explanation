@@ -303,7 +303,7 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 		} else if (popularity == count) {
 			return "Axiom appears in ALL justifications";
 		} else {
-			return String.format("Axiom appears in %s justifications", count);
+			return String.format("Axiom appears in %s justifications", popularity);
 		}
 	}
 }
