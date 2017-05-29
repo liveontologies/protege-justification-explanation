@@ -23,6 +23,8 @@ package org.liveontologies.protege.explanation.justification;
  */
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -67,26 +69,23 @@ public class AxiomsDisplay extends JPanel
 
 	private static final long serialVersionUID = -3309833245922441823L;
 
-	private final Justification<OWLAxiom> justification_;
 	private final AxiomsFrame frame_;
 	private final AxiomsFrameList frameList_;
 	private final AxiomSelectionModel axiomSelectionModel_;
 	private boolean isTransmittingSelectionToModel_ = false;
+	private final Explanation explanation_;
 
 	public AxiomsDisplay(PresentationManager manager,
-			AxiomSelectionModel selectionModel,
-			Justification<OWLAxiom> justification, int justificationNo) {
+			AxiomSelectionModel selectionModel, OWLAxiom entailment) {
 		OWLEditorKit editorKit = manager.getOWLEditorKit();
 		axiomSelectionModel_ = selectionModel;
-		justification_ = justification;
+		explanation_ = new Explanation(entailment);
 		frame_ = new AxiomsFrame(editorKit);
-		frame_.addSection(justification_, String.format("Justification %s with %d axioms",
-				justificationNo, justification_.getSize()));
 		setLayout(new BorderLayout());
+		frame_.setRootObject(explanation_);
 		frameList_ = new AxiomsFrameList(selectionModel, manager, frame_);
 		add(frameList_, BorderLayout.NORTH);
-		frame_.setRootObject(justification_);
-		frameList_.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		frameList_.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
 		frameList_.getSelectionModel()
 				.addListSelectionListener(new ListSelectionListener() {
@@ -112,6 +111,19 @@ public class AxiomsDisplay extends JPanel
 				});
 	}
 
+	public void addJustification(Justification<OWLAxiom> justification,
+			int justificationNo) {
+		int index = explanation_.addJustification(justification);
+		frame_.addSection(index,
+				String.format("Justification %s with %d axioms",
+						justificationNo, justification.getSize()));
+		frameList_.validate();
+	}
+
+	public void clear() {
+		frame_.clear();
+	}
+
 	private void respondToAxiomSelectionChange() {
 		if (!isTransmittingSelectionToModel_) {
 			frameList_.clearSelection();
@@ -135,10 +147,6 @@ public class AxiomsDisplay extends JPanel
 		} finally {
 			isTransmittingSelectionToModel_ = false;
 		}
-	}
-
-	public Justification<OWLAxiom> getExplanation() {
-		return justification_;
 	}
 
 	@Override

@@ -117,7 +117,7 @@ public class PresentationPanel extends JPanel
 	private final JComponent explanationDisplayHolder_;
 	private final JComponent serviceSettingsDisplayHolder_;
 	private final JScrollPane scrollPane_;
-	private final Collection<AxiomsDisplay> panels_;
+	private AxiomsDisplay display;
 	private final JComponent headerPanel_;
 	private PriorityQueue<Justification<OWLAxiom>> displayedJustifications_;
 	private JButton bAdd_;
@@ -224,8 +224,10 @@ public class PresentationPanel extends JPanel
 		}
 
 		selectionModel_ = new AxiomSelectionModelImpl();
-		panels_ = new ArrayList<>();
 		kit_.getModelManager().addListener(this);
+
+		display = new AxiomsDisplay(manager, this, manager_.getEntailment());
+		display.setBorder(BorderFactory.createEmptyBorder(2, 0, 10, 0));
 
 		serviceSettingsDisplayHolder_ = new JPanel(new BorderLayout());
 		updateSettingsPanel();
@@ -254,6 +256,8 @@ public class PresentationPanel extends JPanel
 				new GridBagConstraints(0, 2, 2, 1, 1.0, 1.0,
 						GridBagConstraints.NORTHEAST, GridBagConstraints.BOTH,
 						new Insets(2, 0, 2, 0), 0, 0));
+
+		explanationDisplayHolder_.add(display);
 
 		recompute();
 	}
@@ -387,8 +391,7 @@ public class PresentationPanel extends JPanel
 
 	private void recompute() {
 		try {
-			panels_.forEach(AxiomsDisplay::dispose);
-			explanationDisplayHolder_.removeAll();
+			display.clear();
 			explanationDisplayHolder_.validate();
 
 			Set<Justification<OWLAxiom>> e = manager_.getJustifications();
@@ -430,16 +433,8 @@ public class PresentationPanel extends JPanel
 				getDisplayedExplanationsAmout());
 
 		for (int nJust = settings.getCurrentCount()
-				+ 1; nJust <= maxCnt; nJust++) {
-			Justification<OWLAxiom> justification = displayedJustifications_
-					.poll();
-			final AxiomsDisplay display = new AxiomsDisplay(manager_, this,
-					justification, nJust);
-			AxiomsDisplayList displayList = new AxiomsDisplayList(display);
-			displayList.setBorder(BorderFactory.createEmptyBorder(2, 0, 10, 0));
-			explanationDisplayHolder_.add(displayList);
-			panels_.add(display);
-		}
+				+ 1; nJust <= maxCnt; nJust++)
+			display.addJustification(displayedJustifications_.poll(), nJust);
 
 		settings.setCurrentCount(maxCnt);
 		updateHeaderPanel();
@@ -470,9 +465,7 @@ public class PresentationPanel extends JPanel
 	@Override
 	public void dispose() {
 		kit_.getModelManager().removeListener(this);
-		for (AxiomsDisplay panel : panels_) {
-			panel.dispose();
-		}
+		display.dispose();
 		selectionModel_.dispose();
 	}
 

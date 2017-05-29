@@ -39,20 +39,19 @@ import org.semanticweb.owlapi.model.OWLOntology;
  * Group Date: 19/03/2012
  */
 
-public class AxiomsFrameSection extends
-		AbstractOWLFrameSection<Justification<OWLAxiom>, OWLAxiom, OWLAxiom> {
-
-	private static final String LABEL = "";
+public class AxiomsFrameSection
+		extends AbstractOWLFrameSection<Explanation, OWLAxiom, OWLAxiom> {
 
 	private boolean isFilled_ = false;
-	
-	private final Justification<OWLAxiom> justification_;
+	private final Explanation explanation_;
+	private final int justificationIndex_;
 
 	public AxiomsFrameSection(OWLEditorKit editorKit,
-			OWLFrame<? extends Justification<OWLAxiom>> owlFrame,
-			String caption, Justification<OWLAxiom> justification) {
+			OWLFrame<? extends Explanation> owlFrame, String caption,
+			int justificationIndex) {
 		super(editorKit, caption, owlFrame);
-		justification_ = justification;
+		explanation_ = owlFrame.getRootObject();
+		justificationIndex_ = justificationIndex;
 	}
 
 	@Override
@@ -74,12 +73,13 @@ public class AxiomsFrameSection extends
 
 		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
 				.getInstance();
+		Justification<OWLAxiom> justification = getJustification();
 		List<OWLAxiom> formatting = formattingManager
-				.getOrdering(justification_);
+				.getOrdering(justification);
 		for (OWLAxiom axiom : formatting) {
-			int depth = formattingManager.getIndentation(justification_, axiom);
+			int depth = formattingManager.getIndentation(justification, axiom);
 			AxiomsFrameSectionRow row = new AxiomsFrameSectionRow(
-					getOWLEditorKit(), this, justification_, axiom, depth);
+					getOWLEditorKit(), this, explanation_, axiom, depth);
 			addRow(row);
 		}
 	}
@@ -89,7 +89,11 @@ public class AxiomsFrameSection extends
 		isFilled_ = false;
 	}
 
-	public Comparator<OWLFrameSectionRow<Justification<OWLAxiom>, OWLAxiom, OWLAxiom>> getRowComparator() {
+	public Justification<OWLAxiom> getJustification() {
+		return explanation_.getJustification(justificationIndex_);
+	}
+
+	public Comparator<OWLFrameSectionRow<Explanation, OWLAxiom, OWLAxiom>> getRowComparator() {
 		return null;
 	}
 

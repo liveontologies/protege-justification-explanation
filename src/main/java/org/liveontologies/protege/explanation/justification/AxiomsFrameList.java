@@ -51,7 +51,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
  * Group Date: 19/03/2012
  */
 
-public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
+public class AxiomsFrameList extends OWLFrameList<Explanation> {
 
 	private static final long serialVersionUID = -8844035741045455140L;
 
@@ -67,7 +67,7 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 
 	public AxiomsFrameList(AxiomSelectionModel axiomSelectionModel,
 			PresentationManager manager,
-			OWLFrame<Justification<OWLAxiom>> justificationOWLFrame) {
+			OWLFrame<Explanation> justificationOWLFrame) {
 		super(manager.getOWLEditorKit(), justificationOWLFrame);
 		this.manager_ = manager;
 		this.axiomSelectionModel_ = axiomSelectionModel;
@@ -135,15 +135,17 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 
 	private void handleMoveUp() {
 		OWLAxiom selectedAxiom = getSelectedAxiom();
+		int k = getSelectedIndex();
 		if (selectedAxiom == null) {
 			return;
 		}
 		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
 				.getInstance();
-		int newIndex = formattingManager.moveAxiomUp(getRootObject(),
-				selectedAxiom);
+		boolean hasMoved = formattingManager
+				.moveAxiomUp(getSelectedJustification(), selectedAxiom);
+		int selIndex = getSelectedIndex();
 		getFrame().setRootObject(getRootObject());
-		setSelectedIndex(newIndex + 1);
+		setSelectedIndex(selIndex - (hasMoved ? 1 : 0));
 	}
 
 	private void handleMoveDown() {
@@ -153,10 +155,11 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 		}
 		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
 				.getInstance();
-		int newIndex = formattingManager.moveAxiomDown(getRootObject(),
-				selectedAxiom);
+		boolean hasMoved = formattingManager
+				.moveAxiomDown(getSelectedJustification(), selectedAxiom);
+		int selIndex = getSelectedIndex();
 		getFrame().setRootObject(getRootObject());
-		setSelectedIndex(newIndex + 1);
+		setSelectedIndex(selIndex + (hasMoved ? 1 : 0));
 	}
 
 	private void handleIncreaseIndentation() {
@@ -166,7 +169,8 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 		}
 		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
 				.getInstance();
-		formattingManager.increaseIndentation(getRootObject(), selectedAxiom);
+		formattingManager.increaseIndentation(getSelectedJustification(),
+				selectedAxiom);
 		int selIndex = getSelectedIndex();
 		getFrame().setRootObject(getRootObject());
 		setSelectedIndex(selIndex);
@@ -179,7 +183,8 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 		}
 		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
 				.getInstance();
-		formattingManager.decreaseIndentation(getRootObject(), selectedAxiom);
+		formattingManager.decreaseIndentation(getSelectedJustification(),
+				selectedAxiom);
 		int selIndex = getSelectedIndex();
 		getFrame().setRootObject(getRootObject());
 		setSelectedIndex(selIndex);
@@ -195,6 +200,19 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 			return null;
 		}
 		return ((AxiomsFrameSectionRow) element).getAxiom();
+	}
+
+	private Justification<OWLAxiom> getSelectedJustification() {
+		int selectedIndex = getSelectedIndex();
+		if (selectedIndex == -1) {
+			return null;
+		}
+		Object element = getModel().getElementAt(selectedIndex);
+		if (!(element instanceof AxiomsFrameSectionRow)) {
+			return null;
+		}
+		return ((AxiomsFrameSection) ((AxiomsFrameSectionRow) element)
+				.getFrameSection()).getJustification();
 	}
 
 	@Override
@@ -221,7 +239,7 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 
 	@Override
 	public void addToPopupMenu(
-			OWLFrameListPopupMenuAction<Justification<OWLAxiom>> justificationOWLFrameListPopupMenuAction) {
+			OWLFrameListPopupMenuAction<Explanation> justificationOWLFrameListPopupMenuAction) {
 		// NO MENU FOR US
 	}
 
@@ -303,7 +321,8 @@ public class AxiomsFrameList extends OWLFrameList<Justification<OWLAxiom>> {
 		} else if (popularity == count) {
 			return "Axiom appears in ALL justifications";
 		} else {
-			return String.format("Axiom appears in %s justifications", popularity);
+			return String.format("Axiom appears in %s justifications",
+					popularity);
 		}
 	}
 }

@@ -149,30 +149,32 @@ public class AxiomsFormattingManager {
 		setIndentation(justification, axiom, indent);
 	}
 
-	public int moveAxiomUp(Justification<?> justification, OWLAxiom axiom) {
+	public boolean moveAxiomUp(Justification<?> justification, OWLAxiom axiom) {
 		initIfNecessary(justification);
 		List<OWLAxiom> ordering = ordering_.get(justification);
 		// Lowest index is 1 - the entailment is held in position 0
 		int index = ordering.indexOf(axiom);
-		if (index > 0) {
+		boolean hasMoved = index > 0;
+		if (hasMoved) {
 			index--;
 		}
 		ordering.remove(axiom);
 		ordering.add(index, axiom);
-		return index;
+		return hasMoved;
 	}
 
-	public int moveAxiomDown(Justification<?> justification, OWLAxiom axiom) {
+	public boolean moveAxiomDown(Justification<?> justification, OWLAxiom axiom) {
 		initIfNecessary(justification);
 		List<OWLAxiom> ordering = ordering_.get(justification);
 		// Lowest index is 1 - the entailment is held in position 0
 		int index = ordering.indexOf(axiom);
-		if (index < ordering.size() - 1) {
+		boolean hasMoved = index < ordering.size() - 1;
+		if (hasMoved) {
 			index++;
 		}
 		ordering.remove(axiom);
 		ordering.add(index, axiom);
-		return index;
+		return hasMoved;
 	}
 
 	public List<OWLAxiom> getOrdering(Justification<?> justification) {

@@ -1,5 +1,7 @@
 package org.liveontologies.protege.explanation.justification;
 
+import java.util.ArrayList;
+
 /*-
  * #%L
  * Protege Justification Explanation
@@ -31,17 +33,21 @@ import org.semanticweb.owlapi.model.OWLAxiom;
  * Group Date: 19/03/2012
  */
 
-public class AxiomsFrame extends AbstractOWLFrame<Justification<OWLAxiom>> {
+public class AxiomsFrame extends AbstractOWLFrame<Explanation> {
 
 	private final OWLEditorKit editorKit_;
-	
+
 	public AxiomsFrame(OWLEditorKit editorKit) {
 		super(editorKit.getOWLModelManager().getOWLOntologyManager());
 		editorKit_ = editorKit;
 	}
-	
-	public void addSection(Justification<OWLAxiom> justification, String caption) {
-		addSection(new AxiomsFrameSection(editorKit_, this, caption, justification));
+
+	public void addSection(int index, String caption) {
+		addSection(new AxiomsFrameSection(editorKit_, this, caption, index));
 		refill();
+	}
+
+	public void clear() {
+		clearSections();
 	}
 }

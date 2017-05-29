@@ -40,14 +40,14 @@ import org.semanticweb.owlapi.model.OWLOntology;
  * Group Date: 19/03/2012
  */
 
-public class AxiomsFrameSectionRow extends
-		AbstractOWLFrameSectionRow<Justification<OWLAxiom>, OWLAxiom, OWLAxiom> {
+public class AxiomsFrameSectionRow
+		extends AbstractOWLFrameSectionRow<Explanation, OWLAxiom, OWLAxiom> {
 
 	private int depth_;
 
 	public AxiomsFrameSectionRow(OWLEditorKit owlEditorKit,
-			OWLFrameSection<Justification<OWLAxiom>, OWLAxiom, OWLAxiom> section,
-			Justification<OWLAxiom> rootObject, OWLAxiom axiom, int depth) {
+			OWLFrameSection<Explanation, OWLAxiom, OWLAxiom> section,
+			Explanation rootObject, OWLAxiom axiom, int depth) {
 		super(owlEditorKit, section, getOntologyForAxiom(owlEditorKit, axiom),
 				rootObject, axiom);
 		this.depth_ = depth;
