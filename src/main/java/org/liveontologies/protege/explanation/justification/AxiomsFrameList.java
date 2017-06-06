@@ -23,9 +23,14 @@ package org.liveontologies.protege.explanation.justification;
  */
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,9 +41,13 @@ import javax.swing.Action;
 import javax.swing.JList;
 import javax.swing.KeyStroke;
 import javax.swing.border.Border;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import org.protege.editor.core.Disposable;
 import org.protege.editor.core.ui.list.MListButton;
 import org.protege.editor.core.ui.list.MListItem;
+import org.protege.editor.core.ui.list.MListSectionHeader;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.frame.OWLFrame;
 import org.protege.editor.owl.ui.framelist.ExplainButton;
@@ -51,7 +60,8 @@ import org.semanticweb.owlapi.model.OWLAxiom;
  * Group Date: 19/03/2012
  */
 
-public class AxiomsFrameList extends OWLFrameList<Explanation> {
+public class AxiomsFrameList extends OWLFrameList<Explanation>
+		implements AxiomSelectionListener, Disposable {
 
 	private static final long serialVersionUID = -8844035741045455140L;
 
@@ -64,16 +74,45 @@ public class AxiomsFrameList extends OWLFrameList<Explanation> {
 	private final PresentationManager manager_;
 	private final AxiomSelectionModel axiomSelectionModel_;
 	private int buttonRunWidth_ = 0;
+	private final ShowMoreListener showMoreListener_;
+	private final Explanation explanation_;
+	private boolean isTransmittingSelectionToModel_ = false;
 
 	public AxiomsFrameList(AxiomSelectionModel axiomSelectionModel,
 			PresentationManager manager,
-			OWLFrame<Explanation> justificationOWLFrame) {
+			OWLFrame<Explanation> justificationOWLFrame,
+			ShowMoreListener showMoreListener, Explanation explanation) {
 		super(manager.getOWLEditorKit(), justificationOWLFrame);
-		this.manager_ = manager;
-		this.axiomSelectionModel_ = axiomSelectionModel;
+		manager_ = manager;
+		axiomSelectionModel_ = axiomSelectionModel;
+		showMoreListener_ = showMoreListener;
+		explanation_ = explanation;
 		OWLEditorKit kit = manager.getOWLEditorKit();
 		setWrap(false);
 		setCellRenderer(new AxiomsFrameListRenderer(kit));
+
+		getSelectionModel()
+				.addListSelectionListener(new ListSelectionListener() {
+					@Override
+					public void valueChanged(ListSelectionEvent e) {
+						transmitSelectionToModel();
+					}
+				});
+
+		axiomSelectionModel_
+				.addAxiomSelectionListener(new AxiomSelectionListener() {
+					@Override
+					public void axiomAdded(AxiomSelectionModel source,
+							OWLAxiom axiom) {
+						respondToAxiomSelectionChange();
+					}
+
+					@Override
+					public void axiomRemoved(AxiomSelectionModel source,
+							OWLAxiom axiom) {
+						respondToAxiomSelectionChange();
+					}
+				});
 
 		Action moveUpAction = new AbstractAction("Move up") {
 			private static final long serialVersionUID = -8758870933492900093L;
@@ -131,11 +170,79 @@ public class AxiomsFrameList extends OWLFrameList<Explanation> {
 		getInputMap().put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_MASK),
 				decreaseIndentation.getValue(Action.NAME));
+
+		addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					AxiomsFrameList list = (AxiomsFrameList) e.getSource();
+					int index = list.locationToIndex(e.getPoint());
+					Object row = list.getModel().getElementAt(index);
+					if (row instanceof LoadJustificationsSection)
+						showMoreListener_.showMore();
+				}
+			}
+		});
+	}
+
+	public AxiomsFrame getAxiomsFrame() {
+		return (AxiomsFrame) getFrame();
+	}
+
+	public void addJustification(Justification<OWLAxiom> justification,
+			int justificationNo) {
+		int index = explanation_.addJustification(justification);
+		getAxiomsFrame().addSection(index,
+				String.format("Justification %s with %d axioms",
+						justificationNo, justification.getSize()));
+		validate();
+	}
+
+	private void respondToAxiomSelectionChange() {
+		if (!isTransmittingSelectionToModel_) {
+			clearSelection();
+			repaint(getVisibleRect());
+		}
+		repaint(getVisibleRect());
+	}
+
+	private void transmitSelectionToModel() {
+		try {
+			isTransmittingSelectionToModel_ = true;
+			axiomSelectionModel_.clearSelection();
+			for (int i = 0; i < getModel().getSize(); i++) {
+				Object element = getModel().getElementAt(i);
+				if (element instanceof AxiomsFrameSectionRow)
+					if (isSelectedIndex(i)) {
+						AxiomsFrameSectionRow row = (AxiomsFrameSectionRow) element;
+						OWLAxiom ax = row.getAxiom();
+						axiomSelectionModel_.setAxiomSelected(ax, true);
+					}
+			}
+		} finally {
+			isTransmittingSelectionToModel_ = false;
+		}
+	}
+
+	public void clear() {
+		getAxiomsFrame().clear();
+	}
+
+	@Override
+	public void dispose() {
+		getAxiomsFrame().dispose();
+	}
+
+	@Override
+	public void axiomAdded(AxiomSelectionModel source, OWLAxiom axiom) {
+		System.out.println("SEL: " + axiom);
+	}
+
+	@Override
+	public void axiomRemoved(AxiomSelectionModel source, OWLAxiom axiom) {
 	}
 
 	private void handleMoveUp() {
 		OWLAxiom selectedAxiom = getSelectedAxiom();
-		int k = getSelectedIndex();
 		if (selectedAxiom == null) {
 			return;
 		}
@@ -216,25 +323,45 @@ public class AxiomsFrameList extends OWLFrameList<Explanation> {
 	}
 
 	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Color oldColor = g.getColor();
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+
+		for (int index = 0; index < getModel().getSize(); index++) {
+			Object o = getModel().getElementAt(index);
+			if (o instanceof MListSectionHeader)
+				if (o instanceof LoadJustificationsSection) {
+					LoadJustificationsButton button = new LoadJustificationsButton(
+							new AbstractAction() {
+								private static final long serialVersionUID = 7260664426335623869L;
+
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									// showMoreListener_.showMore();
+								}
+							});
+					Rectangle bounds = getCellBounds(index, index);
+					button.setLocation(bounds.x, bounds.y);
+					button.setSize(20);
+					button.paintButtonContent(g2);
+				}
+		}
+
+		g.setColor(oldColor);
+	}
+
+	@Override
 	protected List<MListButton> getButtons(Object value) {
 		if (value instanceof AxiomsFrameSectionRow) {
-			List<MListButton> buttons = Arrays.<MListButton> asList(
-					new ExplainButton(new AbstractAction() {
-						/**
-						 * 
-						 */
-						private static final long serialVersionUID = 4860966076807447714L;
-
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							invokeExplanationHandler();
-						}
-					}));
-			buttonRunWidth_ = buttons.size() * (getButtonDimension() + 2) + 20;
-			return buttons;
-		} else {
-			return Collections.emptyList();
+			if (((AxiomsFrameSectionRow) value).getButtons() == null)
+				((AxiomsFrameSectionRow) value)
+						.setButtons(createAxiomsRowButtons());
+			return ((AxiomsFrameSectionRow) value).getButtons();
 		}
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -253,31 +380,35 @@ public class AxiomsFrameList extends OWLFrameList<Explanation> {
 					.getActiveOntology().containsAxiom(axiom))
 				return INFERRED_BG_COLOR;
 
-			// int rowIndex = row.getFrameSection().getRowIndex(row) + 1;
-			// if (!isSelectedIndex(rowIndex)) {
-			// if (axiomSelectionModel_.getSelectedAxioms().contains(axiom)) {
-			// return Color.YELLOW;
-			// } else {
-			// boolean isInAll = true;
-			// for (Explanation<?> expl : manager_.getJustifications(
-			// getRootObject().getEntailment())) {
-			// if (!expl.contains(axiom)) {
-			// isInAll = false;
-			// break;
-			// }
-			// }
-			// if (isInAll) {
-			// return new Color(245, 255, 235);
-			// }
-			// }
-			// }
+			int rowIndex = row.getFrameSection().getRowIndex(row) + 1;
+			if (!isSelectedIndex(rowIndex))
+				if (axiomSelectionModel_.getSelectedAxioms().contains(axiom))
+					return Color.YELLOW;
 		}
 		return super.getItemBackgroundColor(item);
 	}
 
 	@Override
 	protected List<MListButton> getListItemButtons(MListItem item) {
+		if (item instanceof AxiomsFrameSectionRow) {
+			if (((AxiomsFrameSectionRow) item).getButtons() == null)
+				((AxiomsFrameSectionRow) item)
+						.setButtons(createAxiomsRowButtons());
+			return ((AxiomsFrameSectionRow) item).getButtons();
+		}
 		return Collections.emptyList();
+	}
+
+	private List<MListButton> createAxiomsRowButtons() {
+		return Arrays
+				.<MListButton> asList(new ExplainButton(new AbstractAction() {
+					private static final long serialVersionUID = 4860966076807447714L;
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						invokeExplanationHandler();
+					}
+				}));
 	}
 
 	@Override
@@ -305,9 +436,11 @@ public class AxiomsFrameList extends OWLFrameList<Explanation> {
 			return super.getToolTipText();
 
 		Object element = getModel().getElementAt(index);
-		if (element instanceof AxiomsFrameSectionRow) {
+		if (element instanceof AxiomsFrameSectionRow)
 			return getPopularityString((AxiomsFrameSectionRow) element);
-		}
+
+		if (element instanceof LoadJustificationsSection)
+			return showMoreListener_.getIncrementString();
 
 		return super.getToolTipText(event);
 	}

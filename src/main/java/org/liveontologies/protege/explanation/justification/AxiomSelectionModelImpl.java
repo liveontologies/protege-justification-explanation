@@ -69,6 +69,12 @@ public class AxiomSelectionModelImpl
 		listeners_ = new ArrayList<>();
 	}
 
+	public void clearSelection() {
+		while (selectedAxioms_.size() > 0) {
+			setAxiomSelected(selectedAxioms_.iterator().next(), false);
+		}
+	}
+
 	public void setAxiomSelected(OWLAxiom axiom, boolean b) {
 		if (b) {
 			if (!selectedAxioms_.contains(axiom)) {

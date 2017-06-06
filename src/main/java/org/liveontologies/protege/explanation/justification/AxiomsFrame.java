@@ -1,7 +1,5 @@
 package org.liveontologies.protege.explanation.justification;
 
-import java.util.ArrayList;
-
 /*-
  * #%L
  * Protege Justification Explanation
@@ -26,7 +24,6 @@ import java.util.ArrayList;
 
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.frame.AbstractOWLFrame;
-import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
  * Author: Matthew Horridge Stanford University Bio-Medical Informatics Research
@@ -36,18 +33,28 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 public class AxiomsFrame extends AbstractOWLFrame<Explanation> {
 
 	private final OWLEditorKit editorKit_;
+	private final LoadJustificationsSection showMoreSection_;
 
-	public AxiomsFrame(OWLEditorKit editorKit) {
+	public AxiomsFrame(OWLEditorKit editorKit, Explanation explanation) {
 		super(editorKit.getOWLModelManager().getOWLOntologyManager());
 		editorKit_ = editorKit;
+
+		setRootObject(explanation);
+
+		showMoreSection_ = new LoadJustificationsSection(editorKit_, this);
+
+		clear();
 	}
 
 	public void addSection(int index, String caption) {
-		addSection(new AxiomsFrameSection(editorKit_, this, caption, index));
+		addSection(new AxiomsFrameSection(editorKit_, this, caption, index),
+				getSectionCount() - 1);
 		refill();
 	}
 
 	public void clear() {
 		clearSections();
+		addSection(showMoreSection_);
+		refill();
 	}
 }

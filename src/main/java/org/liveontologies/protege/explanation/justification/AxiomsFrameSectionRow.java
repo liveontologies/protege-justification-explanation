@@ -1,5 +1,7 @@
 package org.liveontologies.protege.explanation.justification;
 
+import java.awt.event.ActionEvent;
+
 /*-
  * #%L
  * Protege Justification Explanation
@@ -26,11 +28,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.AbstractAction;
+
 import org.protege.editor.core.ui.list.MListButton;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.editor.OWLObjectEditor;
 import org.protege.editor.owl.ui.frame.AbstractOWLFrameSectionRow;
 import org.protege.editor.owl.ui.frame.OWLFrameSection;
+import org.protege.editor.owl.ui.framelist.ExplainButton;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -44,13 +49,15 @@ public class AxiomsFrameSectionRow
 		extends AbstractOWLFrameSectionRow<Explanation, OWLAxiom, OWLAxiom> {
 
 	private int depth_;
+	private List<MListButton> buttons_;
 
 	public AxiomsFrameSectionRow(OWLEditorKit owlEditorKit,
 			OWLFrameSection<Explanation, OWLAxiom, OWLAxiom> section,
 			Explanation rootObject, OWLAxiom axiom, int depth) {
 		super(owlEditorKit, section, getOntologyForAxiom(owlEditorKit, axiom),
 				rootObject, axiom);
-		this.depth_ = depth;
+		depth_ = depth;
+		buttons_ = null;
 	}
 
 	public int getDepth() {
@@ -106,5 +113,13 @@ public class AxiomsFrameSectionRow
 	@Override
 	public boolean isInferred() {
 		return false;
+	}
+
+	public List<MListButton> getButtons() {
+		return buttons_;
+	}
+
+	public void setButtons(List<MListButton> buttons) {
+		buttons_ = buttons;
 	}
 }

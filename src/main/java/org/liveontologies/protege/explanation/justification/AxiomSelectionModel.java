@@ -62,4 +62,6 @@ public interface AxiomSelectionModel {
 	void setAxiomSelected(OWLAxiom axiom, boolean b);
 
 	Set<OWLAxiom> getSelectedAxioms();
+
+	void clearSelection();
 }
