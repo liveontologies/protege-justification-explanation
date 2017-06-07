@@ -228,6 +228,14 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 		getAxiomsFrame().clear();
 	}
 
+	public void setNextSectionVisibility(boolean isVisible) {
+		getAxiomsFrame().setNextSectionVisibility(isVisible);
+	}
+
+	public boolean getNextSectionVisibility() {
+		return getAxiomsFrame().getNextSectionVisibility();
+	}
+
 	@Override
 	public void dispose() {
 		getAxiomsFrame().dispose();

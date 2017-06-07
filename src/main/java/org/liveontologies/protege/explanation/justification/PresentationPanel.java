@@ -279,6 +279,8 @@ public class PresentationPanel extends JPanel implements Disposable,
 
 	private void updateHeaderPanel() {
 		lNumberInfo_.setText(getNumberString());
+		frameList_.setNextSectionVisibility(manager_.getPresentationSettings()
+				.getCurrentCount() != getDisplayedExplanationsAmout());
 		serviceSettingsDisplayHolder_.validate();
 	}
 

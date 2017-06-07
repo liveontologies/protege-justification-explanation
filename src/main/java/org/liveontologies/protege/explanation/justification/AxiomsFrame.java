@@ -34,6 +34,7 @@ public class AxiomsFrame extends AbstractOWLFrame<Explanation> {
 
 	private final OWLEditorKit editorKit_;
 	private final LoadJustificationsSection showMoreSection_;
+	private boolean isNextSectionVisible_;
 
 	public AxiomsFrame(OWLEditorKit editorKit, Explanation explanation) {
 		super(editorKit.getOWLModelManager().getOWLOntologyManager());
@@ -43,18 +44,36 @@ public class AxiomsFrame extends AbstractOWLFrame<Explanation> {
 
 		showMoreSection_ = new LoadJustificationsSection(editorKit_, this);
 
-		clear();
+		setNextSectionVisibility(true);
 	}
 
 	public void addSection(int index, String caption) {
 		addSection(new AxiomsFrameSection(editorKit_, this, caption, index),
-				getSectionCount() - 1);
+				getSectionCount() - (getNextSectionVisibility() ? 1 : 0));
 		refill();
 	}
 
 	public void clear() {
 		clearSections();
-		addSection(showMoreSection_);
+		if (getNextSectionVisibility())
+			addSection(showMoreSection_);
 		refill();
+	}
+
+	public void setNextSectionVisibility(boolean isVisible) {
+		if (isNextSectionVisible_ == isVisible)
+			return;
+
+		if (isVisible)
+			addSection(showMoreSection_);
+		else
+			getFrameSections().remove(showMoreSection_);
+
+		isNextSectionVisible_ = isVisible;
+		refill();
+	}
+
+	public boolean getNextSectionVisibility() {
+		return isNextSectionVisible_;
 	}
 }

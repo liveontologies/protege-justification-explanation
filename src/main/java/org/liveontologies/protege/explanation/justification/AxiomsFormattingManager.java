@@ -163,7 +163,8 @@ public class AxiomsFormattingManager {
 		return hasMoved;
 	}
 
-	public boolean moveAxiomDown(Justification<?> justification, OWLAxiom axiom) {
+	public boolean moveAxiomDown(Justification<?> justification,
+			OWLAxiom axiom) {
 		initIfNecessary(justification);
 		List<OWLAxiom> ordering = ordering_.get(justification);
 		// Lowest index is 1 - the entailment is held in position 0
