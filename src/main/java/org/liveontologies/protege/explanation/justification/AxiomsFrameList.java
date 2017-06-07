@@ -70,6 +70,7 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 	public static final Color COLOR_ALL_POPULARITY = new Color(6, 133, 19);
 
 	public static final Color INFERRED_BG_COLOR = new Color(255, 255, 215);
+	public static final Color HIGHLIGHT_COLOR = new Color(230, 215, 246);
 
 	private final PresentationManager manager_;
 	private final AxiomSelectionModel axiomSelectionModel_;
@@ -383,7 +384,7 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 			int rowIndex = row.getFrameSection().getRowIndex(row) + 1;
 			if (!isSelectedIndex(rowIndex))
 				if (axiomSelectionModel_.getSelectedAxioms().contains(axiom))
-					return Color.YELLOW;
+					return HIGHLIGHT_COLOR;
 		}
 		return super.getItemBackgroundColor(item);
 	}
