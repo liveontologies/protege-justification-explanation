@@ -36,13 +36,15 @@ public class AxiomsFrame extends AbstractOWLFrame<Explanation> {
 	private final LoadJustificationsSection showMoreSection_;
 	private boolean isNextSectionVisible_;
 
-	public AxiomsFrame(OWLEditorKit editorKit, Explanation explanation) {
+	public AxiomsFrame(OWLEditorKit editorKit, Explanation explanation,
+			ShowMoreListener showMoreListener) {
 		super(editorKit.getOWLModelManager().getOWLOntologyManager());
 		editorKit_ = editorKit;
 
 		setRootObject(explanation);
 
-		showMoreSection_ = new LoadJustificationsSection(editorKit_, this);
+		showMoreSection_ = new LoadJustificationsSection(editorKit_, this,
+				showMoreListener);
 
 		setNextSectionVisibility(true);
 	}

@@ -26,11 +26,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Collections;
@@ -74,7 +72,6 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 
 	private final PresentationManager manager_;
 	private final AxiomSelectionModel axiomSelectionModel_;
-	private int buttonRunWidth_ = 0;
 	private final ShowMoreListener showMoreListener_;
 	private final Explanation explanation_;
 	private boolean isTransmittingSelectionToModel_ = false;
@@ -171,18 +168,6 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 		getInputMap().put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_MASK),
 				decreaseIndentation.getValue(Action.NAME));
-
-		addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					AxiomsFrameList list = (AxiomsFrameList) e.getSource();
-					int index = list.locationToIndex(e.getPoint());
-					Object row = list.getModel().getElementAt(index);
-					if (row instanceof LoadJustificationsSection)
-						showMoreListener_.showMore();
-				}
-			}
-		});
 	}
 
 	public AxiomsFrame getAxiomsFrame() {
@@ -339,25 +324,18 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 
-		for (int index = 0; index < getModel().getSize(); index++) {
-			Object o = getModel().getElementAt(index);
-			if (o instanceof MListSectionHeader)
-				if (o instanceof LoadJustificationsSection) {
-					LoadJustificationsButton button = new LoadJustificationsButton(
-							new AbstractAction() {
-								private static final long serialVersionUID = 7260664426335623869L;
-
-								@Override
-								public void actionPerformed(ActionEvent e) {
-									// showMoreListener_.showMore();
-								}
-							});
-					Rectangle bounds = getCellBounds(index, index);
-					button.setLocation(bounds.x, bounds.y);
-					button.setSize(20);
-					button.paintButtonContent(g2);
-				}
-		}
+		// for (int index = 0; index < getModel().getSize(); index++) {
+		// Object o = getModel().getElementAt(index);
+		// if (o instanceof MListSectionHeader)
+		// if (o instanceof LoadJustificationsSection) {
+		// LoadJustificationsButton button = ((LoadJustificationsSection)
+		// o).getButton();
+		// Rectangle bounds = getCellBounds(index, index);
+		// button.setLocation(bounds.x, bounds.y);
+		// button.setSize(20);
+		// button.paintButtonContent(g2);
+		// }
+		// }
 
 		g.setColor(oldColor);
 	}
@@ -370,6 +348,11 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 						.setButtons(createAxiomsRowButtons());
 			return ((AxiomsFrameSectionRow) value).getButtons();
 		}
+		if (value instanceof MListSectionHeader)
+			if (value instanceof LoadJustificationsSection) {
+				return Collections.singletonList(
+						((LoadJustificationsSection) value).getButton());
+			}
 		return Collections.emptyList();
 	}
 

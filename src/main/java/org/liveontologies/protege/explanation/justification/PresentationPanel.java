@@ -24,15 +24,9 @@ package org.liveontologies.protege.explanation.justification;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.LayoutManager;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -51,9 +45,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.Scrollable;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
 
 import org.liveontologies.protege.explanation.justification.preferences.JustPrefPanel;
 import org.liveontologies.protege.explanation.justification.preferences.JustificationPreferencesGeneralPanel;
@@ -233,7 +224,7 @@ public class PresentationPanel extends JPanel implements Disposable,
 
 		Explanation explanation_ = new Explanation(manager_.getEntailment());
 		AxiomsFrame frame_ = new AxiomsFrame(manager.getOWLEditorKit(),
-				explanation_);
+				explanation_, this);
 		frameList_ = new AxiomsFrameList(this, manager, frame_, this,
 				explanation_);
 		scrollPane_ = new JScrollPane(frameList_);
