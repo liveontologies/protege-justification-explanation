@@ -49,10 +49,12 @@ public class AxiomsFrame extends AbstractOWLFrame<Explanation> {
 		setNextSectionVisibility(true);
 	}
 
-	public void addSection(int index, String caption) {
-		addSection(new AxiomsFrameSection(editorKit_, this, caption, index),
+	public void addSection(int index, String caption) {		
+		AxiomsFrameSection newSection = new AxiomsFrameSection(editorKit_, this,
+				caption, index);
+		addSection(newSection,
 				getSectionCount() - (getNextSectionVisibility() ? 1 : 0));
-		refill();
+		newSection.setRootObject(getRootObject());
 	}
 
 	public void clear() {
