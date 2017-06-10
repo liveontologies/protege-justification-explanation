@@ -67,14 +67,14 @@ public class AxiomsFrame extends AbstractOWLFrame<Explanation> {
 	public void setNextSectionVisibility(boolean isVisible) {
 		if (isNextSectionVisible_ == isVisible)
 			return;
-
-		if (isVisible)
+		isNextSectionVisible_ = isVisible;		
+		if (isVisible) {
 			addSection(showMoreSection_);
-		else
+			showMoreSection_.setRootObject(getRootObject());
+		} else {
 			getFrameSections().remove(showMoreSection_);
-
-		isNextSectionVisible_ = isVisible;
-		refill();
+			fireContentChanged();
+		}	
 	}
 
 	public boolean getNextSectionVisibility() {
