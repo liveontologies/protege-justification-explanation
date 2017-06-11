@@ -98,6 +98,10 @@ public class AxiomsFormattingManager {
 			ordering.add(tree.getUserObject());
 			indents.put(tree.getUserObject(), tree.getPathToRoot().size() - 2);
 		}
+		else if(tree.getChildCount() == 0) {
+			ordering.add(tree.getUserObject());
+			indents.put(tree.getUserObject(), 0);
+		}
 		for (Tree<OWLAxiom> child : tree.getChildren()) {
 			fill(child, ordering, indents);
 		}
