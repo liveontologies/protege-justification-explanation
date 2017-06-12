@@ -80,4 +80,10 @@ public class AxiomsFrame extends AbstractOWLFrame<Explanation> {
 	public boolean getNextSectionVisibility() {
 		return isNextSectionVisible_;
 	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		showMoreSection_.dispose();
+	}
 }

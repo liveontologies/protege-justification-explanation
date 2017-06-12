@@ -75,12 +75,10 @@ import org.slf4j.LoggerFactory;
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
-
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
-
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -107,6 +105,7 @@ public class PresentationPanel extends JPanel implements Disposable,
 	private final PresentationManager manager_;
 	private final JScrollPane scrollPane_;
 	private final JComponent serviceSettingsDisplayHolder_;
+	private final AxiomsFrame frame_;
 	private final AxiomsFrameList frameList_;
 	private PriorityQueue<Justification<OWLAxiom>> displayedJustifications_;
 	private JLabel lNumberInfo_;
@@ -223,8 +222,7 @@ public class PresentationPanel extends JPanel implements Disposable,
 		add(headerPanel, BorderLayout.NORTH);
 
 		Explanation explanation_ = new Explanation(manager_.getEntailment());
-		AxiomsFrame frame_ = new AxiomsFrame(manager.getOWLEditorKit(),
-				explanation_, this);
+		frame_ = new AxiomsFrame(manager.getOWLEditorKit(), explanation_, this);
 		frameList_ = new AxiomsFrameList(this, manager, frame_, this,
 				explanation_);
 		scrollPane_ = new JScrollPane(frameList_);
@@ -405,6 +403,7 @@ public class PresentationPanel extends JPanel implements Disposable,
 	public void dispose() {
 		kit_.getModelManager().removeListener(this);
 		frameList_.dispose();
+		frame_.dispose();
 		selectionModel_.dispose();
 	}
 
