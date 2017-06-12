@@ -223,6 +223,7 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 
 	@Override
 	public void dispose() {
+		super.dispose();
 		getAxiomsFrame().dispose();
 	}
 
