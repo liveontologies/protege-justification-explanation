@@ -92,9 +92,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public class PresentationPanel extends JPanel implements Disposable,
-		OWLModelManagerListener, EntailmentSelectionListener,
-		AxiomSelectionModel, ExplanationManagerListener,
-		ComputationServiceListener, ShowMoreListener {
+		AxiomSelectionModel, ComputationServiceListener, ShowMoreListener {
 
 	private static final long serialVersionUID = 5025702425365703918L;
 
@@ -125,7 +123,6 @@ public class PresentationPanel extends JPanel implements Disposable,
 		this.kit_ = this.manager_.getOWLEditorKit();
 
 		selectionModel_ = new AxiomSelectionModelImpl();
-		kit_.getModelManager().addListener(this);
 
 		setLayout(new BorderLayout());
 
@@ -279,21 +276,6 @@ public class PresentationPanel extends JPanel implements Disposable,
 	}
 
 	@Override
-	public void explanationLimitChanged(
-			PresentationManager presentationManager) {
-		selectionChanged();
-	}
-
-	@Override
-	public void explanationsComputed(OWLAxiom entailment) {
-	}
-
-	@Override
-	public void selectionChanged() {
-		recompute();
-	}
-
-	@Override
 	public void redrawingCalled() {
 		manager_.clearJustificationsCache();
 		recompute();
@@ -304,12 +286,6 @@ public class PresentationPanel extends JPanel implements Disposable,
 		serviceSettingsDisplayHolder_.removeAll();
 
 		lNumberInfo_ = new JLabel(getIncrementString());
-		// lNumberInfo_.addActionListener(new ActionListener() {
-		// @Override
-		// public void actionPerformed(ActionEvent e) {
-		// updatePanel(manager_.getPresentationSettings().getIncrement());
-		// }
-		// });
 		JustificationPreferencesGeneralPanel.addListener(
 				new JustificationPreferencesGeneralPanel.PreferencesListener() {
 					@Override
@@ -401,15 +377,9 @@ public class PresentationPanel extends JPanel implements Disposable,
 
 	@Override
 	public void dispose() {
-		kit_.getModelManager().removeListener(this);
 		frameList_.dispose();
 		frame_.dispose();
 		selectionModel_.dispose();
-	}
-
-	@Override
-	public void handleChange(OWLModelManagerChangeEvent event) {
-
 	}
 
 	@Override
