@@ -103,7 +103,6 @@ public class PresentationPanel extends JPanel implements Disposable,
 	private final PresentationManager manager_;
 	private final JScrollPane scrollPane_;
 	private final JComponent serviceSettingsDisplayHolder_;
-	private final AxiomsFrame frame_;
 	private final AxiomsFrameList frameList_;
 	private PriorityQueue<Justification<OWLAxiom>> displayedJustifications_;
 	private JLabel lNumberInfo_;
@@ -219,9 +218,7 @@ public class PresentationPanel extends JPanel implements Disposable,
 		add(headerPanel, BorderLayout.NORTH);
 
 		Explanation explanation_ = new Explanation(manager_.getEntailment());
-		frame_ = new AxiomsFrame(manager.getOWLEditorKit(), explanation_, this);
-		frameList_ = new AxiomsFrameList(this, manager, frame_, this,
-				explanation_);
+		frameList_ = new AxiomsFrameList(this, manager, this, explanation_);
 		scrollPane_ = new JScrollPane(frameList_);
 		scrollPane_.setMinimumSize(new Dimension(10, 10));
 		scrollPane_.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
@@ -378,7 +375,6 @@ public class PresentationPanel extends JPanel implements Disposable,
 	@Override
 	public void dispose() {
 		frameList_.dispose();
-		frame_.dispose();
 		selectionModel_.dispose();
 	}
 

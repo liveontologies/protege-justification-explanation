@@ -74,13 +74,23 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 	private final AxiomSelectionModel axiomSelectionModel_;
 	private final ShowMoreListener showMoreListener_;
 	private final Explanation explanation_;
+	private final AxiomsFrame frame_;
 	private boolean isTransmittingSelectionToModel_ = false;
 
 	public AxiomsFrameList(AxiomSelectionModel axiomSelectionModel,
-			PresentationManager manager,
-			OWLFrame<Explanation> justificationOWLFrame,
+			PresentationManager manager, ShowMoreListener showMoreListener,
+			Explanation explanation) {
+		this(axiomSelectionModel, manager,
+				new AxiomsFrame(manager.getOWLEditorKit(), explanation,
+						showMoreListener),
+				showMoreListener, explanation);
+	}
+
+	private AxiomsFrameList(AxiomSelectionModel axiomSelectionModel,
+			PresentationManager manager, AxiomsFrame frame,
 			ShowMoreListener showMoreListener, Explanation explanation) {
-		super(manager.getOWLEditorKit(), justificationOWLFrame);
+		super(manager.getOWLEditorKit(), frame);
+		frame_ = frame;
 		manager_ = manager;
 		axiomSelectionModel_ = axiomSelectionModel;
 		showMoreListener_ = showMoreListener;
@@ -170,14 +180,10 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 				decreaseIndentation.getValue(Action.NAME));
 	}
 
-	public AxiomsFrame getAxiomsFrame() {
-		return (AxiomsFrame) getFrame();
-	}
-
 	public void addJustification(Justification<OWLAxiom> justification,
 			int justificationNo) {
 		int index = explanation_.addJustification(justification);
-		getAxiomsFrame().addSection(index,
+		frame_.addSection(index,
 				String.format("Justification %s with %d axioms",
 						justificationNo, justification.getSize()));
 		validate();
@@ -210,21 +216,15 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 	}
 
 	public void clear() {
-		getAxiomsFrame().clear();
+		frame_.clear();
 	}
 
 	public void setNextSectionVisibility(boolean isVisible) {
-		getAxiomsFrame().setNextSectionVisibility(isVisible);
+		frame_.setNextSectionVisibility(isVisible);
 	}
 
 	public boolean getNextSectionVisibility() {
-		return getAxiomsFrame().getNextSectionVisibility();
-	}
-
-	@Override
-	public void dispose() {
-		super.dispose();
-		getAxiomsFrame().dispose();
+		return frame_.getNextSectionVisibility();
 	}
 
 	@Override
