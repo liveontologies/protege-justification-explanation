@@ -25,6 +25,7 @@ package org.liveontologies.protege.explanation.justification;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
@@ -36,6 +37,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.KeyStroke;
 import javax.swing.border.Border;
@@ -47,7 +49,6 @@ import org.protege.editor.core.ui.list.MListButton;
 import org.protege.editor.core.ui.list.MListItem;
 import org.protege.editor.core.ui.list.MListSectionHeader;
 import org.protege.editor.owl.OWLEditorKit;
-import org.protege.editor.owl.ui.frame.OWLFrame;
 import org.protege.editor.owl.ui.framelist.ExplainButton;
 import org.protege.editor.owl.ui.framelist.OWLFrameList;
 import org.protege.editor.owl.ui.framelist.OWLFrameListPopupMenuAction;
@@ -63,12 +64,10 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 
 	private static final long serialVersionUID = -8844035741045455140L;
 
-	public static final Color COLOR_SINGLE_POPULARITY = new Color(170, 70, 15);
-	public static final Color COLOR_MULTI_POPULARITY = new Color(10, 75, 175);
-	public static final Color COLOR_ALL_POPULARITY = new Color(6, 133, 19);
+	private static final Color INFERRED_BG_COLOR_ = new Color(255, 255, 215);
+	private static final Color HIGHLIGHT_COLOR_ = new Color(230, 215, 246);
 
-	public static final Color INFERRED_BG_COLOR = new Color(255, 255, 215);
-	public static final Color HIGHLIGHT_COLOR = new Color(230, 215, 246);
+	private static final int AXIOM_INDENT_ = 30;
 
 	private final PresentationManager manager_;
 	private final AxiomSelectionModel axiomSelectionModel_;
@@ -371,12 +370,12 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 
 			if (!manager_.getOWLEditorKit().getOWLModelManager()
 					.getActiveOntology().containsAxiom(axiom))
-				return INFERRED_BG_COLOR;
+				return INFERRED_BG_COLOR_;
 
 			int rowIndex = row.getFrameSection().getRowIndex(row) + 1;
 			if (!isSelectedIndex(rowIndex))
 				if (axiomSelectionModel_.getSelectedAxioms().contains(axiom))
-					return HIGHLIGHT_COLOR;
+					return HIGHLIGHT_COLOR_;
 		}
 		return super.getItemBackgroundColor(item);
 	}
@@ -407,6 +406,13 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 	@Override
 	protected Border createListItemBorder(JList list, Object value, int index,
 			boolean isSelected, boolean cellHasFocus) {
+		if (value instanceof AxiomsFrameSectionRow) {
+			Insets insets = super.createListItemBorder(list, value, index,
+					isSelected, cellHasFocus).getBorderInsets(this);
+			return BorderFactory.createMatteBorder(insets.top,
+					((AxiomsFrameSectionRow) value).getDepth() * AXIOM_INDENT_,
+					insets.bottom, insets.right, list.getBackground());
+		}
 		return super.createListItemBorder(list, value, index, isSelected,
 				cellHasFocus);
 	}
