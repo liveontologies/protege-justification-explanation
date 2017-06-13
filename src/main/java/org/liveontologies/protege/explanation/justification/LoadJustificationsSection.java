@@ -72,12 +72,6 @@ public class LoadJustificationsSection
 		return null;
 	}
 
-	public void updateText(String text) {
-		setLabel(text);
-		if (getRows().size() > 0)
-			((LoadJustificationsSectionRow) getRows().get(0)).setText(text);
-	}
-
 	@Override
 	protected void refill(OWLOntology ontology) {
 		if (isFilled_)
