@@ -39,14 +39,14 @@ import org.semanticweb.owlapi.model.OWLOntology;
  * Group Date: 19/03/2012
  */
 
-public class AxiomsFrameSection
+public class JustificationFrameSection
 		extends AbstractOWLFrameSection<Explanation, OWLAxiom, OWLAxiom> {
 
 	private boolean isFilled_ = false;
 	private final Explanation explanation_;
 	private final int justificationIndex_;
 
-	public AxiomsFrameSection(OWLEditorKit editorKit,
+	public JustificationFrameSection(OWLEditorKit editorKit,
 			OWLFrame<? extends Explanation> owlFrame, String caption,
 			int justificationIndex) {
 		super(editorKit, caption, owlFrame);
@@ -71,14 +71,14 @@ public class AxiomsFrameSection
 		}
 		isFilled_ = true;
 
-		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
+		JustificationFormattingManager formattingManager = JustificationFormattingManager
 				.getInstance();
 		Justification<OWLAxiom> justification = getJustification();
 		List<OWLAxiom> formatting = formattingManager
 				.getOrdering(justification);
 		for (OWLAxiom axiom : formatting) {
 			int depth = formattingManager.getIndentation(justification, axiom);
-			AxiomsFrameSectionRow row = new AxiomsFrameSectionRow(
+			JustificationFrameSectionRow row = new JustificationFrameSectionRow(
 					getOWLEditorKit(), this, explanation_, axiom, depth);
 			addRow(row);
 		}

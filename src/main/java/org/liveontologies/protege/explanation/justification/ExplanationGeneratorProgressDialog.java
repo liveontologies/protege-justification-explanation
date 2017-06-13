@@ -39,12 +39,12 @@ import org.liveontologies.protege.explanation.justification.service.Justificatio
 public class ExplanationGeneratorProgressDialog extends JDialog {
 
 	private static final long serialVersionUID = 2729423646823799401L;
-	private final AxiomsProgressPanel panel_;
+	private final JustificationProgressPanel panel_;
 
 	public ExplanationGeneratorProgressDialog(Frame owner,
 			JustificationComputation computation) {
 		super(owner, "Computing explanations", true);
-		panel_ = new AxiomsProgressPanel(computation);
+		panel_ = new JustificationProgressPanel(computation);
 		setContentPane(panel_);
 		pack();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

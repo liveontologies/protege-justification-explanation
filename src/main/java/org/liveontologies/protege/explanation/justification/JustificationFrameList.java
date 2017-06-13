@@ -59,7 +59,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
  * Group Date: 19/03/2012
  */
 
-public class AxiomsFrameList extends OWLFrameList<Explanation>
+public class JustificationFrameList extends OWLFrameList<Explanation>
 		implements AxiomSelectionListener, Disposable {
 
 	private static final long serialVersionUID = -8844035741045455140L;
@@ -73,20 +73,20 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 	private final AxiomSelectionModel axiomSelectionModel_;
 	private final ShowMoreListener showMoreListener_;
 	private final Explanation explanation_;
-	private final AxiomsFrame frame_;
+	private final JustificationFrame frame_;
 	private boolean isTransmittingSelectionToModel_ = false;
 
-	public AxiomsFrameList(AxiomSelectionModel axiomSelectionModel,
+	public JustificationFrameList(AxiomSelectionModel axiomSelectionModel,
 			PresentationManager manager, ShowMoreListener showMoreListener,
 			Explanation explanation) {
 		this(axiomSelectionModel, manager,
-				new AxiomsFrame(manager.getOWLEditorKit(), explanation,
+				new JustificationFrame(manager.getOWLEditorKit(), explanation,
 						showMoreListener),
 				showMoreListener, explanation);
 	}
 
-	private AxiomsFrameList(AxiomSelectionModel axiomSelectionModel,
-			PresentationManager manager, AxiomsFrame frame,
+	private JustificationFrameList(AxiomSelectionModel axiomSelectionModel,
+			PresentationManager manager, JustificationFrame frame,
 			ShowMoreListener showMoreListener, Explanation explanation) {
 		super(manager.getOWLEditorKit(), frame);
 		frame_ = frame;
@@ -96,7 +96,7 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 		explanation_ = explanation;
 		OWLEditorKit kit = manager.getOWLEditorKit();
 		setWrap(false);
-		setCellRenderer(new AxiomsFrameListRenderer(kit));
+		setCellRenderer(new JustificationFrameListRenderer(kit));
 
 		getSelectionModel()
 				.addListSelectionListener(new ListSelectionListener() {
@@ -202,9 +202,9 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 			axiomSelectionModel_.clearSelection();
 			for (int i = 0; i < getModel().getSize(); i++) {
 				Object element = getModel().getElementAt(i);
-				if (element instanceof AxiomsFrameSectionRow)
+				if (element instanceof JustificationFrameSectionRow)
 					if (isSelectedIndex(i)) {
-						AxiomsFrameSectionRow row = (AxiomsFrameSectionRow) element;
+						JustificationFrameSectionRow row = (JustificationFrameSectionRow) element;
 						OWLAxiom ax = row.getAxiom();
 						axiomSelectionModel_.setAxiomSelected(ax, true);
 					}
@@ -240,7 +240,7 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 		if (selectedAxiom == null) {
 			return;
 		}
-		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
+		JustificationFormattingManager formattingManager = JustificationFormattingManager
 				.getInstance();
 		boolean hasMoved = formattingManager
 				.moveAxiomUp(getSelectedJustification(), selectedAxiom);
@@ -254,7 +254,7 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 		if (selectedAxiom == null) {
 			return;
 		}
-		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
+		JustificationFormattingManager formattingManager = JustificationFormattingManager
 				.getInstance();
 		boolean hasMoved = formattingManager
 				.moveAxiomDown(getSelectedJustification(), selectedAxiom);
@@ -268,7 +268,7 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 		if (selectedAxiom == null) {
 			return;
 		}
-		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
+		JustificationFormattingManager formattingManager = JustificationFormattingManager
 				.getInstance();
 		formattingManager.increaseIndentation(getSelectedJustification(),
 				selectedAxiom);
@@ -282,7 +282,7 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 		if (selectedAxiom == null) {
 			return;
 		}
-		AxiomsFormattingManager formattingManager = AxiomsFormattingManager
+		JustificationFormattingManager formattingManager = JustificationFormattingManager
 				.getInstance();
 		formattingManager.decreaseIndentation(getSelectedJustification(),
 				selectedAxiom);
@@ -297,10 +297,10 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 			return null;
 		}
 		Object element = getModel().getElementAt(selectedIndex);
-		if (!(element instanceof AxiomsFrameSectionRow)) {
+		if (!(element instanceof JustificationFrameSectionRow)) {
 			return null;
 		}
-		return ((AxiomsFrameSectionRow) element).getAxiom();
+		return ((JustificationFrameSectionRow) element).getAxiom();
 	}
 
 	private Justification<OWLAxiom> getSelectedJustification() {
@@ -309,10 +309,10 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 			return null;
 		}
 		Object element = getModel().getElementAt(selectedIndex);
-		if (!(element instanceof AxiomsFrameSectionRow)) {
+		if (!(element instanceof JustificationFrameSectionRow)) {
 			return null;
 		}
-		return ((AxiomsFrameSection) ((AxiomsFrameSectionRow) element)
+		return ((JustificationFrameSection) ((JustificationFrameSectionRow) element)
 				.getFrameSection()).getJustification();
 	}
 
@@ -342,11 +342,11 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 
 	@Override
 	protected List<MListButton> getButtons(Object value) {
-		if (value instanceof AxiomsFrameSectionRow) {
-			if (((AxiomsFrameSectionRow) value).getButtons() == null)
-				((AxiomsFrameSectionRow) value)
+		if (value instanceof JustificationFrameSectionRow) {
+			if (((JustificationFrameSectionRow) value).getButtons() == null)
+				((JustificationFrameSectionRow) value)
 						.setButtons(createAxiomsRowButtons());
-			return ((AxiomsFrameSectionRow) value).getButtons();
+			return ((JustificationFrameSectionRow) value).getButtons();
 		}
 		if (value instanceof MListSectionHeader)
 			if (value instanceof LoadJustificationsSection) {
@@ -364,8 +364,8 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 
 	@Override
 	protected Color getItemBackgroundColor(MListItem item) {
-		if (item instanceof AxiomsFrameSectionRow) {
-			AxiomsFrameSectionRow row = (AxiomsFrameSectionRow) item;
+		if (item instanceof JustificationFrameSectionRow) {
+			JustificationFrameSectionRow row = (JustificationFrameSectionRow) item;
 			OWLAxiom axiom = row.getAxiom();
 
 			if (!manager_.getOWLEditorKit().getOWLModelManager()
@@ -382,11 +382,11 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 
 	@Override
 	protected List<MListButton> getListItemButtons(MListItem item) {
-		if (item instanceof AxiomsFrameSectionRow) {
-			if (((AxiomsFrameSectionRow) item).getButtons() == null)
-				((AxiomsFrameSectionRow) item)
+		if (item instanceof JustificationFrameSectionRow) {
+			if (((JustificationFrameSectionRow) item).getButtons() == null)
+				((JustificationFrameSectionRow) item)
 						.setButtons(createAxiomsRowButtons());
-			return ((AxiomsFrameSectionRow) item).getButtons();
+			return ((JustificationFrameSectionRow) item).getButtons();
 		}
 		return Collections.emptyList();
 	}
@@ -406,21 +406,14 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 	@Override
 	protected Border createListItemBorder(JList list, Object value, int index,
 			boolean isSelected, boolean cellHasFocus) {
-		if (value instanceof AxiomsFrameSectionRow) {
+		if (value instanceof JustificationFrameSectionRow) {
 			Insets insets = super.createListItemBorder(list, value, index,
 					isSelected, cellHasFocus).getBorderInsets(this);
 			return BorderFactory.createMatteBorder(insets.top,
-					((AxiomsFrameSectionRow) value).getDepth() * AXIOM_INDENT_,
+					((JustificationFrameSectionRow) value).getDepth() * AXIOM_INDENT_,
 					insets.bottom, insets.right, list.getBackground());
 		}
 		return super.createListItemBorder(list, value, index, isSelected,
-				cellHasFocus);
-	}
-
-	@Override
-	protected Border createPaddingBorder(JList list, Object value, int index,
-			boolean isSelected, boolean cellHasFocus) {
-		return super.createPaddingBorder(list, value, index, isSelected,
 				cellHasFocus);
 	}
 
@@ -435,8 +428,8 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 			return super.getToolTipText();
 
 		Object element = getModel().getElementAt(index);
-		if (element instanceof AxiomsFrameSectionRow)
-			return getPopularityString((AxiomsFrameSectionRow) element);
+		if (element instanceof JustificationFrameSectionRow)
+			return getPopularityString((JustificationFrameSectionRow) element);
 
 		if (element instanceof LoadJustificationsSection)
 			return showMoreListener_.getIncrementString();
@@ -444,7 +437,7 @@ public class AxiomsFrameList extends OWLFrameList<Explanation>
 		return super.getToolTipText(event);
 	}
 
-	private String getPopularityString(AxiomsFrameSectionRow row) {
+	private String getPopularityString(JustificationFrameSectionRow row) {
 		OWLAxiom entailment = row.getRoot().getEntailment();
 		int popularity = manager_.getPopularity(entailment, row.getAxiom());
 		int count = manager_.getComputedExplanationCount(entailment);

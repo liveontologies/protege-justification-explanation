@@ -62,19 +62,19 @@ import uk.ac.manchester.cs.owl.explanation.ordering.Tree;
  * Group Date: 23-Oct-2008
  */
 
-public class AxiomsFormattingManager {
+public class JustificationFormattingManager {
 
-	private final static AxiomsFormattingManager instance_ = new AxiomsFormattingManager();
+	private final static JustificationFormattingManager instance_ = new JustificationFormattingManager();
 
 	private final Map<Justification<?>, Map<OWLAxiom, Integer>> indents_;
 	private final Map<Justification<?>, List<OWLAxiom>> ordering_;
 
-	private AxiomsFormattingManager() {
+	private JustificationFormattingManager() {
 		indents_ = new HashMap<>();
 		ordering_ = new HashMap<>();
 	}
 
-	public static AxiomsFormattingManager getInstance() {
+	public static JustificationFormattingManager getInstance() {
 		return instance_;
 	}
 

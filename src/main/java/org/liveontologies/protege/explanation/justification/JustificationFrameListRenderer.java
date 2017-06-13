@@ -30,9 +30,9 @@ import org.protege.editor.owl.ui.framelist.OWLFrameListRenderer;
  * Group Date: 19/03/2012
  */
 
-public class AxiomsFrameListRenderer extends OWLFrameListRenderer {
+public class JustificationFrameListRenderer extends OWLFrameListRenderer {
 
-	public AxiomsFrameListRenderer(OWLEditorKit owlEditorKit) {
+	public JustificationFrameListRenderer(OWLEditorKit owlEditorKit) {
 		super(owlEditorKit);
 		setHighlightUnsatisfiableClasses(false);
 		setHighlightUnsatisfiableProperties(false);

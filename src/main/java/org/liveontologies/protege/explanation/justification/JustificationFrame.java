@@ -26,17 +26,19 @@ import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.frame.AbstractOWLFrame;
 
 /**
- * Author: Matthew Horridge Stanford University Bio-Medical Informatics Research
- * Group Date: 19/03/2012
+ * Author: Matthew Horridge
+ * Stanford University
+ * Bio-Medical Informatics Research Group
+ * Date: 19/03/2012
  */
 
-public class AxiomsFrame extends AbstractOWLFrame<Explanation> {
+public class JustificationFrame extends AbstractOWLFrame<Explanation> {
 
 	private final OWLEditorKit editorKit_;
 	private final LoadJustificationsSection showMoreSection_;
 	private boolean isNextSectionVisible_;
 
-	public AxiomsFrame(OWLEditorKit editorKit, Explanation explanation,
+	public JustificationFrame(OWLEditorKit editorKit, Explanation explanation,
 			ShowMoreListener showMoreListener) {
 		super(editorKit.getOWLModelManager().getOWLOntologyManager());
 		editorKit_ = editorKit;
@@ -49,9 +51,9 @@ public class AxiomsFrame extends AbstractOWLFrame<Explanation> {
 		setNextSectionVisibility(true);
 	}
 
-	public void addSection(int index, String caption) {		
-		AxiomsFrameSection newSection = new AxiomsFrameSection(editorKit_, this,
-				caption, index);
+	public void addSection(int index, String caption) {
+		JustificationFrameSection newSection = new JustificationFrameSection(
+				editorKit_, this, caption, index);
 		addSection(newSection,
 				getSectionCount() - (getNextSectionVisibility() ? 1 : 0));
 		newSection.setRootObject(getRootObject());
@@ -67,20 +69,20 @@ public class AxiomsFrame extends AbstractOWLFrame<Explanation> {
 	public void setNextSectionVisibility(boolean isVisible) {
 		if (isNextSectionVisible_ == isVisible)
 			return;
-		isNextSectionVisible_ = isVisible;		
+		isNextSectionVisible_ = isVisible;
 		if (isVisible) {
 			addSection(showMoreSection_);
 			showMoreSection_.setRootObject(getRootObject());
 		} else {
 			getFrameSections().remove(showMoreSection_);
 			fireContentChanged();
-		}	
+		}
 	}
 
 	public boolean getNextSectionVisibility() {
 		return isNextSectionVisible_;
 	}
-	
+
 	@Override
 	public void dispose() {
 		super.dispose();
