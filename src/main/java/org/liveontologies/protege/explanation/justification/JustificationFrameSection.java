@@ -71,16 +71,19 @@ public class JustificationFrameSection
 		}
 		isFilled_ = true;
 
-		JustificationFormattingManager formattingManager = JustificationFormattingManager
-				.getInstance();
 		Justification<OWLAxiom> justification = getJustification();
-		List<OWLAxiom> formatting = formattingManager
-				.getOrdering(justification);
-		for (OWLAxiom axiom : formatting) {
-			int depth = formattingManager.getIndentation(justification, axiom);
-			JustificationFrameSectionRow row = new JustificationFrameSectionRow(
-					getOWLEditorKit(), this, explanation_, axiom, depth);
-			addRow(row);
+
+		if (justification.getSize() == 0) {
+			setLabel("The axiom is a tautology");
+		} else {
+			JustificationFormattingManager formattingManager = JustificationFormattingManager.getInstance();
+			List<OWLAxiom> formatting = formattingManager.getOrdering(justification);
+			for (OWLAxiom axiom : formatting) {
+				int depth = formattingManager.getIndentation(justification, axiom);
+				JustificationFrameSectionRow row = new JustificationFrameSectionRow(getOWLEditorKit(), this,
+						explanation_, axiom, depth);
+				addRow(row);
+			}
 		}
 	}
 
