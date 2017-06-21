@@ -29,20 +29,16 @@ import org.protege.editor.core.prefs.PreferencesManager;
 public class JustPrefs {
 	private static final String PREFS_KEY_ = "JUSTIFICATION_EXPLANATION_PREFS",
 			INCREMENT_KEY_ = "INCREMENT",
-			INITIAL_NUMBER_KEY_ = "INITIAL_NUMBER",
-			IS_AXIOM_POPULARITY_SHOWN_KEY_ = "AXIOM_POPULARITY";
+			INITIAL_NUMBER_KEY_ = "INITIAL_NUMBER";
 
 	public final static String INCREMENT_DESCRIPTION = "The number of additional justifications displayed after click on “Show next” button",
-			INITIAL_NUMBER_DESCRIPTION = "The number of justifications displayed at the beginning",
-			AXIOM_POPULARITY_DESCRIPTION = "Sets whether the popularity number for each axiom would be displayed";
+			INITIAL_NUMBER_DESCRIPTION = "The number of justifications displayed at the beginning";
 
 	private final static int DEFAULT_INCREMENT_ = 10; 
 	private final static int DEFAULT_INITIAL_NUMBER_ = 20;
-	private final static boolean DEFAULT_IS_AXIOM_POPULARITY_SHOWN_ = false;
 
 	public int increment = DEFAULT_INCREMENT_;
 	public int initialNumber = DEFAULT_INITIAL_NUMBER_;
-	public boolean isPopularityShown = DEFAULT_IS_AXIOM_POPULARITY_SHOWN_;
 
 	private JustPrefs() {
 
@@ -63,8 +59,6 @@ public class JustPrefs {
 		increment = prefs.getInt(INCREMENT_KEY_, DEFAULT_INCREMENT_);
 		initialNumber = prefs.getInt(INITIAL_NUMBER_KEY_,
 				DEFAULT_INITIAL_NUMBER_);
-		isPopularityShown = prefs.getBoolean(IS_AXIOM_POPULARITY_SHOWN_KEY_,
-				DEFAULT_IS_AXIOM_POPULARITY_SHOWN_);
 		return this;
 	}
 
@@ -72,14 +66,12 @@ public class JustPrefs {
 		Preferences prefs = getPrefs();
 		prefs.putInt(INCREMENT_KEY_, increment);
 		prefs.putInt(INITIAL_NUMBER_KEY_, initialNumber);
-		prefs.putBoolean(IS_AXIOM_POPULARITY_SHOWN_KEY_, isPopularityShown);
 		return this;
 	}
 
 	public JustPrefs reset() {
 		increment = DEFAULT_INCREMENT_;
 		initialNumber = DEFAULT_INITIAL_NUMBER_;
-		isPopularityShown = DEFAULT_IS_AXIOM_POPULARITY_SHOWN_;
 		return this;
 	}
 }

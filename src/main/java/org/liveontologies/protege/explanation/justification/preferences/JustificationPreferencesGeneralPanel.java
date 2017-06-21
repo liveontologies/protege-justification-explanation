@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -47,7 +46,6 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 	private static ArrayList<PreferencesListener> listeners_ = new ArrayList<PreferencesListener>();
 
 	private SpinnerNumberModel initialAmountM_, incrementM_;
-	private JCheckBox showPopularityChB_;
 
 	@Override
 	public void initialise() throws Exception {
@@ -55,7 +53,7 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 		PreferencesLayoutPanel panel = new PreferencesLayoutPanel();
 		add(panel, BorderLayout.NORTH);
 
-		panel.addGroup("Installed justification plugins");
+		panel.addGroup("Installed justification services");
 		DefaultListModel<String> pluginModel = new DefaultListModel<>();
 		JustificationComputationServiceManager manager = JustificationComputationServiceManager
 				.get(getOWLEditorKit());
@@ -73,8 +71,7 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 		JComponent spinnerIA = new JSpinner(initialAmountM_);
 		spinnerIA.setMaximumSize(spinnerIA.getPreferredSize());
 		panel.addGroupComponent(spinnerIA);
-		spinnerIA.setToolTipText(
-				JustPrefs.INITIAL_NUMBER_DESCRIPTION);
+		spinnerIA.setToolTipText(JustPrefs.INITIAL_NUMBER_DESCRIPTION);
 
 		panel.addGroup("Increment value");
 		incrementM_ = new SpinnerNumberModel(1, 1, 999, 1);
@@ -82,12 +79,6 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 		spinnerI.setMaximumSize(spinnerI.getPreferredSize());
 		panel.addGroupComponent(spinnerI);
 		spinnerI.setToolTipText(JustPrefs.INCREMENT_DESCRIPTION);
-
-		panel.addGroup("Popularity of axioms");
-		showPopularityChB_ = new JCheckBox("Display popularity");
-		panel.addGroupComponent(showPopularityChB_);
-		showPopularityChB_.setToolTipText(
-				JustPrefs.AXIOM_POPULARITY_DESCRIPTION);
 
 		panel.addGroup("");
 		JButton resetButton = new JButton("Reset");
@@ -114,13 +105,11 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 	private void loadFrom(JustPrefs prefs) {
 		incrementM_.setValue(prefs.increment);
 		initialAmountM_.setValue(prefs.initialNumber);
-		showPopularityChB_.setSelected(prefs.isPopularityShown);
 	}
 
 	private void saveTo(JustPrefs prefs) {
 		prefs.increment = incrementM_.getNumber().intValue();
 		prefs.initialNumber = initialAmountM_.getNumber().intValue();
-		prefs.isPopularityShown = showPopularityChB_.isSelected();
 	}
 
 	private void reset() {
