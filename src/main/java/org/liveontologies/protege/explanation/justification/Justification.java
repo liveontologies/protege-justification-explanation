@@ -1,55 +1,57 @@
 package org.liveontologies.protege.explanation.justification;
 
-/*-
- * #%L
- * Protege Justification Explanation
- * $Id:$
- * $HeadURL:$
- * %%
- * Copyright (C) 2016 - 2017 Live Ontologies Project
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.semanticweb.owlapi.model.AxiomType;
+import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 
-public class Justification<E> {
+public class Justification implements Comparable<Justification> {
 
-	private E entailment_;
-	private Set<OWLAxiom> justification_;
+	private Set<OWLAxiom> axioms_;
 
-	public Justification(E entailment, Set<OWLAxiom> justification) {
-		this.entailment_ = entailment;
-		this.justification_ = Collections.unmodifiableSet(justification);
-	}
+	private final int axiomTypeCount_, classExpressionTypeCount_;
 
-	public E getEntailment() {
-		return entailment_;
+	public Justification(Set<OWLAxiom> axioms) {
+		this.axioms_ = axioms;
+		Set<AxiomType<?>> axiomTypes = new HashSet<>();
+		Set<ClassExpressionType> classExpressionTypes = new HashSet<>();
+		for (OWLAxiom ax : getAxioms()) {
+			axiomTypes.add(ax.getAxiomType());
+			classExpressionTypes.addAll(ax.getNestedClassExpressions().stream()
+					.map(OWLClassExpression::getClassExpressionType)
+					.collect(Collectors.toList()));
+		}
+		this.axiomTypeCount_ = axiomTypes.size();
+		this.classExpressionTypeCount_ = classExpressionTypes.size();
 	}
 
 	public Set<OWLAxiom> getAxioms() {
-		return justification_;
+		return axioms_;
 	}
 
 	public int getSize() {
-		return justification_.size();
+		return axioms_.size();
 	}
 
 	public boolean contains(OWLAxiom axiom) {
-		return justification_.contains(axiom);
+		return axioms_.contains(axiom);
 	}
+
+	@Override
+	public int compareTo(Justification o) {
+		int diff = axiomTypeCount_ - o.axiomTypeCount_;
+		if (diff != 0) {
+			return diff;
+		}
+		diff = classExpressionTypeCount_ - o.classExpressionTypeCount_;
+		if (diff != 0) {
+			return diff;
+		}
+		return getSize() - o.getSize();
+	}
+
 }

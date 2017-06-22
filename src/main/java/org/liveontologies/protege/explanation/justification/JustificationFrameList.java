@@ -69,7 +69,7 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 
 	private static final int AXIOM_INDENT_ = 30;
 
-	private final PresentationManager manager_;
+	private final JustificationManager manager_;
 	private final AxiomSelectionModel axiomSelectionModel_;
 	private final ShowMoreListener showMoreListener_;
 	private final Explanation explanation_;
@@ -77,24 +77,24 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 	private boolean isTransmittingSelectionToModel_ = false;
 
 	public JustificationFrameList(AxiomSelectionModel axiomSelectionModel,
-			PresentationManager manager, ShowMoreListener showMoreListener,
+			JustificationManager manager, ShowMoreListener showMoreListener,
 			Explanation explanation) {
-		this(axiomSelectionModel, manager,
-				new JustificationFrame(manager.getOWLEditorKit(), explanation,
-						showMoreListener),
+		this(axiomSelectionModel,
+				manager, new JustificationFrame(manager.getOwlEditorKit(),
+						explanation, showMoreListener),
 				showMoreListener, explanation);
 	}
 
 	private JustificationFrameList(AxiomSelectionModel axiomSelectionModel,
-			PresentationManager manager, JustificationFrame frame,
+			JustificationManager manager, JustificationFrame frame,
 			ShowMoreListener showMoreListener, Explanation explanation) {
-		super(manager.getOWLEditorKit(), frame);
+		super(manager.getOwlEditorKit(), frame);
 		frame_ = frame;
 		manager_ = manager;
 		axiomSelectionModel_ = axiomSelectionModel;
 		showMoreListener_ = showMoreListener;
 		explanation_ = explanation;
-		OWLEditorKit kit = manager.getOWLEditorKit();
+		OWLEditorKit kit = manager.getOwlEditorKit();
 		setWrap(false);
 		setCellRenderer(new JustificationFrameListRenderer(kit));
 
@@ -179,7 +179,7 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 				decreaseIndentation.getValue(Action.NAME));
 	}
 
-	public void addJustification(Justification<OWLAxiom> justification,
+	public void addJustification(Justification justification,
 			int justificationNo) {
 		int index = explanation_.addJustification(justification);
 		frame_.addSection(index,
@@ -242,8 +242,9 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 		}
 		JustificationFormattingManager formattingManager = JustificationFormattingManager
 				.getInstance();
-		boolean hasMoved = formattingManager
-				.moveAxiomUp(getSelectedJustification(), selectedAxiom);
+		boolean hasMoved = formattingManager.moveAxiomUp(
+				manager_.getEntailment(), getSelectedJustification(),
+				selectedAxiom);
 		int selIndex = getSelectedIndex();
 		getFrame().setRootObject(getRootObject());
 		setSelectedIndex(selIndex - (hasMoved ? 1 : 0));
@@ -256,8 +257,9 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 		}
 		JustificationFormattingManager formattingManager = JustificationFormattingManager
 				.getInstance();
-		boolean hasMoved = formattingManager
-				.moveAxiomDown(getSelectedJustification(), selectedAxiom);
+		boolean hasMoved = formattingManager.moveAxiomDown(
+				manager_.getEntailment(), getSelectedJustification(),
+				selectedAxiom);
 		int selIndex = getSelectedIndex();
 		getFrame().setRootObject(getRootObject());
 		setSelectedIndex(selIndex + (hasMoved ? 1 : 0));
@@ -270,8 +272,8 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 		}
 		JustificationFormattingManager formattingManager = JustificationFormattingManager
 				.getInstance();
-		formattingManager.increaseIndentation(getSelectedJustification(),
-				selectedAxiom);
+		formattingManager.increaseIndentation(manager_.getEntailment(),
+				getSelectedJustification(), selectedAxiom);
 		int selIndex = getSelectedIndex();
 		getFrame().setRootObject(getRootObject());
 		setSelectedIndex(selIndex);
@@ -284,8 +286,8 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 		}
 		JustificationFormattingManager formattingManager = JustificationFormattingManager
 				.getInstance();
-		formattingManager.decreaseIndentation(getSelectedJustification(),
-				selectedAxiom);
+		formattingManager.decreaseIndentation(manager_.getEntailment(),
+				getSelectedJustification(), selectedAxiom);
 		int selIndex = getSelectedIndex();
 		getFrame().setRootObject(getRootObject());
 		setSelectedIndex(selIndex);
@@ -303,7 +305,7 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 		return ((JustificationFrameSectionRow) element).getAxiom();
 	}
 
-	private Justification<OWLAxiom> getSelectedJustification() {
+	private Justification getSelectedJustification() {
 		int selectedIndex = getSelectedIndex();
 		if (selectedIndex == -1) {
 			return null;
@@ -323,20 +325,6 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
-
-		// for (int index = 0; index < getModel().getSize(); index++) {
-		// Object o = getModel().getElementAt(index);
-		// if (o instanceof MListSectionHeader)
-		// if (o instanceof LoadJustificationsSection) {
-		// LoadJustificationsButton button = ((LoadJustificationsSection)
-		// o).getButton();
-		// Rectangle bounds = getCellBounds(index, index);
-		// button.setLocation(bounds.x, bounds.y);
-		// button.setSize(20);
-		// button.paintButtonContent(g2);
-		// }
-		// }
-
 		g.setColor(oldColor);
 	}
 
@@ -368,7 +356,7 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 			JustificationFrameSectionRow row = (JustificationFrameSectionRow) item;
 			OWLAxiom axiom = row.getAxiom();
 
-			if (!manager_.getOWLEditorKit().getOWLModelManager()
+			if (!manager_.getOwlEditorKit().getOWLModelManager()
 					.getActiveOntology().containsAxiom(axiom))
 				return INFERRED_BG_COLOR_;
 
@@ -410,7 +398,8 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 			Insets insets = super.createListItemBorder(list, value, index,
 					isSelected, cellHasFocus).getBorderInsets(this);
 			return BorderFactory.createMatteBorder(insets.top,
-					((JustificationFrameSectionRow) value).getDepth() * AXIOM_INDENT_,
+					((JustificationFrameSectionRow) value).getDepth()
+							* AXIOM_INDENT_,
 					insets.bottom, insets.right, list.getBackground());
 		}
 		return super.createListItemBorder(list, value, index, isSelected,
@@ -438,9 +427,8 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 	}
 
 	private String getPopularityString(JustificationFrameSectionRow row) {
-		OWLAxiom entailment = row.getRoot().getEntailment();
-		int popularity = manager_.getPopularity(entailment, row.getAxiom());
-		int count = manager_.getComputedExplanationCount(entailment);
+		int popularity = manager_.getPopularity(row.getAxiom());
+		int count = manager_.getRemainingJustificationCount();
 		if (popularity == 1) {
 			return "Axiom appears only in THIS justification";
 		} else if (popularity == count) {

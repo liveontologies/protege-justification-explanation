@@ -1,5 +1,7 @@
 package org.liveontologies.protege.explanation.justification.service;
 
+import org.liveontologies.protege.explanation.justification.service.JustificationComputation.InterruptMonitor;
+
 /*-
  * #%L
  * Protege Justification Explanation
@@ -22,22 +24,46 @@ package org.liveontologies.protege.explanation.justification.service;
  * #L%
  */
 
-import javax.swing.JPanel;
-
 import org.protege.editor.core.plugin.ProtegePluginInstance;
 import org.protege.editor.owl.OWLEditorKit;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 /**
  * A skeleton for a plugin that can provide justification based explanation for
  * OWL axioms and inconsistent ontologies
  * 
  * @author Alexander Stupnikov Date: 08-02-2017
+ * @author Yevgeny Kazakov
  */
+public abstract class JustificationComputationService
+		implements ProtegePluginInstance {
 
-public abstract class ComputationService implements ProtegePluginInstance {
+	private OWLEditorKit kit_;
+
+	private OWLAxiom inconsistentAxiom_;
+
+	/**
+	 * Setup function for service. Should be called before computation object
+	 * creation.
+	 *
+	 * @param kit
+	 *            OWLEditorKit to store in the service instance.
+	 */
+	JustificationComputationService setup(OWLEditorKit kit) {
+		kit_ = kit;
+		OWLDataFactory df = kit.getOWLModelManager().getOWLDataFactory();
+		inconsistentAxiom_ = df.getOWLSubClassOfAxiom(df.getOWLThing(),
+				df.getOWLNothing());
+		return this;
+	}
+
+	/**
+	 * @param entailment
+	 * @return {@code true} if {@link #createComputationManager(OWLAxiom)} can
+	 *         compute the output for the given {@link OWLAxiom}
+	 */
+	public abstract boolean canJustify(OWLAxiom entailment);
 
 	/**
 	 * Creates computation object designed to compute everything regarding the
@@ -49,28 +75,23 @@ public abstract class ComputationService implements ProtegePluginInstance {
 	 * @return JustificationComputation for the service. Null if plugin is not
 	 *         able to manage the entailment.
 	 */
-	public abstract JustificationComputation createJustificationComputation(
-			OWLAxiom entailment);
-
-	public JustificationComputation createInconsistentOntologyJustificationComputation() {
-		OWLDataFactory df = getOWLEditorKit().getOWLModelManager()
-				.getOWLDataFactory();
-		OWLSubClassOfAxiom entailment = df
-				.getOWLSubClassOfAxiom(df.getOWLThing(), df.getOWLNothing());
-		return createJustificationComputation(entailment);
-	}
+	public abstract JustificationComputationManager createComputationManager(
+			OWLAxiom entailment, JustificationListener listener,
+			InterruptMonitor monitor);
 
 	/**
-	 * 
-	 * @param entailment
-	 * @return if returns true createJustificationComputation should not return
-	 *         null
+	 * @return {@code true} if
+	 *         {@link #createInconsistentOntologyJustificationComputation()} can
+	 *         compute the output
 	 */
-	public boolean canComputeJustification(OWLAxiom entailment) {
-		return createJustificationComputation(entailment) == null;
+	public boolean canJustifyInconsistentOntology() {
+		return canJustify(inconsistentAxiom_);
 	}
 
-	private OWLEditorKit kit_;
+	public JustificationComputationManager createInconsistentOntologyJustificationComputation(
+			JustificationListener listener, InterruptMonitor monitor) {
+		return createComputationManager(inconsistentAxiom_, listener, monitor);
+	}
 
 	/**
 	 * Should return a name for the plugin
@@ -93,40 +114,4 @@ public abstract class ComputationService implements ProtegePluginInstance {
 		return kit_;
 	}
 
-	/**
-	 * Setup function for service. Should be called before computation object
-	 * creation.
-	 *
-	 * @param kit
-	 *            OWLEditorKit to store in the service instance.
-	 */
-	ComputationService stp(OWLEditorKit kit) {
-		kit_ = kit;
-		return this;
-	}
-
-	private ComputationServiceListener listener_ = null;
-
-	void setListener(ComputationServiceListener listener) {
-		listener_ = listener;
-	}
-
-	/**
-	 * Could Return visual control pane which will be displayed while the plugin
-	 * is chosen
-	 * 
-	 * @return the panel to be displayed. Null if panel is not provided.
-	 */
-	public JPanel getSettingsPanel() {
-		return null;
-	}
-
-	/**
-	 * Allows plugin to ask to re-display justification by calling this method.
-	 * When called, JustificationComputation will be requested again.
-	 */
-	public void settingsChanged() {
-		if (listener_ != null)
-			listener_.redrawingCalled();
-	}
 }

@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 public class Explanation {
-	private final ArrayList<Justification<OWLAxiom>> justifications_;
+	private final ArrayList<Justification> justifications_;
 	private final OWLAxiom entailment_;
 
 	public Explanation(OWLAxiom entailment) {
@@ -35,11 +35,11 @@ public class Explanation {
 		entailment_ = entailment;
 	}
 
-	public Justification<OWLAxiom> getJustification(int index) {
+	public Justification getJustification(int index) {
 		return justifications_.get(index);
 	}
 
-	public int addJustification(Justification<OWLAxiom> justification) {
+	public int addJustification(Justification justification) {
 		justifications_.add(justification);
 		return justifications_.size() - 1;
 	}

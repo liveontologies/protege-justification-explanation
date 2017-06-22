@@ -33,7 +33,7 @@ import org.protege.editor.owl.OWLEditorKit;
  */
 
 public class JustificationComputationPlugin
-		extends AbstractProtegePlugin<ComputationService> {
+		extends AbstractProtegePlugin<JustificationComputationService> {
 
 	private final OWLEditorKit kit_;
 
@@ -52,8 +52,8 @@ public class JustificationComputationPlugin
 	}
 
 	@Override
-	public ComputationService newInstance() throws ClassNotFoundException,
+	public JustificationComputationService newInstance() throws ClassNotFoundException,
 			IllegalAccessException, InstantiationException {
-		return super.newInstance().stp(kit_);
+		return super.newInstance().setup(kit_);
 	}
 }

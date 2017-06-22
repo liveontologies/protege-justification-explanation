@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -13,7 +14,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import org.liveontologies.protege.explanation.justification.JustificationComputationServiceManager;
-import org.liveontologies.protege.explanation.justification.service.ComputationService;
+import org.liveontologies.protege.explanation.justification.service.JustificationComputationService;
 import org.protege.editor.core.ui.preferences.PreferencesLayoutPanel;
 import org.protege.editor.owl.ui.preferences.OWLPreferencesPanel;
 
@@ -46,6 +47,7 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 	private static ArrayList<PreferencesListener> listeners_ = new ArrayList<PreferencesListener>();
 
 	private SpinnerNumberModel initialAmountM_, incrementM_;
+	private JCheckBox showPopularityChB_;
 
 	@Override
 	public void initialise() throws Exception {
@@ -53,11 +55,11 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 		PreferencesLayoutPanel panel = new PreferencesLayoutPanel();
 		add(panel, BorderLayout.NORTH);
 
-		panel.addGroup("Installed justification services");
+		panel.addGroup("Installed justification plugins");
 		DefaultListModel<String> pluginModel = new DefaultListModel<>();
 		JustificationComputationServiceManager manager = JustificationComputationServiceManager
 				.get(getOWLEditorKit());
-		for (ComputationService service : manager.getServices())
+		for (JustificationComputationService service : manager.getServices())
 			pluginModel.addElement(service.getName());
 		JList<String> pluginList = new JList<>(pluginModel);
 		pluginList.setToolTipText(
@@ -71,7 +73,8 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 		JComponent spinnerIA = new JSpinner(initialAmountM_);
 		spinnerIA.setMaximumSize(spinnerIA.getPreferredSize());
 		panel.addGroupComponent(spinnerIA);
-		spinnerIA.setToolTipText(JustPrefs.INITIAL_NUMBER_DESCRIPTION);
+		spinnerIA.setToolTipText(
+				JustPrefs.INITIAL_NUMBER_DESCRIPTION);
 
 		panel.addGroup("Increment value");
 		incrementM_ = new SpinnerNumberModel(1, 1, 999, 1);

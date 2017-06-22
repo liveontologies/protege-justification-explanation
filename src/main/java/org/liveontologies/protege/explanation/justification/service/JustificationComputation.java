@@ -1,93 +1,56 @@
 package org.liveontologies.protege.explanation.justification.service;
 
-/*-
- * #%L
- * Protege Justification Explanation
- * $Id:$
- * $HeadURL:$
- * %%
- * Copyright (C) 2016 - 2017 Live Ontologies Project
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
+import java.util.Set;
 
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
- * Designed to compute and keep track of justifications
+ * An object using which justification can be computed
  * 
- * @author Alexander Stupnikov Date: 08-02-2017
+ * @author Yevgeny Kazakov
+ *
  */
-
 public abstract class JustificationComputation {
 
-	private final OWLAxiom entailment_;
+	private final JustificationListener listener_;
 
-	/**
-	 * Constructs a computation object
-	 * 
-	 * @param entailment
-	 *            an axiom to compute justifications for
-	 */
-	public JustificationComputation(OWLAxiom entailment) {
-		entailment_ = entailment;
+	private final InterruptMonitor monitor_;
+
+	public JustificationComputation(JustificationListener listener,
+			InterruptMonitor monitor) {
+		this.listener_ = listener;
+		this.monitor_ = monitor;
 	}
 
 	/**
-	 * Should initiate a computation process
+	 * Initiate the computation of justifications;
 	 */
 	public abstract void startComputation();
 
 	/**
-	 * When called, asks the plugin to stop computation process
-	 */
-	public abstract void interruptComputation();
-
-	/**
-	 * Should return whether the computation object was notified to stop
-	 * computation process
+	 * Should be called each time a new justification is found
 	 * 
-	 * @return whether the computation object was notified to stop computation
-	 *         process or not
+	 * @param justification
 	 */
-	public abstract boolean isComputationInterrupted();
-
-	/**
-	 * Should store a listener to notify about computed justifications
-	 * 
-	 * @param listener
-	 *            listener which should be notified about computed
-	 *            justifications
-	 */
-	public abstract void addComputationListener(
-			JustificationComputationListener listener);
-
-	/**
-	 * Should remove the specified listener
-	 * 
-	 * @param listener
-	 *            listener to notify no more
-	 */
-	public abstract void removeComputationListener(
-			JustificationComputationListener listener);
-
-	/**
-	 * Returns the entailment
-	 * 
-	 * @return an axiom to compute justifications for
-	 */
-	public OWLAxiom getEntailment() {
-		return entailment_;
+	protected void notifyJustificationFound(Set<OWLAxiom> justification) {
+		listener_.justificationFound(justification);
 	}
+
+	/**
+	 * @return {@code true} if the computation has been interrupted and
+	 *         {@code false} otherwise
+	 */
+	public boolean isInterrupted() {
+		return monitor_.isInterrupted();
+	}
+
+	public interface InterruptMonitor {
+
+		/**
+		 * @return {@code true} if the computation should be interrupted
+		 */
+		boolean isInterrupted();
+
+	}
+
 }

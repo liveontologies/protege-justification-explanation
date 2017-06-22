@@ -22,7 +22,7 @@ package org.liveontologies.protege.explanation.justification;
  * #L%
  */
 
-import org.liveontologies.protege.explanation.justification.service.ComputationService;
+import org.liveontologies.protege.explanation.justification.service.JustificationComputationService;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.explanation.ExplanationResult;
 import org.protege.editor.owl.ui.explanation.ExplanationService;
@@ -44,8 +44,8 @@ public class PresentationService extends ExplanationService {
 
 	@Override
 	public boolean hasExplanation(OWLAxiom axiom) {
-		for (ComputationService service : manager_.getServices())
-			if (service.canComputeJustification(axiom))
+		for (JustificationComputationService service : manager_.getServices())
+			if (service.canJustify(axiom))
 				return true;
 		return false;
 	}

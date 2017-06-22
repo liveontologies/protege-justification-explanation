@@ -26,6 +26,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -34,9 +36,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
-import org.liveontologies.protege.explanation.justification.service.JustificationComputation;
+import org.liveontologies.protege.explanation.justification.service.JustificationComputation.InterruptMonitor;
+import org.liveontologies.protege.explanation.justification.service.JustificationListener;
 /*
  * Copyright (C) 2009, University of Manchester
  *
@@ -59,13 +62,16 @@ import org.liveontologies.protege.explanation.justification.service.Justificatio
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
  * Author: Matthew Horridge The University of Manchester Information Management
  * Group Date: 14-Oct-2009
+ * 
+ * @author Yevgeny Kazakov
  */
-
-public class JustificationProgressPanel extends JPanel {
+public class JustificationProgressPanel extends JPanel
+		implements JustificationListener, InterruptMonitor, ActionListener {
 
 	private static final long serialVersionUID = 5548156306411811469L;
 
@@ -73,12 +79,14 @@ public class JustificationProgressPanel extends JPanel {
 
 	private final JLabel messageLabel_;
 	private final Action cancelAction_;
+	private final Timer timer_;
+	private boolean isInterrupted_ = false;
 	private int nFound_ = 0;
 
 	/**
 	 * Creates a new <code>JPanel</code> with a double buffer and a flow layout.
 	 */
-	public JustificationProgressPanel(JustificationComputation computation) {
+	public JustificationProgressPanel() {
 		setLayout(new BorderLayout(12, 12));
 		setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 		setPreferredSize(new Dimension(400, 100));
@@ -92,14 +100,17 @@ public class JustificationProgressPanel extends JPanel {
 		cancelAction_ = new AbstractAction("Stop searching") {
 			private static final long serialVersionUID = 1784308350971019508L;
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				computation.interruptComputation();
+				interrupt();
 				setEnabled(false);
 			}
 		};
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		add(buttonPanel, BorderLayout.SOUTH);
 		buttonPanel.add(new JButton(cancelAction_));
+		timer_ = new Timer(20, this);
+		timer_.start();
 	}
 
 	public void reset() {
@@ -107,13 +118,32 @@ public class JustificationProgressPanel extends JPanel {
 		cancelAction_.setEnabled(true);
 	}
 
-	public void setExplanationCount(int count) {
-		nFound_ = count;
-		Runnable runnable = () -> messageLabel_.setText(MESSAGE + nFound_);
-		if (SwingUtilities.isEventDispatchThread()) {
-			runnable.run();
-		} else {
-			SwingUtilities.invokeLater(runnable);
-		}
+	public synchronized int getNoFoundJustifications() {
+		return nFound_;
 	}
+
+	@Override
+	public synchronized void justificationFound(Set<OWLAxiom> justification) {
+		nFound_++;
+	}
+
+	@Override
+	public synchronized boolean isInterrupted() {
+		return isInterrupted_;
+	}
+
+	private synchronized void interrupt() {
+		isInterrupted_ = true;
+	}
+
+	public synchronized void clearInterrupt() {
+		isInterrupted_ = false;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		messageLabel_.setText(MESSAGE + nFound_);
+		timer_.restart();
+	}
+
 }

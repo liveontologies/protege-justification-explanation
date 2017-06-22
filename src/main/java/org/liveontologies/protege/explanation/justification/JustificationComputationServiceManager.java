@@ -24,46 +24,38 @@ package org.liveontologies.protege.explanation.justification;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.liveontologies.protege.explanation.justification.service.ComputationService;
 import org.liveontologies.protege.explanation.justification.service.JustificationComputationPlugin;
 import org.liveontologies.protege.explanation.justification.service.JustificationComputationPluginLoader;
+import org.liveontologies.protege.explanation.justification.service.JustificationComputationService;
 import org.protege.editor.core.Disposable;
 import org.protege.editor.owl.OWLEditorKit;
 
 /**
- * Keeps track of the available specified {@link ComputationService} plugins.
+ * Keeps track of the available {@link JustificationComputationService} plugins.
  * 
  * @author Pavel Klinov pavel.klinov@uni-ulm.de
  * 
  * @author Yevgeny Kazakov
  */
-
 public class JustificationComputationServiceManager implements Disposable {
 
-	public static String LAST_CHOOSEN_SERVICE_ID = null;
 	private static final String KEY_ = "org.liveontologies.protege.explanation.justification.services";
 
 	private final OWLEditorKit kit_;
-	private final Collection<ComputationService> services_;
-	private final Map<ComputationService, String> serviceIds_;
-	private ComputationService selectedService_ = null;
+
+	private final Collection<JustificationComputationService> services_;
 
 	private JustificationComputationServiceManager(OWLEditorKit kit)
 			throws Exception {
 		kit_ = kit;
-		services_ = new ArrayList<ComputationService>();
-		serviceIds_ = new HashMap<ComputationService, String>();
+		services_ = new ArrayList<JustificationComputationService>();
 		JustificationComputationPluginLoader loader = new JustificationComputationPluginLoader(
 				kit_);
 		for (JustificationComputationPlugin plugin : loader.getPlugins()) {
-			ComputationService service = plugin.newInstance();
+			JustificationComputationService service = plugin.newInstance();
 			service.initialise();
 			services_.add(service);
-			serviceIds_.put(service,
-					plugin.getIExtension().getUniqueIdentifier());
 		}
 	}
 
@@ -80,29 +72,17 @@ public class JustificationComputationServiceManager implements Disposable {
 
 	@Override
 	public void dispose() throws Exception {
-		for (ComputationService service : services_) {
+		for (JustificationComputationService service : services_) {
 			service.dispose();
 		}
 	}
 
-	public OWLEditorKit getOWLEditorKit() {
+	public OWLEditorKit getOwlEditorKit() {
 		return kit_;
 	}
 
-	public Collection<ComputationService> getServices() {
+	public Collection<JustificationComputationService> getServices() {
 		return services_;
 	}
 
-	public ComputationService getSelectedService() {
-		return selectedService_;
-	}
-
-	public void selectService(ComputationService service) {
-		selectedService_ = service;
-		LAST_CHOOSEN_SERVICE_ID = getIdForService(service);
-	}
-
-	public String getIdForService(ComputationService service) {
-		return serviceIds_.get(service);
-	}
 }

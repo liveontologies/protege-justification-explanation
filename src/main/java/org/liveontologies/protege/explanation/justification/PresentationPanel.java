@@ -28,11 +28,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -45,24 +41,15 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import org.liveontologies.protege.explanation.justification.preferences.JustPrefPanel;
+import org.liveontologies.protege.explanation.justification.preferences.JustPrefs;
 import org.liveontologies.protege.explanation.justification.preferences.JustificationPreferencesGeneralPanel;
-import org.liveontologies.protege.explanation.justification.service.ComputationService;
-import org.liveontologies.protege.explanation.justification.service.ComputationServiceListener;
+import org.liveontologies.protege.explanation.justification.service.JustificationComputationService;
 import org.protege.editor.core.Disposable;
-import org.protege.editor.core.ProtegeManager;
 import org.protege.editor.core.plugin.PluginUtilities;
-import org.protege.editor.owl.OWLEditorKit;
-import org.protege.editor.owl.model.event.OWLModelManagerChangeEvent;
-import org.protege.editor.owl.model.event.OWLModelManagerListener;
-import org.semanticweb.owlapi.model.AxiomType;
-import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLRuntimeException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /*
  * Copyright (C) 2008, University of Manchester
  *
@@ -91,37 +78,29 @@ import org.slf4j.LoggerFactory;
  * The component that displays a set of justification
  */
 
-public class PresentationPanel extends JPanel implements Disposable,
-		AxiomSelectionModel, ComputationServiceListener, ShowMoreListener {
+public class PresentationPanel extends JPanel
+		implements Disposable, AxiomSelectionModel,
+		JustificationManager.ChangeListener, ShowMoreListener {
 
 	private static final long serialVersionUID = 5025702425365703918L;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(PresentationPanel.class);
-
-	private final OWLEditorKit kit_;
-	private final PresentationManager manager_;
+	private final JustificationManager manager_;
+	private final ExplanationGeneratorProgressDialog progressDialog_;
 	private final JScrollPane scrollPane_;
 	private final JComponent serviceSettingsDisplayHolder_;
 	private final JustificationFrameList frameList_;
-	private PriorityQueue<Justification<OWLAxiom>> displayedJustifications_;
 	private JLabel lNumberInfo_;
 	private final AxiomSelectionModelImpl selectionModel_;
+	private int displayedJustificationCount_ = 0;
 
 	public PresentationPanel(JustificationComputationServiceManager manager,
 			OWLAxiom entailment) {
-		this(new PresentationManager(
-				ProtegeManager.getInstance()
-						.getFrame(manager.getOWLEditorKit().getWorkspace()),
-				manager, entailment));
-	}
-
-	public PresentationPanel(PresentationManager manager) {
-		this.manager_ = manager;
-		manager.setComputationServiceListener(this);
-		this.kit_ = this.manager_.getOWLEditorKit();
-
-		selectionModel_ = new AxiomSelectionModelImpl();
+		this.selectionModel_ = new AxiomSelectionModelImpl();
+		this.progressDialog_ = new ExplanationGeneratorProgressDialog(
+				manager.getOwlEditorKit());
+		this.manager_ = new JustificationManager(manager, entailment,
+				progressDialog_, progressDialog_);
+		manager_.addListener(this);
 
 		setLayout(new BorderLayout());
 
@@ -141,7 +120,7 @@ public class PresentationPanel extends JPanel implements Disposable,
 					try {
 						JustPrefPanel prefPanel = new JustPrefPanel();
 						prefPanel.setup(prefPanel.getLabel(),
-								manager.getOWLEditorKit());
+								manager.getOwlEditorKit());
 						prefPanel.initialise();
 						Dimension screenSize = Toolkit.getDefaultToolkit()
 								.getScreenSize();
@@ -156,7 +135,7 @@ public class PresentationPanel extends JPanel implements Disposable,
 								JOptionPane.PLAIN_MESSAGE,
 								JOptionPane.DEFAULT_OPTION);
 						JDialog dlg = op.createDialog(
-								manager.getOWLEditorKit().getWorkspace(),
+								manager.getOwlEditorKit().getWorkspace(),
 								"Justification preferences");
 						dlg.setResizable(true);
 						dlg.setVisible(true);
@@ -172,53 +151,18 @@ public class PresentationPanel extends JPanel implements Disposable,
 			panel1.add(b, BorderLayout.EAST);
 		}
 
-		Collection<ComputationService> services = manager.getServices();
-		switch (services.size()) {
-		case 0:
-			break;
-		case 1:
-			manager.selectService(services.iterator().next());
-			JLabel label = new JLabel("Using " + manager.getSelectedService()
-					+ " as a computation service");
-			panel1.add(label, BorderLayout.EAST);
-			break;
-		default:
-			JComboBox<ComputationService> selector = new JComboBox<ComputationService>();
-			ComputationService serviceToSelect = services.iterator().next();
-			for (ComputationService service : services)
-				if (service.canComputeJustification(manager.getEntailment())) {
-					selector.addItem(service);
-					if (JustificationComputationServiceManager.LAST_CHOOSEN_SERVICE_ID == manager
-							.getIdForService(service))
-						serviceToSelect = service;
-				}
-			selector.setSelectedItem(serviceToSelect);
-			manager.selectService(serviceToSelect);
-			selector.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					manager.selectService(
-							(ComputationService) selector.getSelectedItem());
-					updateSettingsPanel();
-					manager.clearJustificationsCache();
-					recompute();
-				}
-			});
-			panel1.add(selector, BorderLayout.CENTER);
-		}
-
 		headerPanel.add(panel1);
 
 		serviceSettingsDisplayHolder_ = new JPanel(new BorderLayout());
 		serviceSettingsDisplayHolder_
 				.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
-		updateSettingsPanel();
 		headerPanel.add(serviceSettingsDisplayHolder_);
 
 		add(headerPanel, BorderLayout.NORTH);
 
 		Explanation explanation_ = new Explanation(manager_.getEntailment());
-		frameList_ = new JustificationFrameList(this, manager, this, explanation_);
+		frameList_ = new JustificationFrameList(this, manager_, this,
+				explanation_);
 		scrollPane_ = new JScrollPane(frameList_);
 		scrollPane_.setMinimumSize(new Dimension(10, 10));
 		scrollPane_.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
@@ -227,62 +171,73 @@ public class PresentationPanel extends JPanel implements Disposable,
 
 		add(scrollPane_, BorderLayout.CENTER);
 
-		recompute();
+		Collection<JustificationComputationService> services = manager
+				.getServices();
+		JustificationComputationService selectedService;
+		switch (services.size()) {
+		case 0:
+			break;
+		case 1:
+			selectedService = services.iterator().next();
+			manager_.selectJusificationService(selectedService);
+			JLabel label = new JLabel(
+					"Using " + selectedService + " as a computation service");
+			panel1.add(label, BorderLayout.EAST);
+			break;
+		default:
+			JComboBox<JustificationComputationService> selector = new JComboBox<JustificationComputationService>();
+			selectedService = services.iterator().next();
+			for (JustificationComputationService service : services)
+				if (service.canJustify(entailment)) {
+					selector.addItem(service);
+				}
+			selector.setSelectedItem(selectedService);
+			manager_.selectJusificationService(selectedService);
+			selector.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					manager_.selectJusificationService(
+							(JustificationComputationService) selector
+									.getSelectedItem());
+				}
+			});
+			panel1.add(selector, BorderLayout.CENTER);
+		}
+
 	}
 
 	@Override
 	public String getIncrementString() {
-		try {
-			if (displayedJustifications_ == null)
-				return "Show next "
-						+ manager_.getPresentationSettings().getIncrement()
-						+ " justifications";
-			int inc = Math.min(
-					manager_.getPresentationSettings().getIncrement(),
-					getDisplayedExplanationsAmout() - manager_
-							.getPresentationSettings().getCurrentCount());
-			return "Show next " + inc + " justifications of "
-					+ getDisplayedExplanationsAmout() + " in total";
-		} catch (Exception ex) {
-			return "Show next justifications";
-		}
+		int remainingJustificationsCount = manager_
+				.getRemainingJustificationCount();
+		int inc = Math.min(JustPrefs.create().load().increment,
+				remainingJustificationsCount);
+		return "Show next " + inc + " justifications of "
+				+ (displayedJustificationCount_ + remainingJustificationsCount)
+				+ " in total";
 	}
 
 	public String getNumberString() {
-		int current = manager_.getPresentationSettings().getCurrentCount();
+		String s = displayedJustificationCount_ + " justification"
+				+ (displayedJustificationCount_ == 1 ? " is shown"
+						: "s are shown");
+		int remainingJustificationsCount = manager_
+				.getRemainingJustificationCount();
 
-		String s = current + " justification"
-				+ (current == 1 ? " is shown" : "s are shown");
-
-		if (current == getDisplayedExplanationsAmout())
+		if (remainingJustificationsCount == 0) {
 			return "All " + s;
-		else
-			return s + " of " + getDisplayedExplanationsAmout() + " in total";
+		} else {
+			return s + " of " + (displayedJustificationCount_
+					+ remainingJustificationsCount) + " in total";
+		}
 	}
 
 	private void updateHeaderPanel() {
-		lNumberInfo_.setText(getNumberString());
-		frameList_.setNextSectionVisibility(manager_.getPresentationSettings()
-				.getCurrentCount() != getDisplayedExplanationsAmout());
-		serviceSettingsDisplayHolder_.validate();
-	}
-
-	@Override
-	public Dimension getMinimumSize() {
-		return new Dimension(10, 10);
-	}
-
-	@Override
-	public void redrawingCalled() {
-		manager_.clearJustificationsCache();
-		recompute();
-	}
-
-	private void updateSettingsPanel() {
-		JPanel settingsPanel = manager_.getSelectedService().getSettingsPanel();
+		JPanel settingsPanel = manager_.getSettingsPanel();
 		serviceSettingsDisplayHolder_.removeAll();
 
-		lNumberInfo_ = new JLabel(getIncrementString());
+		lNumberInfo_ = new JLabel(getNumberString());
 		JustificationPreferencesGeneralPanel.addListener(
 				new JustificationPreferencesGeneralPanel.PreferencesListener() {
 					@Override
@@ -295,81 +250,44 @@ public class PresentationPanel extends JPanel implements Disposable,
 		if (settingsPanel != null)
 			serviceSettingsDisplayHolder_.add(settingsPanel, BorderLayout.WEST);
 		validate();
+
+		frameList_.setNextSectionVisibility(
+				manager_.getRemainingJustificationCount() != 0);
+		serviceSettingsDisplayHolder_.validate();
 	}
 
-	private void recompute() {
-		try {
-			frameList_.clear();
-			scrollPane_.validate();
-
-			Set<Justification<OWLAxiom>> e = manager_.getJustifications();
-			setDisplayedExplanationsAmout(e.size());
-			displayedJustifications_ = new PriorityQueue<>(
-					Math.max(getDisplayedExplanationsAmout(), 1),
-					new Comparator<Justification<OWLAxiom>>() {
-						@Override
-						public int compare(Justification<OWLAxiom> o1,
-								Justification<OWLAxiom> o2) {
-							int diff = getAxiomTypes(o1).size()
-									- getAxiomTypes(o2).size();
-							if (diff != 0) {
-								return diff;
-							}
-							diff = getClassExpressionTypes(o1).size()
-									- getClassExpressionTypes(o2).size();
-							if (diff != 0) {
-								return diff;
-							}
-							return o1.getSize() - o2.getSize();
-						}
-					});
-			displayedJustifications_.addAll(e);
-			manager_.getPresentationSettings().setCurrentCount(0);
-
-			updateHeaderPanel();
-
-			updatePanel(manager_.getPresentationSettings().getInitialAmount());
-		} catch (OWLRuntimeException e) {
-			logger.error("An error occurred whilst computing explanations: {}",
-					e.getMessage(), e);
-		}
+	@Override
+	public Dimension getMinimumSize() {
+		return new Dimension(10, 10);
 	}
 
-	private void updatePanel(int diff) {
-		PresentationSettings settings = manager_.getPresentationSettings();
-		int maxCnt = Math.min(settings.getCurrentCount() + diff,
-				getDisplayedExplanationsAmout());
-
-		for (int nJust = settings.getCurrentCount()
-				+ 1; nJust <= maxCnt; nJust++) {
-			frameList_.addJustification(displayedJustifications_.poll(), nJust);
-			frameList_.validate();
-		}
-
-		settings.setCurrentCount(maxCnt);
+	private void updateSettingsPanel() {
 		updateHeaderPanel();
+	}
 
+	private void updateJustifications() {
+		displayedJustificationCount_ = 0;
+		frameList_.clear();
+		loadMoreJustifications(JustPrefs.create().load().initialNumber);
+		updateHeaderPanel();
+	}
+
+	private void loadMoreJustifications(int maxToLoad) {
+		for (;;) {
+			if (maxToLoad <= 0) {
+				break;
+			}
+			maxToLoad--;
+			Justification next = manager_.pollJustification();
+			if (next == null) {
+				break;
+			}
+			displayedJustificationCount_++;
+			frameList_.addJustification(next, displayedJustificationCount_);
+		}
+		// updateHeaderPanel();
+		frameList_.validate();
 		scrollPane_.validate();
-	}
-
-	private Set<AxiomType<?>> getAxiomTypes(
-			Justification<OWLAxiom> justification) {
-		Set<AxiomType<?>> result = new HashSet<>();
-		for (OWLAxiom ax : justification.getAxioms()) {
-			result.add(ax.getAxiomType());
-		}
-		return result;
-	}
-
-	private Set<ClassExpressionType> getClassExpressionTypes(
-			Justification<OWLAxiom> justification) {
-		Set<ClassExpressionType> result = new HashSet<>();
-		for (OWLAxiom ax : justification.getAxioms()) {
-			result.addAll(ax.getNestedClassExpressions().stream()
-					.map(OWLClassExpression::getClassExpressionType)
-					.collect(Collectors.toList()));
-		}
-		return result;
 	}
 
 	@Override
@@ -405,27 +323,30 @@ public class PresentationPanel extends JPanel implements Disposable,
 
 	@Override
 	public Dimension getPreferredSize() {
-		Dimension workspaceSize = kit_.getWorkspace().getSize();
+		Dimension workspaceSize = manager_.getOwlEditorKit().getWorkspace()
+				.getSize();
 		int width = (int) (workspaceSize.getWidth() * 0.8);
 		int height = (int) (workspaceSize.getHeight() * 0.7);
 		return new Dimension(width, height);
 	}
 
-	private int getDisplayedExplanationsAmout() {
-		return manager_.getPresentationSettings().getExplanationsCount();
-	}
-
-	private void setDisplayedExplanationsAmout(int count) {
-		manager_.getPresentationSettings().setExplanationsCount(count);
-	}
-
 	@Override
 	public void showMore(int number) {
-		updatePanel(number);
+		loadMoreJustifications(number);
 	}
 
 	@Override
 	public void showMore() {
-		showMore(manager_.getPresentationSettings().getIncrement());
+		showMore(JustPrefs.create().load().increment);
+	}
+
+	@Override
+	public void justificationsRecomputed() {
+		SwingUtilities.invokeLater(() -> updateJustifications());
+	}
+
+	@Override
+	public void settingsPanelChanged() {
+		SwingUtilities.invokeLater(() -> updateSettingsPanel());
 	}
 }

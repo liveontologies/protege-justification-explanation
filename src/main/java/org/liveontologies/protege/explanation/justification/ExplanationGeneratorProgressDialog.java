@@ -25,26 +25,35 @@ package org.liveontologies.protege.explanation.justification;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
+import java.util.Set;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
-import org.liveontologies.protege.explanation.justification.service.JustificationComputation;
+import org.liveontologies.protege.explanation.justification.service.JustificationComputation.InterruptMonitor;
+import org.protege.editor.core.ProtegeManager;
+import org.protege.editor.owl.OWLEditorKit;
+import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
  * Author: Matthew Horridge Stanford University Bio-Medical Informatics Research
  * Group Date: 20/03/2012
  */
 
-public class ExplanationGeneratorProgressDialog extends JDialog {
+public class ExplanationGeneratorProgressDialog extends JDialog
+		implements JustificationComputationListener, InterruptMonitor {
 
 	private static final long serialVersionUID = 2729423646823799401L;
 	private final JustificationProgressPanel panel_;
 
-	public ExplanationGeneratorProgressDialog(Frame owner,
-			JustificationComputation computation) {
+	public ExplanationGeneratorProgressDialog(OWLEditorKit editorKit) {
+		this(ProtegeManager.getInstance().getFrame(editorKit.getWorkspace()));
+	}
+
+	public ExplanationGeneratorProgressDialog(Frame owner) {
 		super(owner, "Computing explanations", true);
-		panel_ = new JustificationProgressPanel(computation);
+		panel_ = new JustificationProgressPanel();
 		setContentPane(panel_);
 		pack();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -58,7 +67,25 @@ public class ExplanationGeneratorProgressDialog extends JDialog {
 		panel_.reset();
 	}
 
-	public void setExplanationCount(int count) {
-		panel_.setExplanationCount(count);
+	@Override
+	public void justificationFound(Set<OWLAxiom> justification) {
+		panel_.justificationFound(justification);
+	}
+
+	@Override
+	public void computationStarted() {
+		panel_.reset();
+		SwingUtilities.invokeLater(() -> setVisible(true));
+	}
+
+	@Override
+	public void computationFinished() {
+		panel_.clearInterrupt();
+		SwingUtilities.invokeLater(() -> setVisible(false));
+	}
+
+	@Override
+	public boolean isInterrupted() {
+		return panel_.isInterrupted();
 	}
 }
