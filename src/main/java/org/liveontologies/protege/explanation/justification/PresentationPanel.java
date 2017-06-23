@@ -192,8 +192,6 @@ public class PresentationPanel extends JPanel
 				if (service.canJustify(entailment)) {
 					selector.addItem(service);
 				}
-			selector.setSelectedItem(selectedService);
-			manager_.selectJusificationService(selectedService);
 			selector.addActionListener(new ActionListener() {
 
 				@Override
@@ -203,6 +201,7 @@ public class PresentationPanel extends JPanel
 									.getSelectedItem());
 				}
 			});
+			selector.setSelectedItem(selectedService);
 			panel1.add(selector, BorderLayout.CENTER);
 		}
 
