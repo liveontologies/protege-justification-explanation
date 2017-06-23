@@ -167,15 +167,16 @@ public class JustificationManager implements
 		if (selectedComputationService_ == service) {
 			return;
 		}
+		selectedComputationService_ = service;
 		if (computationManager_ != null) {
 			computationManager_.removeListener(this);
 		}
 		computationManager_ = service.createComputationManager(entailment_,
 				this, interruptMonitor_);
-		computationManager_.addListener(this);
 		computationSettingsPanel_ = computationManager_.getSettingsPanel();
 		notifySettingsPanelChanged();
 		recomputeJustifications();
+		computationManager_.addListener(this);
 	}
 
 	@Override
