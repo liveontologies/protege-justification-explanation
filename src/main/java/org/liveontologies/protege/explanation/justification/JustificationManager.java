@@ -18,6 +18,7 @@ import org.liveontologies.protege.explanation.justification.service.Justificatio
 import org.liveontologies.protege.explanation.justification.service.JustificationComputationManager;
 import org.liveontologies.protege.explanation.justification.service.JustificationComputationService;
 import org.liveontologies.protege.explanation.justification.service.JustificationListener;
+import org.liveontologies.protege.explanation.justification.service.JustificationPriorityComparator;
 import org.protege.editor.core.log.LogBanner;
 import org.protege.editor.owl.OWLEditorKit;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -266,19 +267,21 @@ public class JustificationManager implements
 	}
 
 	// TODO: use SwingWorker
-	private class ExplanationComputationTask implements Runnable {
+	private class ExplanationComputationTask implements Runnable,
+			JustificationPriorityComparator<Justification> {
 
 		private final JustificationComputation computation_;
 
 		private ExplanationComputationTask() {
 			this.computation_ = computationManager_.getComputation();
+			computation_.setPrefferredPriority(this);
 		}
 
 		@Override
 		public void run() {
 			try {
 				LOGGER_.info(LogBanner.start("Computing Justifications"));
-				LOGGER_.info("Computing explanations for {}", entailment_);
+				LOGGER_.info("Computing justifications for {}", entailment_);
 				computationListener_.computationStarted();
 				computation_.startComputation();
 			} catch (Throwable e) {
@@ -290,6 +293,16 @@ public class JustificationManager implements
 				LOGGER_.info(LogBanner.end());
 				notifyJustificationsRecomputed();
 			}
+		}
+
+		@Override
+		public int compare(Justification j1, Justification j2) {
+			return j1.compareTo(j2);
+		}
+
+		@Override
+		public Justification getPriority(Set<OWLAxiom> justification) {
+			return new Justification(justification);
 		}
 
 	}

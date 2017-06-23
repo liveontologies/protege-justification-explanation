@@ -23,6 +23,23 @@ public abstract class JustificationComputation {
 	}
 
 	/**
+	 * Sets the preferred priority for returning of justifications
+	 * 
+	 * @param comparator
+	 *            {@link JustificationPriorityComparator} that defines the order
+	 *            in which the justifications should be reported by the
+	 *            computation: justification with the smaller values of
+	 *            {@link JustificationPriorityComparator#getPriority} under the
+	 *            comparator should be returned first
+	 * @return {@code true} if the value has been set and will be used in the
+	 *         computation and {@code false} otherwise
+	 */
+	public <P> boolean setPrefferredPriority(
+			JustificationPriorityComparator<P> comparator) {
+		return false;
+	}
+
+	/**
 	 * Initiate the computation of justifications;
 	 */
 	public abstract void startComputation();

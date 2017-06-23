@@ -60,20 +60,24 @@ public abstract class JustificationComputationService
 
 	/**
 	 * @param entailment
-	 * @return {@code true} if {@link #createComputationManager(OWLAxiom)} can
-	 *         compute the output for the given {@link OWLAxiom}
+	 * @return {@code true} if {@link #createComputationManager} can compute the
+	 *         output for the given {@link OWLAxiom}
 	 */
 	public abstract boolean canJustify(OWLAxiom entailment);
 
 	/**
-	 * Creates computation object designed to compute everything regarding the
-	 * service.
+	 * Creates a {@link JustificationComputationManager} computation object
+	 * designed to compute everything regarding the service.
 	 *
 	 * @param entailment
-	 *            An axiom to compute justification for.
-	 *
-	 * @return JustificationComputation for the service. Null if plugin is not
-	 *         able to manage the entailment.
+	 *            an axiom to compute justification for
+	 * @param listener
+	 *            a listener through which to report the computed justifications
+	 * @param monitor
+	 *            an object that should be used to see if the computation should
+	 *            be interrupted
+	 * @return {@link JustificationComputationManager} which maintains
+	 *         computations for the entailment
 	 */
 	public abstract JustificationComputationManager createComputationManager(
 			OWLAxiom entailment, JustificationListener listener,
@@ -81,7 +85,7 @@ public abstract class JustificationComputationService
 
 	/**
 	 * @return {@code true} if
-	 *         {@link #createInconsistentOntologyJustificationComputation()} can
+	 *         {@link #createInconsistentOntologyJustificationComputation} can
 	 *         compute the output
 	 */
 	public boolean canJustifyInconsistentOntology() {
@@ -106,8 +110,6 @@ public abstract class JustificationComputationService
 	}
 
 	/**
-	 * Returns OWLEditorKit for the service.
-	 *
 	 * @return OWLEditorKit for the service.
 	 */
 	public OWLEditorKit getOWLEditorKit() {
