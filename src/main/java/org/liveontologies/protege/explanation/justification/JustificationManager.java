@@ -58,6 +58,8 @@ public class JustificationManager implements
 
 	private final Queue<Justification> justifications_ = new PriorityQueue<>();
 
+	private final JustificationFactory justificationFactory_ = new JustificationFactory();
+
 	/**
 	 * the size of #justifications_
 	 */
@@ -135,7 +137,8 @@ public class JustificationManager implements
 	}
 
 	private void addJustification(Set<OWLAxiom> justification) {
-		justifications_.add(new Justification(justification));
+		justifications_
+				.add(justificationFactory_.createJustification(justification));
 		justificationCount_++;
 		for (OWLAxiom axiom : justification) {
 			Integer popularity = axiomsPopularity_.get(axiom);
@@ -304,7 +307,7 @@ public class JustificationManager implements
 
 		@Override
 		public Justification getPriority(Set<OWLAxiom> justification) {
-			return new Justification(justification);
+			return justificationFactory_.createJustification(justification);
 		}
 
 	}

@@ -15,7 +15,7 @@ public class Justification implements Comparable<Justification> {
 
 	private final int axiomTypeCount_, classExpressionTypeCount_, size_;
 
-	public Justification(Set<OWLAxiom> axioms) {
+	Justification(Set<OWLAxiom> axioms) {
 		this.axioms_ = axioms;
 		Set<AxiomType<?>> axiomTypes = new HashSet<>();
 		Set<ClassExpressionType> classExpressionTypes = new HashSet<>();
@@ -54,6 +54,21 @@ public class Justification implements Comparable<Justification> {
 			return diff;
 		}
 		return getSize() - o.getSize();
+	}
+
+	@Override
+	public int hashCode() {
+		return axioms_.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Justification) {
+			Justification other = (Justification) obj;
+			return axioms_.equals(other.axioms_);
+		}
+		// else
+		return false;
 	}
 
 }
