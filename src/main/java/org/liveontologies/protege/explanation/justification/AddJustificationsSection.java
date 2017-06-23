@@ -36,18 +36,24 @@ import org.protege.editor.owl.ui.frame.OWLFrameSectionRow;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 
-public class LoadJustificationsSection
+/**
+ * A section for loading justifications
+ * 
+ * @author Yevgeny Kazakov
+ *
+ */
+public class AddJustificationsSection
 		extends AbstractOWLFrameSection<Explanation, OWLAxiom, OWLAxiom> {
 
-	private final LoadJustificationsButton button_;
+	private final AddJustificationsButton button_;
 
 	private boolean isFilled_ = false;
 
-	public LoadJustificationsSection(OWLEditorKit editorKit,
+	public AddJustificationsSection(OWLEditorKit editorKit,
 			OWLFrame<? extends Explanation> owlFrame,
 			ShowMoreListener showMoreListener) {
 		super(editorKit, "", owlFrame);
-		button_ = new LoadJustificationsButton(new AbstractAction() {
+		button_ = new AddJustificationsButton(new AbstractAction() {
 			private static final long serialVersionUID = 7260664426335623869L;
 
 			@Override
@@ -84,7 +90,7 @@ public class LoadJustificationsSection
 		isFilled_ = false;
 	}
 
-	public LoadJustificationsButton getButton() {
+	public AddJustificationsButton getButton() {
 		return button_;
 	}
 }

@@ -45,7 +45,6 @@ import javax.swing.SwingUtilities;
 
 import org.liveontologies.protege.explanation.justification.preferences.JustPrefPanel;
 import org.liveontologies.protege.explanation.justification.preferences.JustPrefs;
-import org.liveontologies.protege.explanation.justification.preferences.JustificationPreferencesGeneralPanel;
 import org.liveontologies.protege.explanation.justification.service.JustificationComputationService;
 import org.protege.editor.core.Disposable;
 import org.protege.editor.core.plugin.PluginUtilities;
@@ -89,7 +88,7 @@ public class PresentationPanel extends JPanel
 	private final JScrollPane scrollPane_;
 	private final JComponent serviceSettingsDisplayHolder_;
 	private final JustificationFrameList frameList_;
-	private JLabel lNumberInfo_;
+	private final JLabel lNumberInfo_;
 	private final AxiomSelectionModelImpl selectionModel_;
 	private int displayedJustificationCount_ = 0;
 
@@ -157,6 +156,8 @@ public class PresentationPanel extends JPanel
 		serviceSettingsDisplayHolder_
 				.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
 		headerPanel.add(serviceSettingsDisplayHolder_);
+
+		lNumberInfo_ = new JLabel();
 
 		add(headerPanel, BorderLayout.NORTH);
 
@@ -233,43 +234,34 @@ public class PresentationPanel extends JPanel
 		}
 	}
 
-	private void updateHeaderPanel() {
-		JPanel settingsPanel = manager_.getSettingsPanel();
-		serviceSettingsDisplayHolder_.removeAll();
-
-		lNumberInfo_ = new JLabel(getNumberString());
-		JustificationPreferencesGeneralPanel.addListener(
-				new JustificationPreferencesGeneralPanel.PreferencesListener() {
-					@Override
-					public void valueChanged() {
-						lNumberInfo_.setText(getIncrementString());
-					}
-				});
-
-		serviceSettingsDisplayHolder_.add(lNumberInfo_, BorderLayout.EAST);
-		if (settingsPanel != null)
-			serviceSettingsDisplayHolder_.add(settingsPanel, BorderLayout.WEST);
-		validate();
-
-		frameList_.setNextSectionVisibility(
-				manager_.getRemainingJustificationCount() != 0);
-		serviceSettingsDisplayHolder_.validate();
-	}
-
 	@Override
 	public Dimension getMinimumSize() {
 		return new Dimension(10, 10);
 	}
 
-	private void updateSettingsPanel() {
-		updateHeaderPanel();
+	private void refreshSettingsPanel() {
+		serviceSettingsDisplayHolder_.removeAll();
+		JPanel settingsPanel = manager_.getSettingsPanel();
+
+		serviceSettingsDisplayHolder_.add(lNumberInfo_, BorderLayout.EAST);
+		if (settingsPanel != null) {
+			serviceSettingsDisplayHolder_.add(settingsPanel, BorderLayout.WEST);
+		}
+		serviceSettingsDisplayHolder_.validate();
 	}
 
-	private void updateJustifications() {
+	private void refreshCounters() {
+		lNumberInfo_.setText(getNumberString());
+		lNumberInfo_.validate();
+		frameList_.setAddJustificationsSectionVisibility(
+				manager_.getRemainingJustificationCount() != 0);
+	}
+
+	private void reloadJustifications() {
 		displayedJustificationCount_ = 0;
 		frameList_.clear();
 		loadMoreJustifications(JustPrefs.create().load().initialNumber);
-		updateHeaderPanel();
+		refreshCounters();
 	}
 
 	private void loadMoreJustifications(int maxToLoad) {
@@ -285,9 +277,7 @@ public class PresentationPanel extends JPanel
 			displayedJustificationCount_++;
 			frameList_.addJustification(next, displayedJustificationCount_);
 		}
-		// updateHeaderPanel();
-		frameList_.validate();
-		scrollPane_.validate();
+		refreshCounters();
 	}
 
 	@Override
@@ -342,11 +332,11 @@ public class PresentationPanel extends JPanel
 
 	@Override
 	public void justificationsRecomputed() {
-		SwingUtilities.invokeLater(() -> updateJustifications());
+		SwingUtilities.invokeLater(() -> reloadJustifications());
 	}
 
 	@Override
 	public void settingsPanelChanged() {
-		SwingUtilities.invokeLater(() -> updateSettingsPanel());
+		SwingUtilities.invokeLater(() -> refreshSettingsPanel());
 	}
 }

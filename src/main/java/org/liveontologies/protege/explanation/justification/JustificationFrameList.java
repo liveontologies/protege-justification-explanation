@@ -218,12 +218,12 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 		frame_.clear();
 	}
 
-	public void setNextSectionVisibility(boolean isVisible) {
-		frame_.setNextSectionVisibility(isVisible);
+	public void setAddJustificationsSectionVisibility(boolean isVisible) {
+		frame_.setAddJustificationsSectionVisibility(isVisible);
 	}
 
-	public boolean getNextSectionVisibility() {
-		return frame_.getNextSectionVisibility();
+	public boolean getAddJustificationsSectionVisibility() {
+		return frame_.getAddJustificationsSectionVisibility();
 	}
 
 	@Override
@@ -337,9 +337,9 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 			return ((JustificationFrameSectionRow) value).getButtons();
 		}
 		if (value instanceof MListSectionHeader)
-			if (value instanceof LoadJustificationsSection) {
+			if (value instanceof AddJustificationsSection) {
 				return Collections.singletonList(
-						((LoadJustificationsSection) value).getButton());
+						((AddJustificationsSection) value).getButton());
 			}
 		return Collections.emptyList();
 	}
@@ -420,7 +420,7 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 		if (element instanceof JustificationFrameSectionRow)
 			return getPopularityString((JustificationFrameSectionRow) element);
 
-		if (element instanceof LoadJustificationsSection)
+		if (element instanceof AddJustificationsSection)
 			return showMoreListener_.getIncrementString();
 
 		return super.getToolTipText(event);

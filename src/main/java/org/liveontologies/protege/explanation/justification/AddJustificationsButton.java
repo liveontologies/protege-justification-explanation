@@ -29,9 +29,9 @@ import java.awt.event.ActionListener;
 
 import org.protege.editor.core.ui.list.MListButton;
 
-public class LoadJustificationsButton extends MListButton {
+public class AddJustificationsButton extends MListButton {
 
-	public LoadJustificationsButton(ActionListener actionListener) {
+	public AddJustificationsButton(ActionListener actionListener) {
 		super("Show next", Color.BLUE.brighter(), actionListener);
 	}
 

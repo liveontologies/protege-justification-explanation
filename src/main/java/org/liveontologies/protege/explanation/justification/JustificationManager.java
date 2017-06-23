@@ -182,6 +182,11 @@ public class JustificationManager implements
 	}
 
 	@Override
+	public void settingsPanelChanged() {
+		notifySettingsPanelChanged();
+	}
+
+	@Override
 	public void justificationFound(Set<OWLAxiom> justification) {
 		addJustification(justification);
 		computationListener_.justificationFound(justification);

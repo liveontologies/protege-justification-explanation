@@ -26,17 +26,15 @@ import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.frame.AbstractOWLFrame;
 
 /**
- * Author: Matthew Horridge
- * Stanford University
- * Bio-Medical Informatics Research Group
- * Date: 19/03/2012
+ * Author: Matthew Horridge Stanford University Bio-Medical Informatics Research
+ * Group Date: 19/03/2012
  */
 
 public class JustificationFrame extends AbstractOWLFrame<Explanation> {
 
 	private final OWLEditorKit editorKit_;
-	private final LoadJustificationsSection showMoreSection_;
-	private boolean isNextSectionVisible_;
+	private final AddJustificationsSection addJustificationsSection_;
+	private boolean isAddJustificationsSectionVisible_;
 
 	public JustificationFrame(OWLEditorKit editorKit, Explanation explanation,
 			ShowMoreListener showMoreListener) {
@@ -45,47 +43,47 @@ public class JustificationFrame extends AbstractOWLFrame<Explanation> {
 
 		setRootObject(explanation);
 
-		showMoreSection_ = new LoadJustificationsSection(editorKit_, this,
-				showMoreListener);
+		addJustificationsSection_ = new AddJustificationsSection(editorKit_,
+				this, showMoreListener);
 
-		setNextSectionVisibility(true);
+		setAddJustificationsSectionVisibility(true);
 	}
 
 	public void addSection(int index, String caption) {
 		JustificationFrameSection newSection = new JustificationFrameSection(
 				editorKit_, this, caption, index);
-		addSection(newSection,
-				getSectionCount() - (getNextSectionVisibility() ? 1 : 0));
+		addSection(newSection, getSectionCount()
+				- (getAddJustificationsSectionVisibility() ? 1 : 0));
 		newSection.setRootObject(getRootObject());
 	}
 
 	public void clear() {
 		clearSections();
-		if (getNextSectionVisibility())
-			addSection(showMoreSection_);
+		if (getAddJustificationsSectionVisibility())
+			addSection(addJustificationsSection_);
 		refill();
 	}
 
-	public void setNextSectionVisibility(boolean isVisible) {
-		if (isNextSectionVisible_ == isVisible)
+	public void setAddJustificationsSectionVisibility(boolean isVisible) {
+		if (isAddJustificationsSectionVisible_ == isVisible)
 			return;
-		isNextSectionVisible_ = isVisible;
+		isAddJustificationsSectionVisible_ = isVisible;
 		if (isVisible) {
-			addSection(showMoreSection_);
-			showMoreSection_.setRootObject(getRootObject());
+			addSection(addJustificationsSection_);
+			addJustificationsSection_.setRootObject(getRootObject());
 		} else {
-			getFrameSections().remove(showMoreSection_);
+			getFrameSections().remove(addJustificationsSection_);
 			fireContentChanged();
 		}
 	}
 
-	public boolean getNextSectionVisibility() {
-		return isNextSectionVisible_;
+	public boolean getAddJustificationsSectionVisibility() {
+		return isAddJustificationsSectionVisible_;
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
-		showMoreSection_.dispose();
+		addJustificationsSection_.dispose();
 	}
 }

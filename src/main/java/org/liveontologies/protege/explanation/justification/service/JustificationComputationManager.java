@@ -140,6 +140,12 @@ public abstract class JustificationComputationManager {
 		 * computed again, the result may differ
 		 */
 		void computationChanged();
+
+		/**
+		 * fired when the settings panel returned by {@link #getSettingsPanel}
+		 * may have changed
+		 */
+		void settingsPanelChanged();
 	}
 
 }
