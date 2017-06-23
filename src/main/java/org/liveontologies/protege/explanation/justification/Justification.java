@@ -13,12 +13,13 @@ public class Justification implements Comparable<Justification> {
 
 	private Set<OWLAxiom> axioms_;
 
-	private final int axiomTypeCount_, classExpressionTypeCount_;
+	private final int axiomTypeCount_, classExpressionTypeCount_, size_;
 
 	public Justification(Set<OWLAxiom> axioms) {
 		this.axioms_ = axioms;
 		Set<AxiomType<?>> axiomTypes = new HashSet<>();
 		Set<ClassExpressionType> classExpressionTypes = new HashSet<>();
+		// TODO: slow! cache these values for each axiom
 		for (OWLAxiom ax : getAxioms()) {
 			axiomTypes.add(ax.getAxiomType());
 			classExpressionTypes.addAll(ax.getNestedClassExpressions().stream()
@@ -27,6 +28,7 @@ public class Justification implements Comparable<Justification> {
 		}
 		this.axiomTypeCount_ = axiomTypes.size();
 		this.classExpressionTypeCount_ = classExpressionTypes.size();
+		this.size_ = axioms.size();
 	}
 
 	public Set<OWLAxiom> getAxioms() {
@@ -34,7 +36,7 @@ public class Justification implements Comparable<Justification> {
 	}
 
 	public int getSize() {
-		return axioms_.size();
+		return size_;
 	}
 
 	public boolean contains(OWLAxiom axiom) {
