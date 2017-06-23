@@ -175,6 +175,7 @@ public class JustificationManager implements
 		computationManager_.addListener(this);
 		computationSettingsPanel_ = computationManager_.getSettingsPanel();
 		notifySettingsPanelChanged();
+		recomputeJustifications();
 	}
 
 	@Override
