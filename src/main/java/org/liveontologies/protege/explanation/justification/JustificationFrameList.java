@@ -44,6 +44,7 @@ import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.liveontologies.protege.explanation.justification.priority.PrioritizedJustification;
 import org.protege.editor.core.Disposable;
 import org.protege.editor.core.ui.list.MListButton;
 import org.protege.editor.core.ui.list.MListItem;
@@ -179,7 +180,7 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 				decreaseIndentation.getValue(Action.NAME));
 	}
 
-	public void addJustification(Justification justification,
+	public void addJustification(PrioritizedJustification justification,
 			int justificationNo) {
 		int index = explanation_.addJustification(justification);
 		frame_.addSection(index,
@@ -305,7 +306,7 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 		return ((JustificationFrameSectionRow) element).getAxiom();
 	}
 
-	private Justification getSelectedJustification() {
+	private PrioritizedJustification getSelectedJustification() {
 		int selectedIndex = getSelectedIndex();
 		if (selectedIndex == -1) {
 			return null;

@@ -25,6 +25,7 @@ package org.liveontologies.protege.explanation.justification;
 import java.util.Comparator;
 import java.util.List;
 
+import org.liveontologies.protege.explanation.justification.priority.PrioritizedJustification;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.editor.OWLObjectEditor;
 import org.protege.editor.owl.ui.frame.AbstractOWLFrameSection;
@@ -71,7 +72,7 @@ public class JustificationFrameSection
 		}
 		isFilled_ = true;
 
-		Justification justification = getJustification();
+		PrioritizedJustification justification = getJustification();
 
 		if (justification.getSize() == 0) {
 			setLabel("The axiom is a tautology");
@@ -96,7 +97,7 @@ public class JustificationFrameSection
 		isFilled_ = false;
 	}
 
-	public Justification getJustification() {
+	public PrioritizedJustification getJustification() {
 		return explanation_.getJustification(justificationIndex_);
 	}
 

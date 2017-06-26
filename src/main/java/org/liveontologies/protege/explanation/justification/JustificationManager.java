@@ -13,6 +13,9 @@ import java.util.concurrent.Executors;
 
 import javax.swing.JPanel;
 
+import org.liveontologies.protege.explanation.justification.priority.JustificationPriority;
+import org.liveontologies.protege.explanation.justification.priority.PrioritizedJustification;
+import org.liveontologies.protege.explanation.justification.priority.PrioritizedJustificationFactory;
 import org.liveontologies.protege.explanation.justification.service.JustificationComputation;
 import org.liveontologies.protege.explanation.justification.service.JustificationComputation.InterruptMonitor;
 import org.liveontologies.protege.explanation.justification.service.JustificationComputationManager;
@@ -56,9 +59,9 @@ public class JustificationManager implements
 
 	private final ExecutorService executorService_;
 
-	private final Queue<Justification> justifications_ = new PriorityQueue<>();
+	private final Queue<PrioritizedJustification> justifications_ = new PriorityQueue<>();
 
-	private final JustificationFactory justificationFactory_ = new JustificationFactory();
+	private final PrioritizedJustificationFactory justificationFactory_ = new PrioritizedJustificationFactory();
 
 	/**
 	 * the size of #justifications_
@@ -216,7 +219,7 @@ public class JustificationManager implements
 		listeners_.remove(listener);
 	}
 
-	public Justification pollJustification() {
+	public PrioritizedJustification pollJustification() {
 		if (justificationCount_ == 0) {
 			return null;
 		}
@@ -273,7 +276,7 @@ public class JustificationManager implements
 
 	// TODO: use SwingWorker
 	private class ExplanationComputationTask implements Runnable,
-			JustificationPriorityComparator<Justification> {
+			JustificationPriorityComparator<JustificationPriority> {
 
 		private final JustificationComputation computation_;
 
@@ -301,13 +304,14 @@ public class JustificationManager implements
 		}
 
 		@Override
-		public int compare(Justification j1, Justification j2) {
-			return j1.compareTo(j2);
+		public int compare(JustificationPriority p1, JustificationPriority p2) {
+			return p1.compareTo(p2);
 		}
 
 		@Override
-		public Justification getPriority(Set<OWLAxiom> justification) {
-			return justificationFactory_.createJustification(justification);
+		public JustificationPriority getPriority(Set<OWLAxiom> justification) {
+			return justificationFactory_.getPriorityFactory()
+					.getPriority(justification);
 		}
 
 	}

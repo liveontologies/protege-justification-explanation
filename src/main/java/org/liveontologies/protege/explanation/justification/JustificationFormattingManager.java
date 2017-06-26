@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.liveontologies.protege.explanation.justification.priority.PrioritizedJustification;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
@@ -66,8 +67,8 @@ public class JustificationFormattingManager {
 
 	private final static JustificationFormattingManager instance_ = new JustificationFormattingManager();
 
-	private final Map<Justification, Map<OWLAxiom, Integer>> indents_;
-	private final Map<Justification, List<OWLAxiom>> ordering_;
+	private final Map<PrioritizedJustification, Map<OWLAxiom, Integer>> indents_;
+	private final Map<PrioritizedJustification, List<OWLAxiom>> ordering_;
 
 	private JustificationFormattingManager() {
 		indents_ = new HashMap<>();
@@ -78,7 +79,7 @@ public class JustificationFormattingManager {
 		return instance_;
 	}
 
-	private void init(OWLAxiom entailment, Justification justification) {
+	private void init(OWLAxiom entailment, PrioritizedJustification justification) {
 		ExplanationOrderer orderer = new ProtegeExplanationOrderer(
 				OWLManager.createOWLOntologyManager());
 		ExplanationTree tree = orderer.getOrderedExplanation(entailment,
@@ -106,13 +107,13 @@ public class JustificationFormattingManager {
 	}
 
 	private void initIfNecessary(OWLAxiom entailment,
-			Justification justification) {
+			PrioritizedJustification justification) {
 		if (!indents_.containsKey(justification)) {
 			init(entailment, justification);
 		}
 	}
 
-	public int getIndentation(OWLAxiom entailment, Justification justification,
+	public int getIndentation(OWLAxiom entailment, PrioritizedJustification justification,
 			OWLAxiom axiom) {
 		if (!justification.getAxioms().contains(axiom)) {
 			throw new IllegalArgumentException(
@@ -128,21 +129,21 @@ public class JustificationFormattingManager {
 		}
 	}
 
-	public void setIndentation(OWLAxiom entailment, Justification justification,
+	public void setIndentation(OWLAxiom entailment, PrioritizedJustification justification,
 			OWLAxiom axiom, int indentation) {
 		initIfNecessary(entailment, justification);
 		indents_.get(justification).put(axiom, indentation);
 	}
 
 	public void increaseIndentation(OWLAxiom entailment,
-			Justification justification, OWLAxiom axiom) {
+			PrioritizedJustification justification, OWLAxiom axiom) {
 		initIfNecessary(entailment, justification);
 		Integer indent = getIndentation(entailment, justification, axiom);
 		setIndentation(entailment, justification, axiom, indent + 1);
 	}
 
 	public void decreaseIndentation(OWLAxiom entailment,
-			Justification justification, OWLAxiom axiom) {
+			PrioritizedJustification justification, OWLAxiom axiom) {
 		initIfNecessary(entailment, justification);
 		Integer indent = getIndentation(entailment, justification, axiom);
 		indent = indent - 1;
@@ -152,7 +153,7 @@ public class JustificationFormattingManager {
 		setIndentation(entailment, justification, axiom, indent);
 	}
 
-	public boolean moveAxiomUp(OWLAxiom entailment, Justification justification,
+	public boolean moveAxiomUp(OWLAxiom entailment, PrioritizedJustification justification,
 			OWLAxiom axiom) {
 		initIfNecessary(entailment, justification);
 		List<OWLAxiom> ordering = ordering_.get(justification);
@@ -168,7 +169,7 @@ public class JustificationFormattingManager {
 	}
 
 	public boolean moveAxiomDown(OWLAxiom entailment,
-			Justification justification, OWLAxiom axiom) {
+			PrioritizedJustification justification, OWLAxiom axiom) {
 		initIfNecessary(entailment, justification);
 		List<OWLAxiom> ordering = ordering_.get(justification);
 		// Lowest index is 1 - the entailment is held in position 0
@@ -183,12 +184,12 @@ public class JustificationFormattingManager {
 	}
 
 	public List<OWLAxiom> getOrdering(OWLAxiom entailment,
-			Justification justification) {
+			PrioritizedJustification justification) {
 		initIfNecessary(entailment, justification);
 		return Collections.unmodifiableList(ordering_.get(justification));
 	}
 
-	public void clearFormatting(Justification justification) {
+	public void clearFormatting(PrioritizedJustification justification) {
 		indents_.remove(justification);
 		ordering_.remove(justification);
 	}

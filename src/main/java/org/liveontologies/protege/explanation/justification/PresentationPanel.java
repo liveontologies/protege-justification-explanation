@@ -45,6 +45,7 @@ import javax.swing.SwingUtilities;
 
 import org.liveontologies.protege.explanation.justification.preferences.JustPrefPanel;
 import org.liveontologies.protege.explanation.justification.preferences.JustPrefs;
+import org.liveontologies.protege.explanation.justification.priority.PrioritizedJustification;
 import org.liveontologies.protege.explanation.justification.service.JustificationComputationService;
 import org.protege.editor.core.Disposable;
 import org.protege.editor.core.plugin.PluginUtilities;
@@ -269,7 +270,7 @@ public class PresentationPanel extends JPanel
 				break;
 			}
 			maxToLoad--;
-			Justification next = manager_.pollJustification();
+			PrioritizedJustification next = manager_.pollJustification();
 			if (next == null) {
 				break;
 			}

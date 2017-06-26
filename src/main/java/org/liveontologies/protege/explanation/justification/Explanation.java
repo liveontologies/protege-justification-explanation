@@ -24,10 +24,11 @@ package org.liveontologies.protege.explanation.justification;
 
 import java.util.ArrayList;
 
+import org.liveontologies.protege.explanation.justification.priority.PrioritizedJustification;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 public class Explanation {
-	private final ArrayList<Justification> justifications_;
+	private final ArrayList<PrioritizedJustification> justifications_;
 	private final OWLAxiom entailment_;
 
 	public Explanation(OWLAxiom entailment) {
@@ -35,11 +36,11 @@ public class Explanation {
 		entailment_ = entailment;
 	}
 
-	public Justification getJustification(int index) {
+	public PrioritizedJustification getJustification(int index) {
 		return justifications_.get(index);
 	}
 
-	public int addJustification(Justification justification) {
+	public int addJustification(PrioritizedJustification justification) {
 		justifications_.add(justification);
 		return justifications_.size() - 1;
 	}
