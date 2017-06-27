@@ -46,6 +46,8 @@ public class JustificationComputationServiceManager implements Disposable {
 
 	private final Collection<JustificationComputationService> services_;
 
+	private JustificationComputationService defaultService_;
+
 	private JustificationComputationServiceManager(OWLEditorKit kit)
 			throws Exception {
 		kit_ = kit;
@@ -83,6 +85,14 @@ public class JustificationComputationServiceManager implements Disposable {
 
 	public Collection<JustificationComputationService> getServices() {
 		return services_;
+	}
+
+	public JustificationComputationService getDefaultService() {
+		return defaultService_;
+	}
+
+	public void setDefaultService(JustificationComputationService service) {
+		this.defaultService_ = service;
 	}
 
 }

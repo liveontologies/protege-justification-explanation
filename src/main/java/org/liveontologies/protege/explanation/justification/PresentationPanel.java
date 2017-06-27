@@ -93,12 +93,13 @@ public class PresentationPanel extends JPanel
 	private final AxiomSelectionModelImpl selectionModel_;
 	private int displayedJustificationCount_ = 0;
 
-	public PresentationPanel(JustificationComputationServiceManager manager,
+	public PresentationPanel(
+			JustificationComputationServiceManager serviceManager,
 			OWLAxiom entailment) {
 		this.selectionModel_ = new AxiomSelectionModelImpl();
 		this.progressDialog_ = new ExplanationGeneratorProgressDialog(
-				manager.getOwlEditorKit());
-		this.manager_ = new JustificationManager(manager, entailment,
+				serviceManager.getOwlEditorKit());
+		this.manager_ = new JustificationManager(serviceManager, entailment,
 				progressDialog_, progressDialog_);
 		manager_.addListener(this);
 
@@ -120,7 +121,7 @@ public class PresentationPanel extends JPanel
 					try {
 						JustPrefPanel prefPanel = new JustPrefPanel();
 						prefPanel.setup(prefPanel.getLabel(),
-								manager.getOwlEditorKit());
+								serviceManager.getOwlEditorKit());
 						prefPanel.initialise();
 						Dimension screenSize = Toolkit.getDefaultToolkit()
 								.getScreenSize();
@@ -135,7 +136,7 @@ public class PresentationPanel extends JPanel
 								JOptionPane.PLAIN_MESSAGE,
 								JOptionPane.DEFAULT_OPTION);
 						JDialog dlg = op.createDialog(
-								manager.getOwlEditorKit().getWorkspace(),
+								serviceManager.getOwlEditorKit().getWorkspace(),
 								"Justification preferences");
 						dlg.setResizable(true);
 						dlg.setVisible(true);
@@ -173,9 +174,9 @@ public class PresentationPanel extends JPanel
 
 		add(scrollPane_, BorderLayout.CENTER);
 
-		Collection<JustificationComputationService> services = manager
+		Collection<JustificationComputationService> services = manager_
 				.getServices();
-		JustificationComputationService selectedService;
+		JustificationComputationService selectedService = null;
 		switch (services.size()) {
 		case 0:
 			break;
@@ -187,12 +188,15 @@ public class PresentationPanel extends JPanel
 			panel1.add(label, BorderLayout.EAST);
 			break;
 		default:
+			JustificationComputationService defaultService = serviceManager
+					.getDefaultService();
 			JComboBox<JustificationComputationService> selector = new JComboBox<JustificationComputationService>();
-			selectedService = services.iterator().next();
-			for (JustificationComputationService service : services)
-				if (service.canJustify(entailment)) {
-					selector.addItem(service);
+			for (JustificationComputationService service : services) {
+				if (selectedService == null || service == defaultService) {
+					selectedService = service;
 				}
+				selector.addItem(service);
+			}
 			selector.addActionListener(new ActionListener() {
 
 				@Override

@@ -174,6 +174,7 @@ public class JustificationManager implements
 			return;
 		}
 		selectedComputationService_ = service;
+		serviceMan_.setDefaultService(service);
 		if (computationManager_ != null) {
 			computationManager_.removeListener(this);
 		}
