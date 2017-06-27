@@ -247,7 +247,7 @@ public class PresentationPanel extends JPanel
 		if (settingsPanel != null) {
 			serviceSettingsDisplayHolder_.add(settingsPanel, BorderLayout.WEST);
 		}
-		serviceSettingsDisplayHolder_.validate();
+		validate();
 	}
 
 	private void refreshCounters() {
