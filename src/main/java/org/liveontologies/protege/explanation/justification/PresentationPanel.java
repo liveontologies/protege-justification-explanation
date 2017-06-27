@@ -246,12 +246,13 @@ public class PresentationPanel extends JPanel
 	private void refreshSettingsPanel() {
 		serviceSettingsDisplayHolder_.removeAll();
 		JPanel settingsPanel = manager_.getSettingsPanel();
+		serviceSettingsDisplayHolder_.repaint();
 
 		serviceSettingsDisplayHolder_.add(lNumberInfo_, BorderLayout.EAST);
 		if (settingsPanel != null) {
 			serviceSettingsDisplayHolder_.add(settingsPanel, BorderLayout.WEST);
 		}
-		validate();
+		serviceSettingsDisplayHolder_.validate();
 	}
 
 	private void refreshCounters() {
