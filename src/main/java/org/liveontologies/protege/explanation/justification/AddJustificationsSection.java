@@ -49,16 +49,19 @@ public class AddJustificationsSection
 
 	private boolean isFilled_ = false;
 
+	private final PartialListVisualizer justificationPanel_;
+
 	public AddJustificationsSection(OWLEditorKit editorKit,
 			OWLFrame<? extends Explanation> owlFrame,
-			ShowMoreListener showMoreListener) {
+			PartialListVisualizer justificationPanel) {
 		super(editorKit, "", owlFrame);
+		justificationPanel_ = justificationPanel;
 		button_ = new AddJustificationsButton(new AbstractAction() {
 			private static final long serialVersionUID = 7260664426335623869L;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				showMoreListener.showMore();
+				justificationPanel.showNext();
 			}
 		});
 	}
@@ -92,5 +95,9 @@ public class AddJustificationsSection
 
 	public AddJustificationsButton getButton() {
 		return button_;
+	}
+
+	public String getToolTipText() {
+		return justificationPanel_.getIncrementString();
 	}
 }

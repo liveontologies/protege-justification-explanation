@@ -34,17 +34,20 @@ public class JustificationFrame extends AbstractOWLFrame<Explanation> {
 
 	private final OWLEditorKit editorKit_;
 	private final AddJustificationsSection addJustificationsSection_;
+	private final JustificationStatusSection justificationStatusSection_;
 	private boolean isAddJustificationsSectionVisible_;
 
 	public JustificationFrame(OWLEditorKit editorKit, Explanation explanation,
-			ShowMoreListener showMoreListener) {
+			PartialListVisualizer justificationPanel) {
 		super(editorKit.getOWLModelManager().getOWLOntologyManager());
 		editorKit_ = editorKit;
 
 		setRootObject(explanation);
 
 		addJustificationsSection_ = new AddJustificationsSection(editorKit_,
-				this, showMoreListener);
+				this, justificationPanel);
+		justificationStatusSection_ = new JustificationStatusSection(editorKit_,
+				this, justificationPanel);
 
 		setAddJustificationsSectionVisibility(true);
 	}
@@ -59,6 +62,7 @@ public class JustificationFrame extends AbstractOWLFrame<Explanation> {
 
 	public void clear() {
 		clearSections();
+		addSection(justificationStatusSection_);
 		if (getAddJustificationsSectionVisibility())
 			addSection(addJustificationsSection_);
 		refill();
@@ -79,6 +83,10 @@ public class JustificationFrame extends AbstractOWLFrame<Explanation> {
 
 	public boolean getAddJustificationsSectionVisibility() {
 		return isAddJustificationsSectionVisible_;
+	}
+
+	public void setStatusString(String value) {
+		justificationStatusSection_.setStatusString(value);
 	}
 
 	@Override

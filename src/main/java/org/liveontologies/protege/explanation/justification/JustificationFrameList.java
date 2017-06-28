@@ -72,28 +72,26 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 
 	private final JustificationManager manager_;
 	private final AxiomSelectionModel axiomSelectionModel_;
-	private final ShowMoreListener showMoreListener_;
 	private final Explanation explanation_;
 	private final JustificationFrame frame_;
 	private boolean isTransmittingSelectionToModel_ = false;
 
 	public JustificationFrameList(AxiomSelectionModel axiomSelectionModel,
-			JustificationManager manager, ShowMoreListener showMoreListener,
+			JustificationManager manager, PartialListVisualizer justificationPanel,
 			Explanation explanation) {
 		this(axiomSelectionModel,
 				manager, new JustificationFrame(manager.getOwlEditorKit(),
-						explanation, showMoreListener),
-				showMoreListener, explanation);
+						explanation, justificationPanel),
+				explanation);
 	}
 
 	private JustificationFrameList(AxiomSelectionModel axiomSelectionModel,
 			JustificationManager manager, JustificationFrame frame,
-			ShowMoreListener showMoreListener, Explanation explanation) {
+			Explanation explanation) {
 		super(manager.getOwlEditorKit(), frame);
 		frame_ = frame;
 		manager_ = manager;
 		axiomSelectionModel_ = axiomSelectionModel;
-		showMoreListener_ = showMoreListener;
 		explanation_ = explanation;
 		OWLEditorKit kit = manager.getOwlEditorKit();
 		setWrap(false);
@@ -187,6 +185,10 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 				String.format("Justification %s with %d axioms",
 						justificationNo, justification.getSize()));
 		validate();
+	}
+
+	public void setStatusString(String value) {
+		frame_.setStatusString(value);
 	}
 
 	private void respondToAxiomSelectionChange() {
@@ -342,6 +344,11 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 				return Collections.singletonList(
 						((AddJustificationsSection) value).getButton());
 			}
+		if (value instanceof MListSectionHeader)
+			if (value instanceof JustificationStatusSection) {
+				return Collections.singletonList(
+						((JustificationStatusSection) value).getButton());
+			}
 		return Collections.emptyList();
 	}
 
@@ -422,7 +429,10 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 			return getPopularityString((JustificationFrameSectionRow) element);
 
 		if (element instanceof AddJustificationsSection)
-			return showMoreListener_.getIncrementString();
+			return ((AddJustificationsSection)element).getToolTipText();
+
+		if (element instanceof JustificationStatusSection)
+			return "Recompute justifications";
 
 		return super.getToolTipText(event);
 	}

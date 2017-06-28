@@ -80,7 +80,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 
 public class PresentationPanel extends JPanel
 		implements Disposable, AxiomSelectionModel,
-		JustificationManager.ChangeListener, ShowMoreListener {
+		JustificationManager.ChangeListener, PartialListVisualizer {
 
 	private static final long serialVersionUID = 5025702425365703918L;
 
@@ -89,7 +89,6 @@ public class PresentationPanel extends JPanel
 	private final JScrollPane scrollPane_;
 	private final JComponent serviceSettingsDisplayHolder_;
 	private final JustificationFrameList frameList_;
-	private final JLabel lNumberInfo_;
 	private final AxiomSelectionModelImpl selectionModel_;
 	private int displayedJustificationCount_ = 0;
 
@@ -155,11 +154,7 @@ public class PresentationPanel extends JPanel
 		headerPanel.add(panel1);
 
 		serviceSettingsDisplayHolder_ = new JPanel(new BorderLayout());
-		serviceSettingsDisplayHolder_
-				.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
 		headerPanel.add(serviceSettingsDisplayHolder_);
-
-		lNumberInfo_ = new JLabel();
 
 		add(headerPanel, BorderLayout.NORTH);
 
@@ -247,19 +242,16 @@ public class PresentationPanel extends JPanel
 		serviceSettingsDisplayHolder_.removeAll();
 		JPanel settingsPanel = manager_.getSettingsPanel();
 		serviceSettingsDisplayHolder_.repaint();
-
-		serviceSettingsDisplayHolder_.add(lNumberInfo_, BorderLayout.EAST);
 		if (settingsPanel != null) {
-			serviceSettingsDisplayHolder_.add(settingsPanel, BorderLayout.WEST);
+			serviceSettingsDisplayHolder_.add(settingsPanel);
 		}
-		serviceSettingsDisplayHolder_.validate();
+		validate();
 	}
 
 	private void refreshCounters() {
-		lNumberInfo_.setText(getNumberString());
-		lNumberInfo_.validate();
 		frameList_.setAddJustificationsSectionVisibility(
 				manager_.getRemainingJustificationCount() != 0);
+		frameList_.setStatusString(getNumberString());
 	}
 
 	private void reloadJustifications() {
@@ -326,13 +318,18 @@ public class PresentationPanel extends JPanel
 	}
 
 	@Override
-	public void showMore(int number) {
+	public void showNext(int number) {
 		loadMoreJustifications(number);
 	}
 
 	@Override
-	public void showMore() {
-		showMore(JustPrefs.create().load().increment);
+	public void showNext() {
+		showNext(JustPrefs.create().load().increment);
+	}
+
+	@Override
+	public void reset() {
+		manager_.recomputeJustifications();
 	}
 
 	@Override
