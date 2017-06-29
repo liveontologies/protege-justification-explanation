@@ -1,5 +1,27 @@
 package org.liveontologies.protege.explanation.justification;
 
+/*-
+ * #%L
+ * Protege Justification Explanation
+ * $Id:$
+ * $HeadURL:$
+ * %%
+ * Copyright (C) 2016 - 2017 Live Ontologies Project
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.ActionListener;
@@ -13,8 +35,8 @@ public class MListReloadButton extends MListButton {
 
 	private static final int ANGLE_START_ = 10, ANGLE_EXTENT_ = 330;
 
-	private final GeneralPath arrow_ = new GeneralPath(
-			GeneralPath.WIND_EVEN_ODD, 6);
+	private final GeneralPath arrowTip_ = new GeneralPath(
+			GeneralPath.WIND_EVEN_ODD, 3);
 	private final Arc2D arcBorder_ = new Arc2D.Float();
 
 	protected MListReloadButton(ActionListener actionListener) {
@@ -44,15 +66,12 @@ public class MListReloadButton extends MListButton {
 		float tipWidth = 3 * radius / 2;
 		float tipHeight = 3 * radius / 2;
 
-		arrow_.reset();
-		arrow_.moveTo(tipX, tipY);
-		arrow_.lineTo(tipX - tipWidth, tipY);
-		arrow_.lineTo(tipX - tipWidth + quarterSize, tipY - quarterSize);
-		arrow_.lineTo(tipX - quarterSize, tipY - quarterSize);
-		arrow_.lineTo(tipX - quarterSize, tipY - tipHeight + quarterSize);
-		arrow_.lineTo(tipX, tipY - tipHeight);
-		arrow_.closePath();
-		g.fill(arrow_);
+		arrowTip_.reset();
+		arrowTip_.moveTo(tipX, tipY);
+		arrowTip_.lineTo(tipX - tipWidth, tipY);
+		arrowTip_.lineTo(tipX, tipY - tipHeight);
+		arrowTip_.closePath();
+		g.fill(arrowTip_);
 		arcBorder_.setArcByCenter(xCenter, yCenter, radius + quarterSize,
 				ANGLE_START_, ANGLE_EXTENT_, Arc2D.PIE);
 		Area area = new Area(arcBorder_);
