@@ -1,7 +1,10 @@
 package org.liveontologies.protege.explanation.justification.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JPanel;
 
@@ -115,6 +118,19 @@ public abstract class JustificationComputationManager {
 	}
 
 	/**
+	 * @return some initial justifications for {@link #getEntailment()}; if the
+	 *         result is non-empty, these justifications will be initially shown
+	 *         in the explanation window. The returned collections of
+	 *         justifications may be not complete but each justification should
+	 *         be correct. There should not be a considerable delay for
+	 *         returning the justifications. This method is mainly intended when
+	 *         the previously computed justifications are cached.
+	 */
+	public Collection<? extends Set<OWLAxiom>> getInitialJustifications() {
+		return Collections.emptyList();
+	}
+
+	/**
 	 * 
 	 * @return the {@link JustificationComputation} that can be used for
 	 *         computing justification; this computation should use the
@@ -125,21 +141,23 @@ public abstract class JustificationComputationManager {
 	public abstract JustificationComputation getComputation();
 
 	/**
-	 * should be called each time the computed justification may have changed
+	 * should be called each time the previously returned justifications bay
+	 * become incorrect
 	 */
-	protected void notifyComputationChanged() {
+	protected void notifyJustificationsOutdated() {
 		for (ChangeListener listener : changeListeners_) {
-			listener.computationChanged();
+			listener.justificationsOutdated();
 		}
 	}
 
 	public interface ChangeListener {
 		/**
-		 * fired when the justifications computed by the
-		 * {@link JustificationComputationManager} may have changed, i.e., when
-		 * computed again, the result may differ
+		 * fired when the justifications previously provided by the
+		 * {@link JustificationComputationManager} may be out of date, i.e.,
+		 * they may be no longer correct for the current ontology or current
+		 * settings and need to be recomputed
 		 */
-		void computationChanged();
+		void justificationsOutdated();
 
 		/**
 		 * fired when the settings panel returned by {@link #getSettingsPanel}

@@ -204,13 +204,13 @@ public class JustificationManager implements
 				this, interruptMonitor_);
 		computationSettingsPanel_ = computationManager_.getSettingsPanel();
 		notifySettingsPanelChanged();
-		recomputeJustifications();
+		initializeJustifications();
 		computationManager_.addListener(this);
 	}
 
 	@Override
-	public void computationChanged() {
-		recomputeJustifications();
+	public void justificationsOutdated() {
+		initializeJustifications();
 	}
 
 	@Override
@@ -222,6 +222,19 @@ public class JustificationManager implements
 	public void justificationFound(Set<OWLAxiom> justification) {
 		addJustification(justification);
 		computationListener_.justificationFound(justification);
+	}
+
+	void initializeJustifications() {
+		Collection<? extends Set<OWLAxiom>> initial = computationManager_
+				.getInitialJustifications();
+		if (initial.isEmpty()) {
+			recomputeJustifications();
+		} else {
+			resetJustifications();
+			for (Set<OWLAxiom> justification : initial) {
+				justificationFound(justification);
+			}
+		}
 	}
 
 	void recomputeJustifications() {
