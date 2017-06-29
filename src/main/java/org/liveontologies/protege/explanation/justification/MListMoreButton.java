@@ -2,11 +2,11 @@ package org.liveontologies.protege.explanation.justification;
 
 /*-
  * #%L
- * Protege Justification Explanation
+ * Protege Proof-Based Explanation
  * $Id:$
  * $HeadURL:$
  * %%
- * Copyright (C) 2016 - 2017 Live Ontologies Project
+ * Copyright (C) 2014 - 2016 Live Ontologies Project
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,27 +29,26 @@ import java.awt.event.ActionListener;
 
 import org.protege.editor.core.ui.list.MListButton;
 
-public class AddJustificationsButton extends MListButton {
+public class MListMoreButton extends MListButton {
 
-	public AddJustificationsButton(ActionListener actionListener) {
-		super("Show next", Color.BLUE.brighter(), actionListener);
+	public static String NAME = "Display more justifications";
+
+	public MListMoreButton(ActionListener actionListener) {
+		super(NAME, Color.GREEN.darker(), actionListener);
 	}
 
 	@Override
 	public void paintButtonContent(Graphics2D g) {
-		int size = getBounds().height;
-		int thickness = (Math.round(size / 8.0f) / 2) * 2;
-
-		int x = getBounds().x;
-		int y = getBounds().y;
-
-		int insetX = size / 4;
-		int insetY = size / 4;
-		int insetHeight = size / 2;
-		int insetWidth = size / 2;
-		g.fillRect(x + size / 2 - thickness / 2, y + insetY, thickness,
-				insetHeight);
-		g.fillRect(x + insetX, y + size / 2 - thickness / 2, insetWidth,
-				thickness);
+		Rectangle bounds = getBounds();
+		int w = bounds.width;
+		int h = bounds.height;
+		int x = bounds.x + w / 2;
+		int y = bounds.y + h / 2;
+		g.drawLine(x, y, x, y);
+		x = x - w / 4;
+		g.drawLine(x, y, x, y);
+		x = x + w / 2;
+		g.drawLine(x, y, x, y);
 	}
+
 }

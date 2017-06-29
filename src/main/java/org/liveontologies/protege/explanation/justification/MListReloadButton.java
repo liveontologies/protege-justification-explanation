@@ -19,7 +19,7 @@ public class MListReloadButton extends MListButton {
 			innerArc_ = new Arc2D.Float();
 
 	protected MListReloadButton(ActionListener actionListener) {
-		super("", Color.BLUE.brighter(), actionListener);
+		super("Reload", Color.BLUE.brighter(), actionListener);
 	}
 
 	@Override

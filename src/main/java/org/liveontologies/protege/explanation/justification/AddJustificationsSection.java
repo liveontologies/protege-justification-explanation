@@ -28,6 +28,7 @@ import java.util.Comparator;
 
 import javax.swing.AbstractAction;
 
+import org.protege.editor.core.ui.list.MListButton;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.editor.OWLObjectEditor;
 import org.protege.editor.owl.ui.frame.AbstractOWLFrameSection;
@@ -45,7 +46,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 public class AddJustificationsSection
 		extends AbstractOWLFrameSection<Explanation, OWLAxiom, OWLAxiom> {
 
-	private final AddJustificationsButton button_;
+	private final MListButton button_;
 
 	private boolean isFilled_ = false;
 
@@ -56,7 +57,7 @@ public class AddJustificationsSection
 			PartialListVisualizer justificationPanel) {
 		super(editorKit, "", owlFrame);
 		justificationPanel_ = justificationPanel;
-		button_ = new AddJustificationsButton(new AbstractAction() {
+		button_ = new MListMoreButton(new AbstractAction() {
 			private static final long serialVersionUID = 7260664426335623869L;
 
 			@Override
@@ -93,7 +94,7 @@ public class AddJustificationsSection
 		isFilled_ = false;
 	}
 
-	public AddJustificationsButton getButton() {
+	public MListButton getButton() {
 		return button_;
 	}
 
