@@ -39,12 +39,12 @@ import org.semanticweb.owlapi.model.OWLOntology;
 public class JustificationStatusSection
 		extends AbstractOWLFrameSection<Explanation, OWLAxiom, OWLAxiom> {
 
-	private final JustificationStatusButton button_;
+	private final MListReloadButton button_;
 
 	protected JustificationStatusSection(OWLEditorKit editorKit,
 			OWLFrame<? extends Explanation> frame, PartialListVisualizer justificationPanel) {
 		super(editorKit, "", frame);
-		button_ = new JustificationStatusButton(new AbstractAction() {
+		button_ = new MListReloadButton(new AbstractAction() {
 			private static final long serialVersionUID = 8000443669915588491L;
 
 			@Override
@@ -77,7 +77,7 @@ public class JustificationStatusSection
 	protected void clear() {
 	}
 
-	public JustificationStatusButton getButton() {
+	public MListReloadButton getButton() {
 		return button_;
 	}
 
