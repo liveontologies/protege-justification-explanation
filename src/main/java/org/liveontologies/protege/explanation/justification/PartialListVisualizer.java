@@ -51,4 +51,9 @@ public interface PartialListVisualizer {
 	 *         additionally
 	 */
 	String getIncrementString();
+
+	/**
+	 * @return number of elements displaying currently
+	 */
+	int getNumber();
 }

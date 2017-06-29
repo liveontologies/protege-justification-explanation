@@ -218,6 +218,11 @@ public class PresentationPanel extends JPanel
 				+ " in total";
 	}
 
+	@Override
+	public int getNumber() {
+		return displayedJustificationCount_;
+	}
+
 	public String getComputedJustificationsDescription() {
 		int computedJustifications = displayedJustificationCount_
 				+ manager_.getRemainingJustificationCount();
