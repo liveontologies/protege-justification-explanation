@@ -441,7 +441,7 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 
 	private String getPopularityString(JustificationFrameSectionRow row) {
 		int popularity = manager_.getPopularity(row.getAxiom());
-		int count = justificationPanel_.getNumber() + manager_.getRemainingJustificationCount();
+		int count = justificationPanel_.getDisplayedJustificationCount() + manager_.getRemainingJustificationCount();
 		if (popularity == 1) {
 			return "Axiom appears only in THIS justification";
 		} else if (popularity == count) {

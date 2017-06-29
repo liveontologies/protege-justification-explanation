@@ -55,5 +55,5 @@ public interface PartialListVisualizer {
 	/**
 	 * @return number of elements displaying currently
 	 */
-	int getNumber();
+	int getDisplayedJustificationCount();
 }

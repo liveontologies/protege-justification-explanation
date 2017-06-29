@@ -219,7 +219,7 @@ public class PresentationPanel extends JPanel
 	}
 
 	@Override
-	public int getNumber() {
+	public int getDisplayedJustificationCount() {
 		return displayedJustificationCount_;
 	}
 
@@ -227,7 +227,7 @@ public class PresentationPanel extends JPanel
 		int computedJustifications = displayedJustificationCount_
 				+ manager_.getRemainingJustificationCount();
 		return computedJustifications + " justification"
-				+ (displayedJustificationCount_ == 1 ? "" : "s") + " computed";
+				+ (computedJustifications == 1 ? "" : "s") + " computed";
 	}
 
 	@Override
