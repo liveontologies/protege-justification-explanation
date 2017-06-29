@@ -208,14 +208,15 @@ public class PresentationPanel extends JPanel
 	}
 
 	@Override
-	public String getIncrementString() {
+	public String getShowMoreJustificationsDescription() {
 		int remainingJustificationsCount = manager_
 				.getRemainingJustificationCount();
-		int inc = Math.min(JustPrefs.create().load().increment,
+		int nextCount = Math.min(JustPrefs.create().load().increment,
 				remainingJustificationsCount);
-		return "Show next " + inc + " justifications of "
-				+ (displayedJustificationCount_ + remainingJustificationsCount)
-				+ " in total";
+		return "Show "
+				+ (nextCount == remainingJustificationsCount ? "last "
+						: "next ")
+				+ nextCount + " justification" + (nextCount == 1 ? "" : "s");
 	}
 
 	@Override

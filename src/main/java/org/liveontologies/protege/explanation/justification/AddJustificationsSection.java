@@ -99,6 +99,6 @@ public class AddJustificationsSection
 	}
 
 	public String getToolTipText() {
-		return justificationPanel_.getIncrementString();
+		return justificationPanel_.getShowMoreJustificationsDescription();
 	}
 }

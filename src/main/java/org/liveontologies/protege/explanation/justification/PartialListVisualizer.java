@@ -50,7 +50,7 @@ public interface PartialListVisualizer {
 	 * @return an information for user about how much elements will be displayed
 	 *         additionally
 	 */
-	String getIncrementString();
+	String getShowMoreJustificationsDescription();
 
 	/**
 	 * @return number of elements displaying currently
