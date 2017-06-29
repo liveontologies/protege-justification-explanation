@@ -55,7 +55,7 @@ public class JustificationPreferencesGeneralPanel extends OWLPreferencesPanel {
 		PreferencesLayoutPanel panel = new PreferencesLayoutPanel();
 		add(panel, BorderLayout.NORTH);
 
-		panel.addGroup("Installed justification plugins");
+		panel.addGroup("Installed justification services");
 		DefaultListModel<String> pluginModel = new DefaultListModel<>();
 		JustificationComputationServiceManager manager = JustificationComputationServiceManager
 				.get(getOWLEditorKit());
