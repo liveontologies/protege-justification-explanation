@@ -75,6 +75,7 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 	private final Explanation explanation_;
 	private final JustificationFrame frame_;
 	private boolean isTransmittingSelectionToModel_ = false;
+	private final PartialListVisualizer justificationPanel_;
 
 	public JustificationFrameList(AxiomSelectionModel axiomSelectionModel,
 			JustificationManager manager, PartialListVisualizer justificationPanel,
@@ -82,17 +83,18 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 		this(axiomSelectionModel,
 				manager, new JustificationFrame(manager.getOwlEditorKit(),
 						explanation, justificationPanel),
-				explanation);
+				explanation, justificationPanel);
 	}
 
 	private JustificationFrameList(AxiomSelectionModel axiomSelectionModel,
 			JustificationManager manager, JustificationFrame frame,
-			Explanation explanation) {
+			Explanation explanation, PartialListVisualizer justificationPanel) {
 		super(manager.getOwlEditorKit(), frame);
 		frame_ = frame;
 		manager_ = manager;
 		axiomSelectionModel_ = axiomSelectionModel;
 		explanation_ = explanation;
+		justificationPanel_ = justificationPanel;
 		OWLEditorKit kit = manager.getOwlEditorKit();
 		setWrap(false);
 		setCellRenderer(new JustificationFrameListRenderer(kit));
@@ -439,7 +441,7 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 
 	private String getPopularityString(JustificationFrameSectionRow row) {
 		int popularity = manager_.getPopularity(row.getAxiom());
-		int count = manager_.getRemainingJustificationCount();
+		int count = justificationPanel_.getNumber() + manager_.getRemainingJustificationCount();
 		if (popularity == 1) {
 			return "Axiom appears only in THIS justification";
 		} else if (popularity == count) {
