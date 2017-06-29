@@ -15,8 +15,7 @@ public class MListReloadButton extends MListButton {
 
 	private final GeneralPath arrow_ = new GeneralPath(
 			GeneralPath.WIND_EVEN_ODD, 6);
-	private final Arc2D outerArc_ = new Arc2D.Float(),
-			innerArc_ = new Arc2D.Float();
+	private final Arc2D arcBorder_ = new Arc2D.Float();
 
 	protected MListReloadButton(ActionListener actionListener) {
 		super("Reload", Color.BLUE.brighter(), actionListener);
@@ -37,7 +36,7 @@ public class MListReloadButton extends MListButton {
 		int quarterSize = (Math.round(width / 4.0f) / 2) * 2;
 
 		float radius = (Math.min(width, height) - quarterSize) / 2;
-		
+
 		double radians = Math.toRadians(ANGLE_START_);
 		// the tip of the arrow
 		double tipX = xCenter + (radius + quarterSize) * Math.cos(radians);
@@ -54,12 +53,12 @@ public class MListReloadButton extends MListButton {
 		arrow_.lineTo(tipX, tipY - tipHeight);
 		arrow_.closePath();
 		g.fill(arrow_);
-		outerArc_.setArcByCenter(xCenter, yCenter, radius + quarterSize,
+		arcBorder_.setArcByCenter(xCenter, yCenter, radius + quarterSize,
 				ANGLE_START_, ANGLE_EXTENT_, Arc2D.PIE);
-		innerArc_.setArcByCenter(xCenter, yCenter, radius, ANGLE_START_,
+		Area area = new Area(arcBorder_);
+		arcBorder_.setArcByCenter(xCenter, yCenter, radius, ANGLE_START_,
 				ANGLE_EXTENT_, Arc2D.PIE);
-		Area area = new Area(outerArc_);
-		area.subtract(new Area(innerArc_));
+		area.subtract(new Area(arcBorder_));
 		g.fill(area);
 	}
 
