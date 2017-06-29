@@ -218,19 +218,11 @@ public class PresentationPanel extends JPanel
 				+ " in total";
 	}
 
-	public String getNumberString() {
-		String s = displayedJustificationCount_ + " justification"
-				+ (displayedJustificationCount_ == 1 ? " is shown"
-						: "s are shown");
-		int remainingJustificationsCount = manager_
-				.getRemainingJustificationCount();
-
-		if (remainingJustificationsCount == 0) {
-			return "All " + s;
-		} else {
-			return s + " of " + (displayedJustificationCount_
-					+ remainingJustificationsCount) + " in total";
-		}
+	public String getComputedJustificationsDescription() {
+		int computedJustifications = displayedJustificationCount_
+				+ manager_.getRemainingJustificationCount();
+		return computedJustifications + " justification"
+				+ (displayedJustificationCount_ == 1 ? "" : "s") + " computed";
 	}
 
 	@Override
@@ -248,10 +240,14 @@ public class PresentationPanel extends JPanel
 		validate();
 	}
 
-	private void refreshCounters() {
+	private void refreshAddJustifications() {
 		frameList_.setAddJustificationsSectionVisibility(
 				manager_.getRemainingJustificationCount() != 0);
-		frameList_.setStatusString(getNumberString());
+	}
+
+	private void refreshCounters() {
+		frameList_.setStatusString(getComputedJustificationsDescription());
+		refreshAddJustifications();
 	}
 
 	private void reloadJustifications() {
@@ -274,7 +270,7 @@ public class PresentationPanel extends JPanel
 			displayedJustificationCount_++;
 			frameList_.addJustification(next, displayedJustificationCount_);
 		}
-		refreshCounters();
+		refreshAddJustifications();
 	}
 
 	@Override
