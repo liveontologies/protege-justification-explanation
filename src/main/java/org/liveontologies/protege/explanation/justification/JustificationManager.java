@@ -234,6 +234,7 @@ public class JustificationManager implements
 			for (Set<OWLAxiom> justification : initial) {
 				justificationFound(justification);
 			}
+			notifyJustificationsRecomputed();
 		}
 	}
 
