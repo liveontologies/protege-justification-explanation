@@ -2,9 +2,9 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-	<extension-point id="JustificationService" name="Justification Service" schema="schema/JustificationService.exsd"/>
+	<extension-point id="JustificationComputationService" name="Justification Computation Service" schema="schema/JustificationComputationService.exsd"/>
 
-	<extension-point id="JustificationPreferences" name="Justification Preferences" schema="schema/JustificationPreferences.exsd"/>
+	<extension-point id="JustificationComputationPreferences" name="Justification Computation Preferences" schema="schema/JustificationComputationPreferences.exsd"/>
 
 	<extension id="PresentationService" point="org.protege.editor.owl.explanation">
 		<name value="Justifications" />
@@ -21,7 +21,7 @@
 		<class value="org.liveontologies.protege.explanation.justification.preferences.JustPrefPanel" />
 	</extension>
 
-	<extension id="JustificationGeneralPreferences" point="org.liveontologies.protege.explanation.justification.JustificationPreferences">
+	<extension id="JustificationComputationGeneralPreferences" point="org.liveontologies.protege.explanation.justification.JustificationComputationPreferences">
 		<label value="General" />
 		<class value="org.liveontologies.protege.explanation.justification.preferences.JustificationPreferencesGeneralPanel" />
 	</extension>

@@ -31,7 +31,7 @@ public class JustificationPreferencesPanelPluginLoader
 
 	private final EditorKit kit_;
 
-	private static final String ID = "JustificationPreferences";
+	private static final String ID = "JustificationComputationPreferences";
 	private static final String KEY = "org.liveontologies.protege.explanation.justification";
 
 	public JustificationPreferencesPanelPluginLoader(EditorKit kit) {

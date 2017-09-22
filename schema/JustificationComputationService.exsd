@@ -3,7 +3,7 @@
 <schema targetNamespace="org.liveontologies.protege.explanation.justification" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.liveontologies.protege.explanation.justification" id="JustificationService" name="Justification Service"/>
+         <meta.schema plugin="org.liveontologies.protege.explanation.justification" id="JustificationComputationService" name="Justification Computation Service"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -44,7 +44,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.liveontologies.protege.explanation.justification.service.ComputationService:"/>
+                  <meta.attribute kind="java" basedOn="org.liveontologies.protege.explanation.justification.service.JustificationComputationService:"/>
                </appinfo>
             </annotation>
          </attribute>

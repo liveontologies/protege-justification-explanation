@@ -36,7 +36,7 @@ public class JustificationComputationPluginLoader
 		extends AbstractPluginLoader<JustificationComputationPlugin> {
 
 	private static final String KEY_ = "org.liveontologies.protege.explanation.justification";
-	private static final String ID_ = "JustificationService";
+	private static final String ID_ = "JustificationComputationService";
 
 	private final OWLEditorKit kit_;
 

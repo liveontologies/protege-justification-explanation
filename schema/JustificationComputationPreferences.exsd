@@ -3,7 +3,7 @@
 <schema targetNamespace="org.liveontologies.protege.explanation.justification" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.liveontologies.protege.explanation.justification" id="JustificationPreferences" name="Justification Preferences"/>
+         <meta.schema plugin="org.liveontologies.protege.explanation.justification" id="JustificationComputationPreferences" name="Justification Computation Preferences"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
