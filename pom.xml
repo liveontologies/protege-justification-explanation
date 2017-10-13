@@ -16,6 +16,8 @@ be provided by other Protege plug-ins. The main functionality of this plug-in
 is displaying a list of these justifications in the user interface.
 	</description>
 
+	<url>https://github.com/liveontologies/${project.artifactId}</url>
+
 	<scm>
 		<connection>scm:git:https://github.com/liveontologies/${project.artifactId}.git</connection>
 		<developerConnection>scm:git:git@github.com:liveontologies/${project.artifactId}.git</developerConnection>
@@ -27,7 +29,7 @@ is displaying a list of these justifications in the user interface.
 		<name>Live Ontologies Project</name>
 		<url>http://liveontologies.org</url>
 	</organization>
-	
+
 	<licenses>
 		<license>
 			<name>GNU LGPL Version 3.0</name>
@@ -35,7 +37,7 @@ is displaying a list of these justifications in the user interface.
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
+
 	<inceptionYear>2016</inceptionYear>
 
 	<developers>
@@ -88,7 +90,7 @@ is displaying a list of these justifications in the user interface.
 			</releases>
 		</repository>
 	</repositories>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>edu.stanford.protege</groupId>
@@ -121,7 +123,7 @@ is displaying a list of these justifications in the user interface.
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
@@ -481,7 +483,7 @@ is displaying a list of these justifications in the user interface.
 				</plugins>
 			</build>
 		</profile>
-		
+
 		<profile>
 			<id>release</id>
 			<build>
