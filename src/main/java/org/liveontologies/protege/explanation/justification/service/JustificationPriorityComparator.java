@@ -38,7 +38,13 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 public interface JustificationPriorityComparator<P> extends Comparator<P> {
 
 	/**
+	 * Computes the priority object of a given justification. Using these
+	 * objects, justifications can be compared.
+	 * 
 	 * @param justification
+	 *            A {@link Set} of {@link OWLAxiom}s for which to compute the
+	 *            priority
+	 * 
 	 * @return the priority, based on which the provided object is compared.
 	 */
 	P getPriority(Set<OWLAxiom> justification);

@@ -187,6 +187,9 @@ public class JustificationManager implements
 	 * {@link #getServices()}.
 	 * 
 	 * @param service
+	 *            the {@link JustificationComputationService} that should be
+	 *            used for computing justifications
+	 * 
 	 * @see #getEntailment()
 	 * @see #getServices()
 	 */

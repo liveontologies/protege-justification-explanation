@@ -59,7 +59,12 @@ public abstract class JustificationComputationService
 	}
 
 	/**
+	 * Check if computation of justifications is supported for a given
+	 * {@link OWLAxiom}
+	 * 
 	 * @param entailment
+	 *            an {@link OWLAxiom} for which justification should be computed
+	 * 
 	 * @return {@code true} if {@link #createComputationManager} can compute the
 	 *         output for the given {@link OWLAxiom}
 	 */

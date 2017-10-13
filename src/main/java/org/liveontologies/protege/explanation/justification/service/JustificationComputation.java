@@ -55,6 +55,9 @@ public abstract class JustificationComputation {
 	 *            comparator should be returned first
 	 * @return {@code true} if the value has been set and will be used in the
 	 *         computation and {@code false} otherwise
+	 * 
+	 * @param <P>
+	 *            the type of objects used to compare justifications
 	 */
 	public <P> boolean setPrefferredPriority(
 			JustificationPriorityComparator<P> comparator) {
@@ -70,6 +73,7 @@ public abstract class JustificationComputation {
 	 * Should be called each time a new justification is found
 	 * 
 	 * @param justification
+	 *            a new justification found by this computation
 	 */
 	protected void notifyJustificationFound(Set<OWLAxiom> justification) {
 		listener_.justificationFound(justification);

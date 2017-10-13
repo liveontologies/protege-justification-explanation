@@ -75,6 +75,8 @@ public class OwlAxiomTypes {
 
 	/**
 	 * @param axiom
+	 *            the input {@link OWLAxiom}
+	 * 
 	 * @return the {@link OwlAxiomType} of the given {@link OWLAxiom}
 	 */
 	public static OwlAxiomType getAxiomType(OWLAxiom axiom) {
