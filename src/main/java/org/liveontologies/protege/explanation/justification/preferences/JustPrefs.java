@@ -31,8 +31,8 @@ public class JustPrefs {
 			INCREMENT_KEY_ = "INCREMENT",
 			INITIAL_NUMBER_KEY_ = "INITIAL_NUMBER";
 
-	public final static String INCREMENT_DESCRIPTION = "The number of additional justifications displayed after click on “Show next” button",
-			INITIAL_NUMBER_DESCRIPTION = "The number of justifications displayed at the beginning";
+	public final static String INCREMENT_DESCRIPTION = "The maximal number of further justifications that can be loaded at once",
+			INITIAL_NUMBER_DESCRIPTION = "The maximal number of justifications displayed at the beginning";
 
 	private final static int DEFAULT_INCREMENT_ = 10; 
 	private final static int DEFAULT_INITIAL_NUMBER_ = 20;
