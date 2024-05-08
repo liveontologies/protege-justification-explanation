@@ -11,7 +11,7 @@
 	<files>
 		<!-- the additional files to be bundled in the archive -->
 		<file>
-			<source>${basedir}/src/main/resources/README.txt</source>
+			<source>${basedir}/src/main/resources/README.md</source>
 			<filtered>true</filtered>
 		</file>
 		<file>

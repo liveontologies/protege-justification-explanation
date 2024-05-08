@@ -300,7 +300,7 @@ is displaying a list of these justifications in the user interface.
 						</goals>
 					</execution>
 					<execution>
-						<!-- set the current year from the build timestamp, used in README.txt -->
+						<!-- set the current year from the build timestamp, used in README.md -->
 						<id>set-current-year</id>
 						<goals>
 							<goal>timestamp-property</goal>
@@ -324,6 +324,12 @@ is displaying a list of these justifications in the user interface.
 							<locale>en,US</locale>
 						</configuration>
 					</execution>
+					<execution>
+						<id>released-version</id>
+						<goals>
+							<goal>released-version</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -345,7 +351,7 @@ is displaying a list of these justifications in the user interface.
 									<filtering>true</filtering>
 									<includes>
 										<include>p5.update.properties</include>
-										<include>README.txt</include>
+										<include>README.md</include>
 									</includes>
 								</resource>
 							</resources>
