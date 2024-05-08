@@ -26,14 +26,6 @@
 	<dependencySets>
 		<!-- the description of the maven packages to be bundled in the archive -->
 		<dependencySet>
-			<scope>provided</scope>
-			<includes>
-				<include>${project.groupId}:*:*</include>
-			</includes>
-			<useStrictFiltering>true</useStrictFiltering>
-			<useProjectArtifact>false</useProjectArtifact>
-		</dependencySet>
-		<dependencySet>
 			<useProjectArtifact>true</useProjectArtifact>
 		</dependencySet>
 	</dependencySets>
