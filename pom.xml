@@ -54,10 +54,6 @@ is displaying a list of these justifications in the user interface.
 			<timezone>1</timezone>
 		</developer>
 		<developer>
-			<name>Matthew Horridge</name>
-			<email>matthew.horridge@stanford.edu</email>
-		</developer>
-		<developer>
 			<id>saa</id>
 			<name>Alexander Stupnikov</name>
 			<email>saarus72@gmail.com</email>
@@ -66,7 +62,7 @@ is displaying a list of these justifications in the user interface.
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<protege.version>5.0.0</protege.version>
+		<protege.version>5.5.0</protege.version>
 		<pluginId>${project.groupId}.protege.explanation.justification</pluginId>
 		<extensionId>${pluginId}.service</extensionId>
 		<plugin-zip.file>
@@ -77,21 +73,23 @@ is displaying a list of these justifications in the user interface.
 			${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}
 		</release.version>
 		<!-- the path to update.properties and version-info.txt for Protege auto-update -->
-		<update.url>https://raw.githubusercontent.com/liveontologies/protege-justification-explanation/release</update.url>
+		<update.url>https://raw.githubusercontent.com/liveontologies/${project.artifactId}/release</update.url>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-	</repositories>
+	<dependencyManagement>
+		<dependencies>
+			<!-- Import versions of dependencies from Protege -->
+			<dependency>
+				<groupId>edu.stanford.protege</groupId>
+				<artifactId>protege-parent</artifactId>
+				<version>${protege.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
@@ -115,23 +113,27 @@ is displaying a list of these justifications in the user interface.
 		<dependency>
 			<groupId>net.sourceforge.owlapi</groupId>
 			<artifactId>owlapi-osgidistribution</artifactId>
-			<version>4.2.6</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.12</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
 	<distributionManagement>
+		<downloadUrl>https://github.com/liveontologies/${project.artifactId}/releases</downloadUrl>
 		<snapshotRepository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/liveontologies/${project.artifactId}/issues/</url>
+	</issueManagement>
 
 	<build>
 		<resources>
@@ -146,42 +148,85 @@ is displaying a list of these justifications in the user interface.
 		</resources>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
 				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.codehaus.mojo</groupId>
-										<artifactId>build-helper-maven-plugin</artifactId>
-										<versionRange>[1.0,)</versionRange>
-										<goals>
-											<goal>timestamp-property</goal>
-											<goal>parse-version</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<execute>
-											<runOnConfiguration>true</runOnConfiguration>
-											<runOnIncremental>true</runOnIncremental>
-										</execute>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.6.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-changes-plugin</artifactId>
+					<version>2.12.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.12.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>3.6.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>3.4.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>3.2.4</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.6.3</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.3.1</version>
+				</plugin>				
+				<plugin>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.3.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<version>5.1.9</version>
+				</plugin>				
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>3.4.0</version>
+				</plugin>				
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>2.3.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.sonatype.plugins</groupId>
+					<artifactId>nexus-staging-maven-plugin</artifactId>
+					<version>1.6.13</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
 			<plugin>
+				<artifactId>maven-enforcer-plugin</artifactId>				
+				<executions>
+					<execution>
+						<id>enforce-maven</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>3.5.4</version>
+								</requireMavenVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -190,7 +235,6 @@ is displaying a list of these justifications in the user interface.
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>3.0.1</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
@@ -202,22 +246,21 @@ is displaying a list of these justifications in the user interface.
 						<Embed-Directory>target/dependency</Embed-Directory>
 						<Update-Url>${update.url}/p5.update.properties</Update-Url>
 					</instructions>
-					<executions>
-						<execution>
-							<id>bundle-manifest</id>
-							<phase>install</phase>
-							<goals>
-								<goal>manifest</goal>
-							</goals>
-						</execution>
-					</executions>
 				</configuration>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>install</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>				
 			</plugin>
 			<plugin>
 				<!-- the plugin used to generate license headers -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
-				<version>1.9</version>
 				<configuration>
 					<verbose>false</verbose>
 					<addSvnKeyWords>true</addSvnKeyWords>
@@ -247,7 +290,6 @@ is displaying a list of these justifications in the user interface.
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.11</version>
 				<executions>
 					<execution>
 						<!-- generate the modified plugin versions, such as release.version 
@@ -288,7 +330,6 @@ is displaying a list of these justifications in the user interface.
 				<!-- filtering and copying of additional files; these will *not* be included 
 					in the jar -->
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.7</version>
 				<executions>
 					<execution>
 						<id>filter-main-resources</id>
@@ -334,9 +375,7 @@ is displaying a list of these justifications in the user interface.
 			</plugin>
 			<plugin>
 				<!-- generate changelog and release announcements -->
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-changes-plugin</artifactId>
-				<version>2.12</version>
 				<configuration>
 					<!-- the changes filtered source changes file -->
 					<xmlPath>${basedir}/target/changes.xml</xmlPath>
@@ -414,7 +453,6 @@ is displaying a list of these justifications in the user interface.
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>ossrh</serverId>
@@ -424,9 +462,7 @@ is displaying a list of these justifications in the user interface.
 			</plugin>
 			<plugin>
 				<!-- generate changelog and release announcements -->
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-changes-plugin</artifactId>
-				<version>2.12</version>
 				<configuration>
 					<!-- the changes filtered source changes file -->
 					<xmlPath>${basedir}/target/changes.xml</xmlPath>
@@ -551,9 +587,7 @@ is displaying a list of these justifications in the user interface.
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>3.0.1</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>
@@ -564,9 +598,7 @@ is displaying a list of these justifications in the user interface.
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>3.0.0-M1</version>
 						<executions>
 							<execution>
 								<id>attach-javadocs</id>
@@ -579,7 +611,6 @@ is displaying a list of these justifications in the user interface.
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>

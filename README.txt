@@ -29,7 +29,7 @@ https://github.com/liveontologies/protege-justification-explanation
 
 REQUIREMENTS:
 
-Protege Justification Explanation is tested to work with Protege 5.0.0. It may work 
+Protege Justification Explanation is tested to work with Protege 5.5.0. It may work 
 with other versions of Protege.
 
 INSTALLATION:
