@@ -366,8 +366,7 @@ public class JustificationFrameList extends OWLFrameList<Explanation>
 			JustificationFrameSectionRow row = (JustificationFrameSectionRow) item;
 			OWLAxiom axiom = row.getAxiom();
 
-			if (!manager_.getOwlEditorKit().getOWLModelManager()
-					.getActiveOntology().containsAxiom(axiom))
+			if (row.isInferred())
 				return INFERRED_BG_COLOR_;
 
 			int rowIndex = row.getFrameSection().getRowIndex(row) + 1;

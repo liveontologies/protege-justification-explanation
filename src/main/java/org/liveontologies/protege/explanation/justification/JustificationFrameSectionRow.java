@@ -34,6 +34,8 @@ import org.protege.editor.owl.ui.frame.OWLFrameSection;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.parameters.AxiomAnnotations;
+import org.semanticweb.owlapi.model.parameters.Imports;
 
 /**
  * Author: Matthew Horridge Stanford University Bio-Medical Informatics Research
@@ -44,7 +46,8 @@ public class JustificationFrameSectionRow
 		extends AbstractOWLFrameSectionRow<Explanation, OWLAxiom, OWLAxiom> {
 
 	private int depth_;
-	private List<MListButton> buttons_;
+	private List<MListButton> buttons_;	
+	private final boolean isInferred_;
 
 	public JustificationFrameSectionRow(OWLEditorKit owlEditorKit,
 			OWLFrameSection<Explanation, OWLAxiom, OWLAxiom> section,
@@ -53,6 +56,9 @@ public class JustificationFrameSectionRow
 				rootObject, axiom);
 		depth_ = depth;
 		buttons_ = null;
+		isInferred_ = !owlEditorKit.getOWLModelManager()
+				.getActiveOntology().containsAxiom(axiom, Imports.INCLUDED,
+						AxiomAnnotations.IGNORE_AXIOM_ANNOTATIONS);
 	}
 
 	public int getDepth() {
@@ -96,7 +102,7 @@ public class JustificationFrameSectionRow
 
 	@Override
 	public boolean isInferred() {
-		return false;
+		return isInferred_;
 	}
 
 	public List<MListButton> getButtons() {

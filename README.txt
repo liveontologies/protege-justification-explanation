@@ -1,6 +1,6 @@
 Protege Justification Explanation
 
-Protege Justification Explanation is Copyright (c) 2016 - 2018 
+Protege Justification Explanation is Copyright (c) 2016 - 2024 
 Live Ontologies Project
 
    Licensed under the Apache License, Version 2.0 (the "License");
