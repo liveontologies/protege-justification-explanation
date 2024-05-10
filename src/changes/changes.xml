@@ -15,7 +15,9 @@ will appear in the produced result.
 		<title>Protege Justification Explanation Project</title>
 	</properties>
 	<body>
-	    <release version="${release.version}" date="${buildDate}" description="Changes since the last release">
+		<release version="${release.version}" date="${buildDate}" description="Changes since the last release">
+		</release>				
+	    <release version="0.1.0" date="2024-05-10" description="First release">
 			<action dev="saa" type="add">
 				Initial implementation based on explanation-workbench.
 			</action>

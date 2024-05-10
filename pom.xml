@@ -4,7 +4,7 @@
 
 	<groupId>org.liveontologies</groupId>
 	<artifactId>protege-justification-explanation</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<name>Protege Justification Explanation</name>
@@ -22,7 +22,7 @@ that implements the new extension points (see plugin.xml).
 		<connection>scm:git:https://github.com/liveontologies/${project.artifactId}.git</connection>
 		<developerConnection>scm:git:git@github.com:liveontologies/${project.artifactId}.git</developerConnection>
 		<url>https://github.com/liveontologies/${project.artifactId}</url>
-		<tag>v0.1.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<organization>

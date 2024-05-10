@@ -20,7 +20,7 @@ with other versions of Protégé.
 
 To install, place all jar files inside the archive 
 
-	protege-justification-explanation-0.1.0.zip 
+	protege-justification-explanation-0.1.1-SNAPSHOT.zip 
 
 into the `plugins` folder of the Protege installation.
 
@@ -37,7 +37,7 @@ To develop extensions to be used with this plugin, use the following Maven depen
 <dependency>
   <groupId>org.liveontologies</groupId>
   <artifactId>protege-justification-explanation</artifactId>
-  <version>${releasedVersion.version}</version>
+  <version>0.1.0</version>
 </dependency>
 ```
 See [`src/main/resources/plugin.xml`](https://github.com/liveontologies/protege-justification-explanation/blob/main/src/main/resources/plugin.xml?raw=true) for the definition of the required extension-points.
