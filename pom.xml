@@ -455,6 +455,17 @@ is displaying a list of these justifications in the user interface.
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<!-- deplyoing to maven central -->
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
@@ -591,18 +602,7 @@ is displaying a list of these justifications in the user interface.
 		<profile>
 			<id>release</id>
 			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-source-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar-no-fork</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
+				<plugins>					
 					<plugin>
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<executions>
