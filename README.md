@@ -3,11 +3,11 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Build status](https://ci.appveyor.com/api/projects/status/nd4uyg7hu88h0o2q?svg=true)](https://ci.appveyor.com/project/ykazakov/protege-justification-explanation)
 
-This is a plug-in that adds justification-based explanation facilities 
-to the Protege Desktop ontology editor. It registers as an extension to the Protege 
-explanation services and defines an extension point using which justifications can 
-be provided by other Protege plug-ins. The main functionality of this plug-in 
-is displaying a list of these justifications in the user interface.
+A plug-in for the Protégé Desktop ontology editor that adds an explanation service for
+displaying minimal subset of axioms (justifications) for entailments. Compared to the
+explanation-workbench plug-in bundled with Protégé, this plug-in can use multiple
+providers for computing justifications. Each of these providers should be a plug-in
+that implements the new extension points (see plugin.xml).
 
 For further information, see <https://github.com/liveontologies/protege-justification-explanation>. 
 
