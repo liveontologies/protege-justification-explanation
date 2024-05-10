@@ -1,5 +1,5 @@
 The Live Ontologies Project team is pleased to announce 
-        the Protege Justification Explanation 0.0.1 release!
+        the Protege Justification Explanation 0.1.0 release!
 
 A plug-in for the Protégé Desktop ontology editor that adds an explanation service for
 displaying minimal subset of axioms (justifications) for entailments. Compared to the

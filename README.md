@@ -20,7 +20,7 @@ with other versions of Protégé.
 
 To install, place all jar files inside the archive 
 
-	protege-justification-explanation-0.0.1-SNAPSHOT.zip 
+	protege-justification-explanation-0.1.0.zip 
 
 into the `plugins` folder of the Protege installation.
 
