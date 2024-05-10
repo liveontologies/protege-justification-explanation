@@ -16,9 +16,51 @@ will appear in the produced result.
 	</properties>
 	<body>
 	    <release version="${release.version}" date="${buildDate}" description="Changes since the last release">
-	    	<action dev="saa" type="add">
-				Initial release.
+			<action dev="saa" type="add">
+				Initial implementation based on explanation-workbench.
 			</action>
-		</release>		
+			<action dev="saa" type="add">
+				Use third party justification computation services over extension points.
+			</action>
+			<action dev="saa" type="add">
+				Provide settings that can be changed from explanation preferences.
+			</action>
+			<action dev="saa" type="update">
+				Make sure preferences persist over Protege restart.
+			</action>
+			<action dev="saa" type="update">
+				Do not show all computed justifications, but load them using a button.
+			</action>
+			<action dev="saa" type="update">
+				Sort only displayed justifications using a priority queue.
+			</action>
+			<action dev="saa" type="update">
+				Cache information about occurrences of axioms in jutifications.
+			</action>
+			<action dev="yevgeny" type="update" issue="13">
+				Cache wether axioms are asserted (appear in ontologies) or derived.
+			</action>
+			<action dev="yevgeny" type="update">
+				Improve comparison of justifications by caching the necessary information, such as sizes.
+			</action>
+			<action dev="saa" type="update">
+				Display information about axiom occurrences only in tooltips.
+			</action>
+			<action dev="yevgeny" type="update">
+				Do not count axioms in justifications, show only justification sizes.
+			</action>
+			<action dev="saa" type="update" issue="4">
+				Tell that the entailment is a tautology if its justificaiton is empty.
+			</action>
+			<action dev="yevgeny" type="fix" issue="7">
+				Fix disposing compoments when the explanation window is closed.
+			</action>
+			<action dev="saa" type="fix" issue="5">
+				Display justifications for entailments which appear as axioms in the ontology.
+			</action>			
+			<action dev="yevgeny" type="update">
+				Allow justification service to provide initial justifications (e.g., if they have been cached).
+			</action>				
+		</release>	
 	</body>
 </document>

@@ -10,7 +10,23 @@ that implements the new extension points (see plugin.xml).
 Changes in this version:
 ------------------------
 New features:
-- Initial release. 
+- Initial implementation based on explanation-workbench. 
+- Use third party justification computation services over extension points. 
+- Provide settings that can be changed from explanation preferences. 
+Fixed Bugs:
+- Fix disposing compoments when the explanation window is closed.  Issue: 7. 
+- Display justifications for entailments which appear as axioms in the ontology.  Issue: 5. 
+Changes:
+- Make sure preferences persist over Protege restart. 
+- Do not show all computed justifications, but load them using a button. 
+- Sort only displayed justifications using a priority queue. 
+- Cache information about occurrences of axioms in jutifications. 
+- Cache wether axioms are asserted (appear in ontologies) or derived.  Issue: 13. 
+- Improve comparison of justifications by caching the necessary information, such as sizes. 
+- Display information about axiom occurrences only in tooltips. 
+- Do not count axioms in justifications, show only justification sizes. 
+- Tell that the entailment is a tautology if its justificaiton is empty.  Issue: 4. 
+- Allow justification service to provide initial justifications (e.g., if they have been cached). 
 
 
 Have fun!
