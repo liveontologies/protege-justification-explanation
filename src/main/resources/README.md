@@ -36,7 +36,13 @@ To develop extensions to be used with this plugin, use the following Maven depen
   <version>${releasedVersion.version}</version>
 </dependency>
 ```
-See [`src/main/resources/plugin.xml`](${project.scm.url}/blob/main/src/main/resources/plugin.xml?raw=true) for the definition of the required extension-points.
+
+Each extension  should be a plug-in that implements the new 
+extension points specified in
+[`src/main/resources/plugin.xml`](${project.scm.url}/blob/main/src/main/resources/plugin.xml?raw=true).
+
+See [Plugin Anatomy](https://protegewiki.stanford.edu/wiki/PluginAnatomy) for general
+information about developing Protégé plugins.
 
 To use snapshots versions of this library (if not compiled from sources), please add
 the Sonatype OSSRH snapshot repository either to your `pom.xml` or `settings.xml`:

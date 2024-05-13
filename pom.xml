@@ -9,11 +9,12 @@
 
 	<name>Protege Justification Explanation</name>
 	<description>
-A plug-in for the Protégé Desktop ontology editor that adds an explanation service for
-displaying minimal subset of axioms (justifications) for entailments. Compared to the
-explanation-workbench plug-in bundled with Protégé, this plug-in can use multiple
-providers for computing justifications. Each of these providers should be a plug-in
-that implements the new extension points (see plugin.xml).
+A plug-in for the [Protégé Desktop](https://protege.stanford.edu) ontology 
+editor that adds an explanation service for displaying minimal subset of 
+axioms (justifications) for entailments. Compared to the 
+[explanation-workbench](https://github.com/protegeproject/explanation-workbench)
+plug-in bundled with Protégé, this plug-in can use custom services for computing
+justifications.
 	</description>
 
 	<url>https://github.com/liveontologies/${project.artifactId}</url>
