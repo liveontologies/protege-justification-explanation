@@ -240,9 +240,6 @@ that implements the new extension points (see plugin.xml).
 						<Bundle-SymbolicName>${pluginId};singleton:=true</Bundle-SymbolicName>
 						<Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
 						<Export-Package>${extensionId}</Export-Package>
-						<Embed-Dependency>*;scope=!provided;scope=compile|runtime;inline=false</Embed-Dependency>
-						<Embed-Transitive>true</Embed-Transitive>
-						<Embed-Directory>target/dependency</Embed-Directory>
 						<Update-Url>${update.url}/p5.update.properties</Update-Url>
 					</instructions>
 				</configuration>
