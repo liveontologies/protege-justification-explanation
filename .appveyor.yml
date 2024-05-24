@@ -26,4 +26,5 @@ test_script:
 deploy_script:
   - bash -c "if [ ${DEPLOY} ] && [ ${APPVEYOR_REPO_BRANCH} = 'main' ]; then mvn deploy --settings .ci-settings.xml -DskipTests=true -B; fi"   
 cache:
-  - $HOME/.m2/
+  - '%USERPROFILE%\.m2'
+  - '$HOME/.m2'
